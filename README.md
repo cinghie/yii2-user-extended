@@ -20,3 +20,18 @@ or add this line to the require section of your `composer.json` file.
 
 Configuration
 -----------------
+
+Set on your configuration file
+
+```
+'modules' =>  [
+        'user' => [
+                'class' => 'dektrium\user\Module',
+                'modelMap' => [
+                    'RegistrationForm' => 'cinghie\yii2userextended\models\RegistrationForm',
+                    'Profile' => 'cinghie\yii2userextended\models\Profile',
+                    'User' => 'cinghie\yii2userextended\models\User',
+                ],
+        ],
+]
+```
