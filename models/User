@@ -9,3 +9,14 @@
  * @package yii2-user-extended
  * @version 0.1.0
  */
+
+namespace cinhghie\yii2userextended;
+
+use dektrium\user\models\User as BaseUser;
+
+class User extends BaseUser
+{
+
+
+
+}
