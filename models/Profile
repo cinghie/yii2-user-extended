@@ -1,6 +1,6 @@
 <?php
 
-namespace cinghie\yii2user\models;
+namespace cinghie\yii2userextended\models;
 
 use dektrium\user\models\Profile as BaseProfile;
 
