@@ -10,7 +10,7 @@
  * @version 0.1.0
  */
 
-namespace cinghie\yii2userextended;
+namespace cinghie\yii2userextended\models;
 
 use dektrium\user\models\User as BaseUser;
 
