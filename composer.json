@@ -1,0 +1,24 @@
+{
+    "name": "cinghie/yii2userextended",
+    "description": "Module to extend funtionalities of Yii2 User by Dektrium.",
+    "keywords": ["yii2", "yii2 user", "yii2 user management", "yii2 user field"],
+    "homepage": "https://github.com/cinghie/yii2-user-extended",
+    "type": "yii2-extension",
+    "license": "BSD 3-Clause",
+    "authors": [
+        {
+            "name": "Gogodigital.it",
+            "email": "info@gogodigital.it",
+            "homepage": "http://www.gogodigital.it/"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*",
+        "dektrium/yii2-user": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "cinghie\\yii2userextended\\": ""
+        }
+    }
+}
