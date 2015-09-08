@@ -1,0 +1,42 @@
+<?php
+
+namespace cinghie\yii2user\models;
+
+use dektrium\user\models\Profile as BaseProfile;
+
+class Profile extends BaseProfile
+{
+
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+
+        // add firstname to scenarios
+        $scenarios['create'][]   = 'firstname';
+        $scenarios['update'][]   = 'firstname';
+        $scenarios['register'][] = 'firstname';
+
+        // add lastname to scenarios
+        $scenarios['create'][]   = 'lastname';
+        $scenarios['update'][]   = 'lastname';
+        $scenarios['register'][] = 'lastname';
+
+        return $scenarios;
+    }
+
+    public function rules()
+    {
+        $rules = parent::rules();
+
+        // add firstname rules
+        $rules['firstnameRequired'] = ['firstname', 'required'];
+        $rules['firstnameLength']   = ['firstname', 'string', 'max' => 255];
+
+        // add lastname rules
+        $rules['lastnameRequired']  = ['lastname', 'required'];
+        $rules['lastnameLength']    = ['lastname', 'string', 'max' => 255];
+
+        return $rules;
+    }
+
+}
