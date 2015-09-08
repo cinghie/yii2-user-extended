@@ -1,5 +1,5 @@
 {
-    "name": "cinghie/yii2userextended",
+    "name": "cinghie/yii2-user-extended",
     "description": "Module to extend funtionalities of Yii2 User by Dektrium.",
     "keywords": ["yii2", "yii2 user", "yii2 user management", "yii2 user field"],
     "homepage": "https://github.com/cinghie/yii2-user-extended",
