@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.1.0
+ * @version 0.1.5
  */
 
 namespace cinghie\yii2userextended\models;
@@ -31,6 +31,11 @@ class Profile extends BaseProfile
         $scenarios['update'][]   = 'lastname';
         $scenarios['register'][] = 'lastname';
 
+        // add birthday to scenarios
+        $scenarios['create'][]   = 'birthday';
+        $scenarios['update'][]   = 'birthday';
+        $scenarios['register'][] = 'birthday';
+
         return $scenarios;
     }
 
@@ -45,6 +50,10 @@ class Profile extends BaseProfile
         // add lastname rules
         $rules['lastnameRequired']  = ['lastname', 'required'];
         $rules['lastnameLength']    = ['lastname', 'string', 'max' => 255];
+
+        // add lastname rules
+        $rules['birthdayRequired']  = ['birthday', 'required'];
+        $rules['birthdayLength']    = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
 
         return $rules;
     }

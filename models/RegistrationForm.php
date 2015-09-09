@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.1.0
+ * @version 0.1.5
  */
 
 namespace cinghie\yii2userextended\models;
@@ -25,6 +25,7 @@ class RegistrationForm extends BaseRegistrationForm
     public $name;
     public $firstname;
     public $lastname;
+    public $birthday;
 
     /**
      * @inheritdoc
@@ -32,8 +33,10 @@ class RegistrationForm extends BaseRegistrationForm
     public function rules()
     {
         $rules = parent::rules();
-        $rules[] = [['name','firstname','lastname'], 'required'];
+        $rules[] = [['name','firstname','lastname','birthday'], 'required'];
         $rules[] = [['name','firstname','lastname'], 'string', 'max' => 255];
+        $rules[] = [['birthday'], 'safe'];
+        $rules[] = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
         return $rules;
     }
 
@@ -46,6 +49,7 @@ class RegistrationForm extends BaseRegistrationForm
         $labels['name']      = \Yii::t('user', 'Name');
         $labels['firstname'] = \Yii::t('user', 'Firstname');
         $labels['lastname']  = \Yii::t('user', 'Lastname');
+        $labels['birthday']  = \Yii::t('user', 'Birthday');
         return $labels;
     }
 
@@ -66,6 +70,7 @@ class RegistrationForm extends BaseRegistrationForm
             'name'      => $this->name,
             'firstname' => $this->firstname,
             'lastname'  => $this->lastname,
+            'birthday'  => $this->birthday,
         ]);
         $user->setProfile($profile);
     }

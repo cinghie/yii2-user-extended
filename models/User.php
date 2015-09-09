@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.1.0
+ * @version 0.1.5
  */
 
 namespace cinghie\yii2userextended\models;
