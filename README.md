@@ -58,6 +58,6 @@ Features
 Add new fields to user profile and on registration view
 <ul>
   <li>firstname</li>
-  <li>lasstname</li>
+  <li>lastname</li>
   <li>birthday</li>
 </ul>
