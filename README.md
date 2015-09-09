@@ -1,7 +1,7 @@
 # Yii2 User Extended
 Yii2 User Extended to extend Yii2 User by Dektrium: https://github.com/dektrium/yii2-user
 
-This is not an standalone module to manage users but a module to extend Yii2 User.
+This is not an standalone module to manage users but a module to extend Yii2 User extension.
 
 Installation
 -----------------
@@ -51,3 +51,13 @@ and in components section
         ],
 ]
 ```
+
+Features
+-----------------
+
+Add new fields to user profile and on registration view
+<ul>
+  <li>firstname</li>
+  <li>lasstname</li>
+  <li>birthday</li>
+</ul>
