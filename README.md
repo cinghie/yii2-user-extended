@@ -26,12 +26,13 @@ Configuration
 Set on your configuration file, in modules section
 
 ```
-'components' =>  [
-        'view' => [
-                'theme' => [
-                        'pathMap' => [
-                                '@dektrium/user/views' => '@cinghie/yii2-user-extended/views'
-                        ],
+'modules' =>  [
+        'user' => [
+                'class' => 'dektrium\user\Module',
+                'modelMap' => [
+                    'RegistrationForm' => 'cinghie\yii2userextended\models\RegistrationForm',
+                    'Profile' => 'cinghie\yii2userextended\models\Profile',
+                    'User' => 'cinghie\yii2userextended\models\User',
                 ],
         ],
 ]
@@ -40,13 +41,12 @@ Set on your configuration file, in modules section
 and in components section
 
 ```
-'modules' =>  [
-        'user' => [
-                'class' => 'dektrium\user\Module',
-                'modelMap' => [
-                    'RegistrationForm' => 'cinghie\yii2userextended\models\RegistrationForm',
-                    'Profile' => 'cinghie\yii2userextended\models\Profile',
-                    'User' => 'cinghie\yii2userextended\models\User',
+'components' =>  [
+        'view' => [
+                'theme' => [
+                        'pathMap' => [
+                                '@dektrium/user/views' => '@cinghie/yii2-user-extended/views'
+                        ],
                 ],
         ],
 ]
