@@ -7,17 +7,11 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.1.0
+ * @version 0.1.5
  */
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-
-/**
- * @var yii\web\View              $this
- * @var dektrium\user\models\User $user
- * @var dektrium\user\Module      $module
- */
 
 $this->title = Yii::t('user', 'Sign up');
 $this->params['breadcrumbs'][] = $this->title;
@@ -38,6 +32,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'firstname') ?>
 
                 <?= $form->field($model, 'lastname') ?>
+
+                <?= $form->field($model, 'birthday') ?>
 
                 <?= $form->field($model, 'name') ?>
 
