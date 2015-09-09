@@ -23,7 +23,21 @@ or add this line to the require section of your `composer.json` file.
 Configuration
 -----------------
 
-Set on your configuration file
+Set on your configuration file, in modules section
+
+```
+'components' =>  [
+        'view' => [
+                'theme' => [
+                        'pathMap' => [
+                                '@dektrium/user/views' => '@cinghie/yii2-user-extended/views'
+                        ],
+                ],
+        ],
+]
+```
+
+and in components section
 
 ```
 'modules' =>  [
