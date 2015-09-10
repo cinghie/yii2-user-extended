@@ -52,6 +52,8 @@ and in components section
 ]
 ```
 
+and update your database tables running SQL file in docs
+
 Features
 -----------------
 
