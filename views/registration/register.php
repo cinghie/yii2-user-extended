@@ -17,7 +17,7 @@ $this->title = Yii::t('user', 'Sign up');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
-    <div class="col-md-4 col-md-offset-4">
+    <div class="col-md-8 col-md-offset-2">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title"><?= Html::encode($this->title) ?></h3>
@@ -29,29 +29,34 @@ $this->params['breadcrumbs'][] = $this->title;
                     'enableClientValidation' => false,
                 ]); ?>
 
-                <?= $form->field($model, 'firstname') ?>
+                <div class="col-md-6">
 
-                <?= $form->field($model, 'lastname') ?>
+                    <?= $form->field($model, 'firstname') ?>
 
-                <?= $form->field($model, 'birthday') ?>
+                    <?= $form->field($model, 'birthday') ?>
 
-                <?= $form->field($model, 'name') ?>
+                    <?= $form->field($model, 'username') ?>
 
-                <?= $form->field($model, 'email') ?>
+                    <?= Html::submitButton(Yii::t('user', 'Sign up'), ['class' => 'btn btn-success btn-block']) ?>
 
-                <?= $form->field($model, 'username') ?>
+                </div>
 
-                <?php if ($module->enableGeneratingPassword == false): ?>
-                    <?= $form->field($model, 'password')->passwordInput() ?>
-                <?php endif ?>
+                <div class="col-md-6">
 
-                <?= Html::submitButton(Yii::t('user', 'Sign up'), ['class' => 'btn btn-success btn-block']) ?>
+                    <?= $form->field($model, 'lastname') ?>
+
+                    <?= $form->field($model, 'email') ?>
+
+                    <?php if ($module->enableGeneratingPassword == false): ?>
+                        <?= $form->field($model, 'password')->passwordInput() ?>
+                    <?php endif ?>
+
+                    <?= Html::a(Yii::t('user', 'Sign in'), ['/user/login'], ['class' => 'btn btn-primary btn-block']) ?>
+
+                </div>
 
                 <?php ActiveForm::end(); ?>
             </div>
         </div>
-        <p class="text-center">
-            <?= Html::a(Yii::t('user', 'Already registered? Sign in!'), ['/user/security/login']) ?>
-        </p>
     </div>
 </div>
