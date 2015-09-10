@@ -45,7 +45,7 @@ and in components section
         'view' => [
                 'theme' => [
                         'pathMap' => [
-                                '@dektrium/user/views' => '@cinghie/yii2-user-extended/views'
+                                '@dektrium/user/views' => '@vendor/cinghie/yii2-user-extended/views'
                         ],
                 ],
         ],
