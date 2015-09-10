@@ -64,3 +64,16 @@ Add new fields to user profile and on registration view
   <li>birthday</li>
   <li>terms</li>
 </ul>
+
+Changelog
+-----------------
+
+<ul>
+  <li>Version 0.2.0 - Fixed Bugs</li>
+  <li>Version 0.1.5 - Fixing register view, Adding Birthday Field</li>
+  <li>Version 0.1.4 - Fixed Bugs</li>
+  <li>Version 0.1.3 - Fix User Namespace</li>
+  <li>Version 0.1.2 - Fixed Extension</li>
+  <li>Version 0.1.1 - Update Composer</li>
+  <li>Version 0.1.0 - Initial Release</li>
+</ul>
