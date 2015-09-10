@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.1.5
+ * @version 0.1.7
  */
 
 use yii\helpers\Html;
@@ -37,8 +37,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <?= $form->field($model, 'username') ?>
 
-                    <?= Html::submitButton(Yii::t('user', 'Sign up'), ['class' => 'btn btn-success btn-block']) ?>
-
                 </div>
 
                 <div class="col-md-6">
@@ -51,7 +49,39 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= $form->field($model, 'password')->passwordInput() ?>
                     <?php endif ?>
 
-                    <?= Html::a(Yii::t('user', 'Sign in'), ['/user/login'], ['class' => 'btn btn-primary btn-block']) ?>
+                </div>
+
+                <div class="col-md-12">
+
+                    <div class="col-md-3">
+
+                        <?= $form->field($model, 'terms')->checkbox(['uncheck' => false, 'checked' => true]) ?>
+
+                    </div>
+
+                    <div class="col-md-9">
+
+                        <?= Yii::t('user', 'By clicking Register, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+
+                    <?= $form->field($model, 'terms', ['template' => "{error}"])->error() ?>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <?= Html::submitButton(Yii::t('user', 'Register'), ['class' => 'btn btn-success btn-block btn-lg']) ?>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <?= Html::a(Yii::t('user', 'Login'), ['/user/login'], ['class' => 'btn btn-primary btn-block btn-lg']) ?>
 
                 </div>
 
