@@ -62,4 +62,5 @@ Add new fields to user profile and on registration view
   <li>firstname</li>
   <li>lastname</li>
   <li>birthday</li>
+  <li>terms</li>
 </ul>

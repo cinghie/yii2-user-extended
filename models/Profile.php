@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.1.6
+ * @version 0.1.7
  */
 
 namespace cinghie\yii2userextended\models;
@@ -54,6 +54,10 @@ class Profile extends BaseProfile
         // add lastname rules
         $rules['birthdayRequired']  = ['birthday', 'required'];
         $rules['birthdayLength']    = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
+
+        // add terms checkbox
+        $rules['termsRequired']     = ['terms', 'required', 'requiredValue' => true, 'message' => 'You must agree to the terms and conditions'];
+        $rules['termsLength']       = ['terms', 'integer'];
 
         return $rules;
     }
