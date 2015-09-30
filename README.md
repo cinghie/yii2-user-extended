@@ -52,6 +52,17 @@ and in components section
 ]
 ```
 
+in your SiteController set in actions() function
+
+```
+			'captcha' => [
+                'class' => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+                'minLength' => 6,
+                'maxLength' => 6
+            ],
+```
+
 and update your database tables running SQL file in docs
 
 Features
@@ -61,14 +72,17 @@ Add new fields to user profile and on registration view
 <ul>
   <li>firstname</li>
   <li>lastname</li>
+  <li>name (firstname + lastname)</li>  
   <li>birthday</li>
   <li>terms</li>
+  <li>captcha</li>
 </ul>
 
 Changelog
 -----------------
 
 <ul>
+  <li>Version 0.2.1 - Adding Captcha</li>
   <li>Version 0.2.0 - Fixed Bugs</li>
   <li>Version 0.1.5 - Fixing register view, Adding Birthday Field</li>
   <li>Version 0.1.4 - Fixed Bugs</li>

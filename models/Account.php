@@ -7,14 +7,14 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.2.1
+ * @version 0.3.0
  */
 
 namespace cinghie\yii2userextended\models;
 
-use dektrium\user\models\User as BaseUser;
+use dektrium\user\models\Account as AccountProfile;
 
-class User extends BaseUser
+class Account extends AccountProfile
 {
 
 

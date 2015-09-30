@@ -7,9 +7,10 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.2.0
+ * @version 0.2.1
  */
 
+use yii\captcha\Captcha;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -23,65 +24,84 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h3 class="panel-title"><?= Html::encode($this->title) ?></h3>
             </div>
             <div class="panel-body">
+
                 <?php $form = ActiveForm::begin([
                     'id'                     => 'registration-form',
                     'enableAjaxValidation'   => true,
                     'enableClientValidation' => false,
                 ]); ?>
 
-                <div class="col-md-6">
-
-                    <?= $form->field($model, 'firstname') ?>
-
-                    <?= $form->field($model, 'birthday') ?>
-
-                    <?= $form->field($model, 'username') ?>
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <?= $form->field($model, 'lastname') ?>
-
-                    <?= $form->field($model, 'email') ?>
-
-                    <?php if ($module->enableGeneratingPassword == false): ?>
-                        <?= $form->field($model, 'password')->passwordInput() ?>
-                    <?php endif ?>
-
-                </div>
-
                 <div class="col-md-12">
 
-                    <div class="col-md-3">
+                    <div class="col-md-6">
 
-                        <?= $form->field($model, 'terms')->checkbox(['uncheck' => false, 'checked' => true]) ?>
+                        <?= $form->field($model, 'firstname') ?>
+
+                        <?= $form->field($model, 'email') ?>
+
+                        <?= $form->field($model, 'username') ?>
 
                     </div>
 
-                    <div class="col-md-9">
+                    <div class="col-md-6">
 
-                        <?= Yii::t('user', 'By clicking Register, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
+                        <?= $form->field($model, 'lastname') ?>
+
+                        <?= $form->field($model, 'birthday') ?>
+
+                        <?php if ($module->enableGeneratingPassword == false): ?>
+                            <?= $form->field($model, 'password')->passwordInput() ?>
+                        <?php endif ?>
 
                     </div>
 
-                </div>
+                    <div class="col-md-12">
 
-                <div class="col-md-12">
+                        <?= $form->field($model, 'captcha')->widget(Captcha::className(), [
+                            'captchaAction' => ['/site/captcha'],
+                            'options' => ['class' => 'form-control'],
+                            'template' => '<div class="row"><div class="col-md-6">{input}</div><div class="col-md-6">{image}</div></div>'
+                        ]) ?>
 
-                    <?= $form->field($model, 'terms', ['template' => "{error}"])->error() ?>
+                    </div>
 
-                </div>
+                    <div class="col-md-12">
 
-                <div class="col-md-6">
+                        <div class="col-md-3">
 
-                    <?= Html::submitButton(Yii::t('user', 'Register'), ['class' => 'btn btn-success btn-block btn-lg']) ?>
+                            <?= $form->field($model, 'terms')->checkbox(['uncheck' => false, 'checked' => true]) ?>
 
-                </div>
+                        </div>
 
-                <div class="col-md-6">
+                        <div class="col-md-9">
 
-                    <?= Html::a(Yii::t('user', 'Login'), ['/user/login'], ['class' => 'btn btn-primary btn-block btn-lg']) ?>
+                            <?= Yii::t('user', 'By clicking Register, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-12">
+
+                        <?= $form->field($model, 'terms', ['template' => "{error}"])->error() ?>
+
+                    </div>
+
+                    <div class="col-md-12">
+
+                        <div class="col-md-6">
+
+                            <?= Html::submitButton(Yii::t('user', 'Register'), ['class' => 'btn btn-success btn-block btn-lg']) ?>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <?= Html::a(Yii::t('user', 'Login'), ['/user/login'], ['class' => 'btn btn-primary btn-block btn-lg']) ?>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
