@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.3.1
+ * @version 0.3.2
  */
 
 namespace cinghie\yii2userextended\controllers;
@@ -47,7 +47,7 @@ class SettingsController extends BaseController
                 $model->avatar = $image->name;
             }
 
-            Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Your profile test has been updated'));
+            Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Your profile has been updated'));
 
             return $this->refresh();
         }
