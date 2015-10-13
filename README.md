@@ -84,7 +84,7 @@ and update your database tables running SQL file in docs
 Features
 -----------------
 
-Add new fields to user profile and on registration view
+Add new fields to user profile
 <ul>
   <li>firstname</li>
   <li>lastname</li>
@@ -92,6 +92,7 @@ Add new fields to user profile and on registration view
   <li>birthday</li>
   <li>terms</li>
   <li>captcha</li>
+  <li>avatar</li>  
 </ul>
 
 Changelog
