@@ -72,11 +72,11 @@ and in components section
 in your SiteController set in actions() function
 
 ```
-			'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'minLength' => 6,
-                'maxLength' => 6
-            ],
+'captcha' => [
+        'class' => 'yii\captcha\CaptchaAction',
+        'minLength' => 6,
+        'maxLength' => 6
+],
 ```
 
 and update your database tables running SQL file in docs
