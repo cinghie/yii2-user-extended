@@ -126,22 +126,22 @@ class Profile extends BaseProfile
      *
      * @return boolean the status of deletion
      */
-    public function deleteImage() {
-        $file = $this->getImageFile();
+    public function deleteImage($imageURL)
+    {
+        $avatar = Yii::getAlias('@webroot')."/img/users/". $oldImage;
 
         // check if file exists on server
-        if (empty($file) || !file_exists($file)) {
+        if (empty($avatar) || !file_exists($avatar)) {
             return false;
         }
 
         // check if uploaded file can be deleted on server
-        if (!unlink($file)) {
+        if (!unlink($avatar)) {
             return false;
         }
 
         // if deletion successful, reset your file attributes
         $this->avatar = null;
-        $this->filename = null;
 
         return true;
     }

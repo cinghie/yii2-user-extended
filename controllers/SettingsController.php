@@ -41,6 +41,9 @@ class SettingsController extends BaseController
             if ($image === false) {
                 $model->avatar = $oldImage;
             } else {
+                // delete old avatar
+                $model->deleteImage($oldImage);
+                // upload new avatar
                 $model->avatar = $image->name;
             }
 
