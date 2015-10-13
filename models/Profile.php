@@ -107,7 +107,7 @@ class Profile extends BaseProfile
      */
     public function getImagePath()
     {
-        return isset($this->avatar) ? Yii::getAlias('@webroot')."/".Yii::$app->controller->module->avatarPath. $this->avatar : null;
+        return isset($this->avatar) ? Yii::getAlias('@webroot')."/img/users/". $this->avatar : null;
     }
 
     /**
@@ -118,7 +118,7 @@ class Profile extends BaseProfile
     public function getImageUrl()
     {
         $avatar = isset($this->avatar) ? $this->avatar : 'default.gif';
-        return Yii::$app->params['uploadUrl'].$avatar;
+        return Yii::getAlias('@web')."/img/users/".$avatar;
     }
 
     /**

@@ -23,6 +23,8 @@ or add this line to the require section of your `composer.json` file.
 Configuration
 -----------------
 
+Copy img folder to your webroot
+
 Set on your configuration file, in modules section
 
 ```

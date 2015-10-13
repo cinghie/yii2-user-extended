@@ -14,8 +14,7 @@ use yii\widgets\Menu;
 
 $user    = Yii::$app->user->identity;
 $profile = $user->profile;
-//$avatar  = Yii::getAlias('@webroot')."/img/users/".$profile->getAttribute('avatar');
-$avatar  = $profile->getImagePath();
+$avatar  = $profile->getImageUrl();
 $networksVisible = count(Yii::$app->authClientCollection->clients) > 0;
 
 ?>
