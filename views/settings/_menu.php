@@ -7,13 +7,17 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.2.1
+ * @version 0.3.0
  */
 
 use yii\widgets\Menu;
 
-$user = Yii::$app->user->identity;
+$user    = Yii::$app->user->identity;
+$profile = $user->profile;
+//$avatar  = Yii::getAlias('@webroot')."/img/users/".$profile->getAttribute('avatar');
+$avatar  = $profile->getImagePath();
 $networksVisible = count(Yii::$app->authClientCollection->clients) > 0;
+
 ?>
 
 <div class="panel panel-default">
@@ -26,7 +30,7 @@ $networksVisible = count(Yii::$app->authClientCollection->clients) > 0;
 
     <div class="user-image">
         <a href="#" style="display: block; max-width: 100%; padding: 15px 15px 0;">
-            <img src="http://www.bdu.edu.et/emti/sites/bdu.edu.et.emti/files/default_images/no-profile-img.gif" alt="<?php echo $user->username ?>" title="<?php echo $user->username ?>" style="border: 1px solid #ddd; margin-left: auto; margin-right: auto; max-width: 100%; padding: 15px;">
+            <img src="<?php echo $avatar ?>" alt="<?php echo $user->username ?>" title="<?php echo $user->username ?>" style="border: 1px solid #ddd; margin-left: auto; margin-right: auto; max-width: 100%; padding: 15px;">
         </a>
     </div>
 
@@ -42,4 +46,5 @@ $networksVisible = count(Yii::$app->authClientCollection->clients) > 0;
             ],
         ]) ?>
     </div>
+
 </div>

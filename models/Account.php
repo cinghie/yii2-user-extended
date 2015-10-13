@@ -12,9 +12,9 @@
 
 namespace cinghie\yii2userextended\models;
 
-use dektrium\user\models\Account as AccountProfile;
+use dektrium\user\models\Account as BaseAccount;
 
-class Account extends AccountProfile
+class Account extends BaseAccount
 {
 
 

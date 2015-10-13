@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.2.1
+ * @version 0.3.0
  */
 
 namespace cinghie\yii2userextended\models;
@@ -37,12 +37,14 @@ class RegistrationForm extends BaseRegistrationForm
     public function rules()
     {
         $rules = parent::rules();
-        $rules[] = [['firstname','lastname','birthday','terms','captcha'], 'required'];
+        $rules[] = [['firstname','lastname','birthday','terms'], 'required'];
         $rules[] = [['firstname','lastname'], 'string', 'max' => 255];
-        $rules[] = ['captcha', 'captcha'];
         $rules[] = [['birthday'], 'safe'];
         $rules[] = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
+        //$rules[] = ['captcha', 'required'];
+        //$rules[] = ['captcha', 'captcha'];
         $rules[] = ['terms', 'required', 'requiredValue' => true, 'message' => 'You must agree to the terms and conditions'];
+
         return $rules;
     }
 
@@ -58,6 +60,7 @@ class RegistrationForm extends BaseRegistrationForm
         $labels['birthday']  = \Yii::t('user', 'Birthday');
         $labels['terms']     = \Yii::t('user', 'I Agree');
         $labels['captcha']   = \Yii::t('user', 'Captcha');
+
         return $labels;
     }
 

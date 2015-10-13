@@ -57,11 +57,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <div class="col-md-12">
 
-                        <?= $form->field($model, 'captcha')->widget(Captcha::className(), [
+                        <?php /*<?= $form->field($model, 'captcha')->widget(Captcha::className(), [
                             'captchaAction' => ['/site/captcha'],
                             'options' => ['class' => 'form-control'],
                             'template' => '<div class="row"><div class="col-md-6">{input}</div><div class="col-md-6">{image}</div></div>'
-                        ]) ?>
+                        ]) ?> */ ?>
 
                     </div>
 
@@ -78,12 +78,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= Yii::t('user', 'By clicking Register, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
 
                         </div>
-
-                    </div>
-
-                    <div class="col-md-12">
-
-                        <?= $form->field($model, 'terms', ['template' => "{error}"])->error() ?>
 
                     </div>
 

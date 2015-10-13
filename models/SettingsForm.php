@@ -12,9 +12,9 @@
 
 namespace cinghie\yii2userextended\models;
 
-use dektrium\user\models\User as BaseUser;
+use dektrium\user\models\SettingsForm as BaseSettingsForm;
 
-class User extends BaseUser
+class SettingsForm extends BaseSettingsForm
 {
 
 
