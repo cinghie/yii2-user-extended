@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.3.3
+ * @version 0.3.4
  */
 
 use yii\helpers\Html;
@@ -66,11 +66,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($model, 'public_email') ?>
 
+                <?= $form->field($model, 'gravatar_email')->hint(\yii\helpers\Html::a(Yii::t('user', 'Change your avatar at Gravatar.com'), 'http://gravatar.com')) ?>
+
                 <?= $form->field($model, 'website') ?>
 
                 <?= $form->field($model, 'location') ?>
-
-                <?= $form->field($model, 'gravatar_email')->hint(\yii\helpers\Html::a(Yii::t('user', 'Change your avatar at Gravatar.com'), 'http://gravatar.com')) ?>
 
                 <?= $form->field($model, 'bio')->textarea() ?>
 

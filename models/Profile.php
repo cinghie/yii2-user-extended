@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.3.3
+ * @version 0.3.4
  */
 
 namespace cinghie\yii2userextended\models;
@@ -128,7 +128,7 @@ class Profile extends BaseProfile
      */
     public function deleteImage($imageURL)
     {
-        $avatar = Yii::getAlias('@webroot')."/img/users/". $oldImage;
+        $avatar = Yii::getAlias('@webroot')."/img/users/". $imageURL;
 
         // check if file exists on server
         if (empty($avatar) || !file_exists($avatar)) {

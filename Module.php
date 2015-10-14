@@ -22,7 +22,7 @@ class Module extends BaseUser
     /**
      * @var string Module version
      */
-    protected $_version = "0.3.0";
+    protected $_version = "0.3.4";
 
     /**
      * @var boolean Module version
