@@ -95,7 +95,14 @@ Add new fields to user profile
   <li>terms</li>
   <li>captcha</li>
   <li>avatar</li>  
+  <ol>
+	<li>The avatar can be uploaded</li>
+	<li>The avatar can be updated</li>
+	<li>On update avatar old image was deleted</li>
+  </ol>
 </ul>
+
+
 
 Changelog
 -----------------
