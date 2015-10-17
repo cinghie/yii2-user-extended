@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.3.4
+ * @version 0.3.5
  */
 
 namespace cinghie\yii2userextended;
@@ -22,7 +22,7 @@ class Module extends BaseUser
     /**
      * @var string Module version
      */
-    protected $_version = "0.3.4";
+    protected $_version = "0.3.5";
 
     /**
      * @var boolean Module version
@@ -35,13 +35,6 @@ class Module extends BaseUser
     public function init()
     {
         parent::init();
-
-        $this->modules = [
-            'user' => [
-                'class' => 'dektrium\user\Module',
-                'identityClass' => 'dektrium\user\models\User',
-            ],
-        ];
 
         // Translate
         $this->registerTranslations();
