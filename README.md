@@ -31,17 +31,6 @@ Set on your configuration file, in modules section
 'modules' =>  [
         'user' => [
                 'class' => 'dektrium\user\Module',
-				// Settings
-				'enableConfirmation' => true,
-				'enableRegistration' => true,
-				// Settings Mailer
-				'mailer' => [
-					'sender'                => 'no-reply@myhost.com', // or ['no-reply@myhost.com' => 'Sender name']
-					'welcomeSubject'        => 'Welcome subject',
-					'confirmationSubject'   => 'Confirmation subject',
-					'reconfirmationSubject' => 'Email change subject',
-					'recoverySubject'       => 'Recovery subject',
-				],
                 // Yii2 User Controllers Overrides
 				'controllerMap' => [
 					'settings' => 'cinghie\yii2userextended\controllers\SettingsController'
