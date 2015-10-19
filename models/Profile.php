@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.3.7
+ * @version 0.3.8
  */
 
 namespace cinghie\yii2userextended\models;
@@ -107,7 +107,7 @@ class Profile extends BaseProfile
      */
     public function getImagePath()
     {
-        return isset($this->avatar) ? Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath).$this->avatar : null;
+        return $this->avatar ? Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath).$this->avatar : null;
     }
 
     /**
@@ -117,7 +117,7 @@ class Profile extends BaseProfile
      */
     public function getImageUrl()
     {
-        $avatar = isset($this->avatar) ? $this->avatar : 'default.png';
+        $avatar = $this->avatar ? $this->avatar : 'default.png';
         return Yii::getAlias(Yii::$app->getModule('userextended')->avatarURL).$avatar;
     }
 

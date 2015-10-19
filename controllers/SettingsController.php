@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.3.7
+ * @version 0.3.8
  */
 
 namespace cinghie\yii2userextended\controllers;
@@ -44,8 +44,13 @@ class SettingsController extends BaseController
             if ($image === false) {
                 $model->avatar = $oldImage;
             } else {
-                // delete old avatar
-                $model->deleteImage($oldImage);
+                
+                // if is there an old image, delete it
+                if($oldImage)
+                {
+                    $model->deleteImage($oldImage);
+                }
+
                 // upload new avatar
                 $model->avatar = $image->name;
             }
