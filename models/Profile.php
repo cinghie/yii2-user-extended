@@ -117,7 +117,7 @@ class Profile extends BaseProfile
      */
     public function getImageUrl()
     {
-        $avatar = isset($this->avatar) ? $this->avatar : 'default.gif';
+        $avatar = isset($this->avatar) ? $this->avatar : 'default.png';
         return Yii::getAlias(Yii::$app->getModule('userextended')->avatarURL).$avatar;
     }
 
