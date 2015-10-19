@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.3.5
+ * @version 0.3.6
  */
 
 namespace cinghie\yii2userextended\controllers;
@@ -25,12 +25,15 @@ class SettingsController extends BaseController
      */
     public function actionProfile()
     {
+        // Load Model
         $model       = $this->finder->findProfileById(Yii::$app->user->identity->getId());
+        // Load Old Image
         $oldImage    = $model->avatar;
-        $imagePath   = Yii::getAlias('@webroot')."/img/users/";
+        // Load avatarPath from Module Params
+        $avatarPath  = Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath);
 
         // Create uploadAvatar Instance
-        $image = $model->uploadAvatar($imagePath);
+        $image = $model->uploadAvatar($avatarPath);
 
         // Ajax Validation
         $this->performAjaxValidation($model);
@@ -53,7 +56,7 @@ class SettingsController extends BaseController
         }
 
         return $this->render('profile', [
-            'model' => $model,
+            'model' => $model
         ]);
     }
 

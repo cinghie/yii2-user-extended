@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.3.5
+ * @version 0.3.6
  */
 
 namespace cinghie\yii2userextended\models;
@@ -107,7 +107,7 @@ class Profile extends BaseProfile
      */
     public function getImagePath()
     {
-        return isset($this->avatar) ? Yii::getAlias('@webroot')."/img/users/". $this->avatar : null;
+        return isset($this->avatar) ? Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath).$this->avatar : null;
     }
 
     /**
@@ -118,7 +118,7 @@ class Profile extends BaseProfile
     public function getImageUrl()
     {
         $avatar = isset($this->avatar) ? $this->avatar : 'default.gif';
-        return Yii::getAlias('@web')."/img/users/".$avatar;
+        return Yii::getAlias(Yii::$app->getModule('userextended')->avatarURL).$avatar;
     }
 
     /**
@@ -126,17 +126,17 @@ class Profile extends BaseProfile
      *
      * @return boolean the status of deletion
      */
-    public function deleteImage($imageURL)
+    public function deleteImage($avatarOld)
     {
-        $avatar = Yii::getAlias('@webroot')."/img/users/". $imageURL;
+        $avatarURL = Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath).$avatarOld;
 
         // check if file exists on server
-        if (empty($avatar) || !file_exists($avatar)) {
+        if (empty($avatarURL) || !file_exists($avatarURL)) {
             return false;
         }
 
         // check if uploaded file can be deleted on server
-        if (!unlink($avatar)) {
+        if (!unlink($avatarURL)) {
             return false;
         }
 

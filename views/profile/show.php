@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.3.5
+ * @version 0.3.6
  */
 
 use yii\helpers\Html;
@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </a>
                 <?php else: ?>
                     <a href="#" class="thumbnail" title="<?php echo $profile->name ?>">
-                        <img class="img-rounded img-responsive" src="http://www.bdu.edu.et/emti/sites/bdu.edu.et.emti/files/default_images/no-profile-img.gif" alt="<?php echo $profile->name ?>" title="<?php echo $profile->name ?>" style="padding: 15px;" />
+                        <img class="img-rounded img-responsive" src="<?php echo $profile->getImageUrl() ?>" alt="<?php echo $profile->name ?>" title="<?php echo $profile->name ?>" style="padding: 15px;" />
                     </a>
                 <?php endif ?>
                 <h1 style="font-size: 20px; padding: 0; text-align: center;"><?= $this->title ?></h1>

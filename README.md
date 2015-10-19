@@ -43,6 +43,11 @@ Set on your configuration file, in modules section
 					'User'             => 'cinghie\yii2userextended\models\User',
 				],
         ],
+		'userextended' => [
+            'class' => 'cinghie\yii2userextended\Module',
+            'avatarPath' => '@webroot/img/users/', // Path to your avatar files
+            'avatarURL'  => '@web/img/users/', // Url to your avatar files
+        ],
 ]
 ```
 
@@ -97,6 +102,7 @@ Changelog
 -----------------
 
 <ul>
+  <li>Version 0.3.6 - Adding Avatar Path and Url params to the module</li>
   <li>Version 0.3.5 - Update version</li>
   <li>Version 0.3.4 - Fixing deleting avatar</li>
   <li>Version 0.3.3 - Update version</li>
