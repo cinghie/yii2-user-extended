@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.3.8
+ * @version 0.4.0
  */
 
 namespace cinghie\yii2userextended;
@@ -20,7 +20,7 @@ class Module extends BaseUser
     /**
      * @var string Module version
      */
-    protected $_version = "0.3.8";
+    protected $_version = "0.4.0";
 
     // @var string Path to avatar file
     public $avatarPath = '@webroot/img/users/';
