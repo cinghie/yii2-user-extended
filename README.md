@@ -120,6 +120,7 @@ Changelog
 -----------------
 
 <ul>
+  <li>Version 0.4.0 - Adding migrations</li>
   <li>Version 0.3.8 - Fixing upload on avatar not set</li>
   <li>Version 0.3.7 - Fixing Avatar default image</li>
   <li>Version 0.3.6 - Adding Avatar Path and Url params to the module</li>
