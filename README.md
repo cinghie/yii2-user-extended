@@ -23,7 +23,25 @@ or add this line to the require section of your `composer.json` file.
 Configuration
 -----------------
 
+### 1. Images folder
+
 Copy img folder to your webroot
+
+### 2. Update yii2 user database schema
+
+Make sure that you have properly configured `db` application component
+and run the following command:
+```
+$ php yii migrate/up --migrationPath=@vendor/dektrium/yii2-user/migrations
+```
+
+### 3. Update yii2 user extended database schema
+
+```
+$ php yii migrate/up --migrationPath=@vendor/cinghie/yii2-user-extended/migrations
+```
+
+### 4. Set configuration file
 
 Set on your configuration file, in modules section
 
@@ -65,6 +83,8 @@ and in components section
 ]
 ```
 
+### 5. Set captcha in Controller
+
 in your SiteController set in actions() function
 
 ```
@@ -74,8 +94,6 @@ in your SiteController set in actions() function
         'maxLength' => 6
 ],
 ```
-
-and update your database tables running SQL file in docs
 
 Features
 -----------------
