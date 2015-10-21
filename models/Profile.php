@@ -70,6 +70,17 @@ class Profile extends BaseProfile
         return $rules;
     }
 
+    /** @inheritdoc */
+    public function attributeLabels()
+    {
+        return [
+            'name' => Yii::t('userextended', 'Name'),
+            'firstname' => Yii::t('userextended', 'Firstname'),
+            'lastname' => Yii::t('userextended', 'Lastname'),
+            'birthday' => Yii::t('userextended', 'Birthday'),
+        ];
+    }
+
     /**
      * Upload file
      *
