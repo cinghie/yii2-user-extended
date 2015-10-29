@@ -35,13 +35,19 @@ and run the following command:
 $ php yii migrate/up --migrationPath=@vendor/dektrium/yii2-user/migrations
 ```
 
-### 3. Update yii2 user extended database schema
+### 3. Add Yii2 RBAC migrations 
+
+```
+$ php yii migrate/up --migrationPath=@yii/rbac/migrations
+```
+
+### 4. Update yii2 user extended database schema
 
 ```
 $ php yii migrate/up --migrationPath=@vendor/cinghie/yii2-user-extended/migrations
 ```
 
-### 4. Set configuration file
+### 5. Set configuration file
 
 Set on your configuration file, in modules section
 
@@ -89,7 +95,7 @@ and in components section
 ]
 ```
 
-### 5. Set captcha in Controller
+### 6. Set captcha in Controller
 
 in your SiteController set in actions() function
 
