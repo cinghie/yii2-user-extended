@@ -47,6 +47,11 @@ Set on your configuration file, in modules section
 
 ```
 'modules' =>  [
+	// Yii2 RBAC
+	'rbac' => [
+        	'class' => 'dektrium\rbac\Module',
+    	],
+	// Yii2 User
         'user' => [
                 'class' => 'dektrium\user\Module',
                 // Yii2 User Controllers Overrides
@@ -61,6 +66,7 @@ Set on your configuration file, in modules section
 					'User'             => 'cinghie\yii2userextended\models\User',
 				],
         ],
+        // Yii2 User Extended
 		'userextended' => [
             'class' => 'cinghie\yii2userextended\Module',
             'avatarPath' => '@webroot/img/users/', // Path to your avatar files
