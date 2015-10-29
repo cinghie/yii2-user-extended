@@ -14,7 +14,8 @@
     ],
     "require": {
         "yiisoft/yii2": "*",
-        "dektrium/yii2-user": "dev-master",
+        "dektrium/yii2-user": "*",
+        "dektrium/yii2-rbac": "*",
         "kartik-v/yii2-widgets": "*"
     },
     "autoload": {
