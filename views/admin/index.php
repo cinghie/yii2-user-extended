@@ -1,12 +1,13 @@
 <?php
 
-/*
- * This file is part of the Dektrium project.
- *
- * (c) Dektrium project <http://github.com/dektrium>
- *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+/**
+ * @copyright Copyright &copy; Gogodigital Srls
+ * @company Gogodigital Srls - Wide ICT Solutions
+ * @website http://www.gogodigital.it
+ * @github https://github.com/cinghie/yii2-user-extended
+ * @license GNU GENERAL PUBLIC LICENSE VERSION 3
+ * @package yii2-user-extended
+ * @version 0.4.0
  */
 
 use dektrium\user\models\UserSearch;
@@ -17,14 +18,9 @@ use yii\jui\DatePicker;
 use yii\web\View;
 use yii\widgets\Pjax;
 
-/**
- * @var View $this
- * @var ActiveDataProvider $dataProvider
- * @var UserSearch $searchModel
- */
-
 $this->title = Yii::t('user', 'Manage users');
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <h1><?= Yii::t('user', 'Manage users') ?></h1>
@@ -43,6 +39,18 @@ $this->params['breadcrumbs'][] = $this->title;
     'layout'  		=> "{items}\n{pager}",
     'columns' => [
         'username',
+        [
+            'attribute' => 'firstname',
+            'value' => 'profile.firstname',
+        ],
+        [
+            'attribute' => 'lastname',
+            'value' => 'profile.lastname',
+        ],
+        [
+            'attribute' => 'bithday',
+            'value' => 'profile.birthday',
+        ],
         'email:email',
         [
             'attribute' => 'registration_ip',
