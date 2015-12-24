@@ -12,11 +12,18 @@
 
 namespace cinghie\yii2userextended\models;
 
+use cinghie\yii2userextended\models\Profile;
 use dektrium\user\models\User as BaseUser;
 
 class User extends BaseUser
 {
 
-
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProfile()
+    {
+        return $this->hasOne($this->module->modelMap['Profile'], ['user_id' => 'id'])->from(Profile::tableName() . ' AS profile');
+    }
 
 }

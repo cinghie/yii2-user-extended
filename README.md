@@ -62,7 +62,8 @@ Set on your configuration file, in modules section
                 'class' => 'dektrium\user\Module',
                 // Yii2 User Controllers Overrides
 				'controllerMap' => [
-					'settings' => 'cinghie\yii2userextended\controllers\SettingsController'
+					'admin' => 'cinghie\yii2userextended\controllers\AdminController',
+					'settings' => 'cinghie\yii2userextended\controllers\SettingsController',
 				],
 				// Yii2 User Models Overrides
 				'modelMap' => [

@@ -10,10 +10,11 @@
  * @version 0.4.0
  */
 
-use dektrium\user\models\UserSearch;
+use cinghie\yii2userextended\models\UserSearch;
 use yii\data\ActiveDataProvider;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\jui\DatePicker;
 use yii\web\View;
 use yii\widgets\Pjax;
@@ -38,38 +39,40 @@ $this->params['breadcrumbs'][] = $this->title;
     'filterModel'  	=> $searchModel,
     'layout'  		=> "{items}\n{pager}",
     'columns' => [
-        'username',
+        [
+            'class' => '\kartik\grid\CheckboxColumn'
+        ],
+        [
+            'attribute' => 'username',
+            'format' => 'html',
+            'hAlign' => 'center',
+            'value' => function ($model) {
+                $url = urldecode(Url::toRoute(['admin/update', 'id' => $model->id]));
+                return Html::a($model->username,$url);
+            }
+        ],
         [
             'attribute' => 'firstname',
+            'hAlign' => 'center',
             'value' => 'profile.firstname',
         ],
         [
             'attribute' => 'lastname',
+            'hAlign' => 'center',
             'value' => 'profile.lastname',
         ],
         [
-            'attribute' => 'bithday',
+            'attribute' => 'birthday',
+            'hAlign' => 'center',
             'value' => 'profile.birthday',
         ],
-        'email:email',
         [
-            'attribute' => 'registration_ip',
-            'value' => function ($model) {
-                return $model->registration_ip == null
-                    ? '<span class="not-set">' . Yii::t('user', '(not set)') . '</span>'
-                    : $model->registration_ip;
-            },
-            'format' => 'html',
+            'attribute' => 'email',
+            'format' => 'email',
+            'hAlign' => 'center',
         ],
         [
             'attribute' => 'created_at',
-            'value' => function ($model) {
-                if (extension_loaded('intl')) {
-                    return Yii::t('user', '{0, date, MMMM dd, YYYY HH:mm}', [$model->created_at]);
-                } else {
-                    return date('Y-m-d G:i:s', $model->created_at);
-                }
-            },
             'filter' => DatePicker::widget([
                 'model'      => $searchModel,
                 'attribute'  => 'created_at',
@@ -78,46 +81,69 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'form-control',
                 ],
             ]),
-        ],
-        [
-            'header' => Yii::t('user', 'Confirmation'),
+            'hAlign' => 'center',
             'value' => function ($model) {
-                if ($model->isConfirmed) {
-                    return '<div class="text-center"><span class="text-success">' . Yii::t('user', 'Confirmed') . '</span></div>';
-                } else {
-                    return Html::a(Yii::t('user', 'Confirm'), ['confirm', 'id' => $model->id], [
-                        'class' => 'btn btn-xs btn-success btn-block',
-                        'data-method' => 'post',
-                        'data-confirm' => Yii::t('user', 'Are you sure you want to confirm this user?'),
-                    ]);
-                }
+                    return date('Y-m-d H:i:s', $model->created_at);
             },
-            'format' => 'raw',
-            'visible' => Yii::$app->getModule('user')->enableConfirmation,
         ],
         [
-            'header' => Yii::t('user', 'Block status'),
+            'header' => Yii::t('userextended', 'Enabled'),
+            'format' => 'raw',
+            'hAlign' => 'center',
             'value' => function ($model) {
                 if ($model->isBlocked) {
-                    return Html::a(Yii::t('user', 'Unblock'), ['block', 'id' => $model->id], [
-                        'class' => 'btn btn-xs btn-success btn-block',
+                    return Html::a('<span class="glyphicon glyphicon-remove text-danger"></span>', ['block', 'id' => $model->id], [
                         'data-method' => 'post',
                         'data-confirm' => Yii::t('user', 'Are you sure you want to unblock this user?'),
                     ]);
                 } else {
-                    return Html::a(Yii::t('user', 'Block'), ['block', 'id' => $model->id], [
-                        'class' => 'btn btn-xs btn-danger btn-block',
+                    return Html::a('<span class="glyphicon glyphicon-ok text-success">', ['block', 'id' => $model->id], [
                         'data-method' => 'post',
                         'data-confirm' => Yii::t('user', 'Are you sure you want to block this user?'),
                     ]);
                 }
             },
+        ],
+        [
+            'header' => Yii::t('userextended', 'Actived'),
             'format' => 'raw',
+            'hAlign' => 'center',
+            'visible' => Yii::$app->getModule('user')->enableConfirmation,
+            'value' => function ($model) {
+                if ($model->isConfirmed) {
+                    return '<span class="glyphicon glyphicon-ok text-success"></span>';
+                } else {
+                    return Html::a('<span class="glyphicon glyphicon-remove text-danger"></span>', ['confirm', 'id' => $model->id], [
+                        'data-method' => 'post',
+                        'data-confirm' => Yii::t('user', 'Are you sure you want to confirm this user?'),
+                    ]);
+                }
+            },
+        ],
+        [
+            'attribute' => 'id',
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{update} {delete}',
+            'template' => '{delete}',
         ],
+    ],
+    'responsive' => true,
+    'hover' => true,
+    'panel' => [
+        'before' => '<span style="margin-right: 5px;">'.
+            Html::a(
+                '<i class="glyphicon glyphicon-plus"></i> '.Yii::t('userextended', 'New'), ['create'], ['class' => 'btn btn-success']
+            ).'</span><span style="margin-right: 5px;">'.
+            Html::a(
+                '<i class="glyphicon glyphicon-pencil"></i> '.Yii::t('userextended', 'Modify'), ['update'], ['class' => 'btn btn-warning']
+            ).'</span><span style="margin-right: 5px;">'.
+            Html::a(
+                '<i class="glyphicon glyphicon-minus-sign"></i> '.Yii::t('userextended', 'Delete'), ['create'], ['class' => 'btn btn-danger']
+            ).'</span>',
+        'heading'    => '<h3 class="panel-title"><i class="glyphicon glyphicon-globe"></i></h3>',
+        'type'       => 'success',
+        'showFooter' => false
     ],
 ]); ?>
 

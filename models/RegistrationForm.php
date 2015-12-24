@@ -77,9 +77,9 @@ class RegistrationForm extends BaseRegistrationForm
 
         $profile = \Yii::createObject(Profile::className());
         $profile->setAttributes([
-            'name'      => $this->firstname." ".$this->lastname,
-            'firstname' => $this->firstname,
-            'lastname'  => $this->lastname,
+            'name'      => ucwords(strtolower($this->firstname))." ".ucwords(strtolower($this->lastname)),
+            'firstname' => ucwords(strtolower($this->firstname)),
+            'lastname'  => ucwords(strtolower($this->lastname)),
             'birthday'  => $this->birthday,
             'terms'     => $this->terms,
         ]);

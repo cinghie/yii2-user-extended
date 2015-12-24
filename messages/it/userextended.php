@@ -17,9 +17,15 @@
  *
  * NOTE: this file must be saved in UTF-8 encoding.
  */
+
 return [
+    'Actived' => 'Attivato',
     'Avatar' => 'Avatar',
+    'Delete' => 'Cancella',
+    'Enabled' => 'Abilitato',
+    'Modify' => 'Modifica',
     'Name' => 'Utente',
+    'New' => 'Nuovo',
     'Firstname' => 'Nome',
     'Lastname' => 'Cognome',
     'Birthday' => 'Data di Nascita',
