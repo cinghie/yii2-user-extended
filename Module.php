@@ -22,16 +22,25 @@ class Module extends BaseUser
      */
     protected $_version = "0.4.0";
 
-    // @var string Path to avatar file
+    /**
+     * @var string Path to avatar file
+     */
     public $avatarPath = '@webroot/img/users/';
 
-    // @var string URL to avatar file
+    /**
+     * @var string URL to avatar file
+     */
     public $avatarURL  = '@web/img/users/';
 
     /**
-     * @var boolean Module version
+     * @var boolean Captcha
      */
     public $captcha = true;
+
+    /**
+     * @var boolean showTitles in views
+     */
+    public $showTitles = true;
 
     /**
      * @inheritdoc

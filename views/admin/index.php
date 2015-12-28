@@ -24,11 +24,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<h1><?= Yii::t('user', 'Manage users') ?></h1>
+<?php if(Yii::$app->getModule('userextended')->showTitles): ?>
+    <h1><?= Yii::t('user', 'Manage users') ?></h1>
+<?php endif ?>
 
-<?= $this->render('/_alert', [
-    'module' => Yii::$app->getModule('user'),
-]) ?>
+<?= $this->render('/_alert', [ 'module' => Yii::$app->getModule('user'), ]) ?>
 
 <?= $this->render('/admin/_menu') ?>
 
@@ -139,9 +139,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 '<i class="glyphicon glyphicon-pencil"></i> '.Yii::t('userextended', 'Modify'), ['update'], ['class' => 'btn btn-warning']
             ).'</span><span style="margin-right: 5px;">'.
             Html::a(
-                '<i class="glyphicon glyphicon-minus-sign"></i> '.Yii::t('userextended', 'Delete'), ['create'], ['class' => 'btn btn-danger']
+                '<i class="glyphicon glyphicon-minus-sign"></i> '.Yii::t('userextended', 'Delete'), ['delete'], ['class' => 'btn btn-danger']
             ).'</span>',
-        'heading'    => '<h3 class="panel-title"><i class="glyphicon glyphicon-globe"></i></h3>',
+        'heading'    => '<h3 class="panel-title"><i class="fa fa-user-plus"></i></h3>',
         'type'       => 'success',
         'showFooter' => false
     ],
