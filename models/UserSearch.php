@@ -83,7 +83,9 @@ class UserSearch extends BaseUserSearch
         }
 
         $query->andFilterWhere(['like', 'username', $this->username])
-              ->andFilterWhere(['like', 'profile.firstname', $this->id])
+              ->andFilterWhere(['like', 'profile.firstname', $this->firstname])
+              ->andFilterWhere(['like', 'profile.lastname', $this->lastname])
+              ->andFilterWhere(['like', 'profile.birthday', $this->birthday])
               ->andFilterWhere(['like', 'email', $this->email])
               ->andFilterWhere(['registration_ip' => $this->registration_ip]);
 

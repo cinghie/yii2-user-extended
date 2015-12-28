@@ -132,14 +132,14 @@ $this->params['breadcrumbs'][] = $this->title;
     'hover' => true,
     'panel' => [
         'before' => '<span style="margin-right: 5px;">'.
-            Html::a(
-                '<i class="glyphicon glyphicon-plus"></i> '.Yii::t('userextended', 'New'), ['create'], ['class' => 'btn btn-success']
+            Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('userextended', 'New'),
+                ['create'], ['class' => 'btn btn-success']
             ).'</span><span style="margin-right: 5px;">'.
-            Html::a(
-                '<i class="glyphicon glyphicon-pencil"></i> '.Yii::t('userextended', 'Modify'), ['update'], ['class' => 'btn btn-warning']
+            Html::a('<i class="glyphicon glyphicon-pencil"></i> '.Yii::t('userextended', 'Modify'),
+                ['update'], ['class' => 'btn btn-warning']
             ).'</span><span style="margin-right: 5px;">'.
-            Html::a(
-                '<i class="glyphicon glyphicon-minus-sign"></i> '.Yii::t('userextended', 'Delete'), ['delete'], ['class' => 'btn btn-danger']
+            Html::a('<i class="glyphicon glyphicon-minus-sign"></i> '.Yii::t('userextended', 'Delete'),
+                ['delete'], ['class' => 'btn btn-danger']
             ).'</span>',
         'heading'    => '<h3 class="panel-title"><i class="fa fa-user-plus"></i></h3>',
         'type'       => 'success',
