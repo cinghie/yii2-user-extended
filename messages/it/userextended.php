@@ -23,6 +23,7 @@ return [
     'Avatar' => 'Avatar',
     'Birthday' => 'Data di Nascita',
     'Delete' => 'Cancella',
+	'Do you want delete selected items?' => 'Vuoi cancellare gli elementi selezionati?',
     'Enabled' => 'Abilitato',
     'Firstname' => 'Nome',
     'I Agree' => 'Acconsento',
@@ -34,5 +35,5 @@ return [
     'Name' => 'Utente',
     'New' => 'Nuovo',
     'Select only 1 item' => 'Seleziona solo 1 elemento!',
-    'Do you want delete selected items?' => 'Vuoi cancellare gli elementi selezionati?',
+    'Select at least one item' => 'Seleziona almeno 1 elemento!',
 ];

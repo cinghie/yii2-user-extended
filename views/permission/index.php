@@ -38,25 +38,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'attribute' => 'name',
             'hAlign' => 'center',
             'header'    => Yii::t('rbac', 'Name'),
-            'options'   => [
-                'style' => 'width: 20%'
-            ],
         ],
         [
             'attribute' => 'description',
             'hAlign' => 'center',
             'header'    => Yii::t('rbac', 'Description'),
-            'options'   => [
-                'style' => 'width: 50%'
-            ],
         ],
         [
             'attribute' => 'rule_name',
             'hAlign' => 'center',
             'header'    => Yii::t('rbac', 'Rule name'),
-            'options'   => [
-                'style' => 'width: 20%'
-            ],
         ],
         [
             'class'      => ActionColumn::className(),
@@ -64,9 +55,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'urlCreator' => function ($action, $model) {
                 return Url::to(['/rbac/permission/' . $action, 'name' => $model['name']]);
             },
-            'options'   => [
-                'style' => 'width: 5%'
-            ],
         ]
     ],
     'responsive' => true,

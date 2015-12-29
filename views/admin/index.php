@@ -19,13 +19,17 @@ use yii\widgets\Pjax;
 $this->title = Yii::t('user', 'Manage users');
 $this->params['breadcrumbs'][] = $this->title;
 
+// Register action buttons js
 $this->registerJs('
     $(document).ready(function()
     {
         $("a.btn-update").click(function() {
             var selectedId = $("#w3").yiiGridView("getSelectedRows");
 
-            if(selectedId.length>1){
+            if(selectedId.length == 0) {
+                alert("'.Yii::t("userextended", "Select at least one item").'");
+            }
+            else if(selectedId.length>1){
                 alert("'.Yii::t("userextended", "Select only 1 item").'");
             } else {
                 var url = "'.Url::to(['/user/admin/update']).'&id="+selectedId[0];
@@ -33,18 +37,23 @@ $this->registerJs('
             }
         });
         $("a.btn-delete").click(function() {
-            var selectedId     = $("#w3").yiiGridView("getSelectedRows");
-            var choose = confirm("'.Yii::t("userextended", "Do you want delete selected items?").'");
+            var selectedId = $("#w3").yiiGridView("getSelectedRows");
 
-            if (choose == true) {
-                $.ajax({
-                    type: \'POST\',
-                    url : "'.Url::to(['/user/admin/delete-multiple']).'&id="+selectedId,
-                    data : {ids: selectedId},
-                    success : function() {
-                        $.pjax.reload({container:"#w3"});
-                    }
-                });
+            if(selectedId.length == 0) {
+                alert("'.Yii::t("userextended", "Select at least one item").'");
+            } else {
+                var choose = confirm("'.Yii::t("userextended", "Do you want delete selected items?").'");
+
+                if (choose == true) {
+                    $.ajax({
+                        type: \'POST\',
+                        url : "'.Url::to(['/user/admin/delete-multiple']).'&id="+selectedId,
+                        data : {ids: selectedId},
+                        success : function() {
+                            $.pjax.reload({container:"#w3"});
+                        }
+                    });
+                }
             }
         });
     });
