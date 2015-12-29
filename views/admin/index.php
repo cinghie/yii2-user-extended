@@ -168,12 +168,15 @@ $this->registerJs('
             Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('userextended', 'New'),
                 ['create'], ['class' => 'btn btn-new btn-success']
             ).'</span><span style="margin-right: 5px;">'.
-            Html::a('<i class="glyphicon glyphicon-pencil"></i> '.Yii::t('userextended', 'Modify'),
+            Html::a('<i class="glyphicon glyphicon-pencil"></i> '.Yii::t('userextended', 'Update'),
                 '#', ['class' => 'btn btn-update btn-warning']
             ).'</span><span style="margin-right: 5px;">'.
             Html::a('<i class="glyphicon glyphicon-minus-sign"></i> '.Yii::t('userextended', 'Delete'),
                 '#', ['class' => 'btn btn-delete btn-danger']
             ).'</span>',
+        'after'      => Html::a('<i class="glyphicon glyphicon-repeat"></i> '.Yii::t('articles', 'Reset Grid'),
+            ['index'], ['class' => 'btn btn-info']
+        ),
         'heading'    => '<h3 class="panel-title"><i class="fa fa-user-plus"></i></h3>',
         'type'       => 'success',
         'showFooter' => false
