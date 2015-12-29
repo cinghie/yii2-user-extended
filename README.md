@@ -78,6 +78,7 @@ Set on your configuration file, in modules section
             'class' => 'cinghie\yii2userextended\Module',
             'avatarPath' => '@webroot/img/users/', // Path to your avatar files
             'avatarURL'  => '@web/img/users/', // Url to your avatar files
+			'showTitles' => true, // Set false in adminLTE
         ],
 ]
 ```
@@ -89,7 +90,8 @@ and in components section
         'view' => [
                 'theme' => [
                         'pathMap' => [
-                                '@dektrium/user/views' => '@vendor/cinghie/yii2-user-extended/views'
+								'@dektrium/rbac/views' => '@vendor/cinghie/yii2-user-extended/views',
+                                '@dektrium/user/views' => '@vendor/cinghie/yii2-user-extended/views',
                         ],
                 ],
         ],
@@ -128,11 +130,11 @@ Add new fields to user profile
 </ul>
 
 
-
 Changelog
 -----------------
 
 <ul>
+  <li>Version 0.5.0 - Manage Users, Roles, Permissions</li>
   <li>Version 0.4.0 - Adding migrations</li>
   <li>Version 0.3.8 - Fixing upload on avatar not set</li>
   <li>Version 0.3.7 - Fixing Avatar default image</li>
