@@ -11,7 +11,7 @@
  */
 
 use kartik\grid\GridView;
-use yii\grid\ActionColumn;
+use kartik\grid\ActionColumn;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php if(Yii::$app->getModule('userextended')->showTitles): ?>
-    <h1><?= Yii::t('rbac', 'Permissions') ?></h1>
+    <h1><?= Yii::t('userextended', 'Manage permissions') ?></h1>
 <?php endif ?>
 
 <?php $this->beginContent('@dektrium/rbac/views/layout.php') ?>
@@ -63,12 +63,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'before' => '<span style="margin-right: 5px;">'.
             Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('userextended', 'New'),
                 ['create'], ['class' => 'btn btn-success']
-            ).'</span><span style="margin-right: 5px;">'.
-            Html::a('<i class="glyphicon glyphicon-pencil"></i> '.Yii::t('userextended', 'Modify'),
-                ['update'], ['class' => 'btn btn-warning']
-            ).'</span><span style="margin-right: 5px;">'.
-            Html::a('<i class="glyphicon glyphicon-minus-sign"></i> '.Yii::t('userextended', 'Delete'),
-                ['delete'], ['class' => 'btn btn-danger']
             ).'</span>',
         'heading'    => '<h3 class="panel-title"><i class="fa fa-user-secret"></i></h3>',
         'type'       => 'success',

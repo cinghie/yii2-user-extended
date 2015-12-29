@@ -28,8 +28,7 @@ $this->registerJs('
 
             if(selectedId.length == 0) {
                 alert("'.Yii::t("userextended", "Select at least one item").'");
-            }
-            else if(selectedId.length>1){
+            } else if(selectedId.length>1){
                 alert("'.Yii::t("userextended", "Select only 1 item").'");
             } else {
                 var url = "'.Url::to(['/user/admin/update']).'&id="+selectedId[0];
