@@ -68,11 +68,6 @@ class UserSearch extends BaseUserSearch
         // Add default Order
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => [
-                'defaultOrder' => [
-                    'created_at' => SORT_DESC
-                ],
-            ],
         ]);
 
         // Override Sort Attributes
@@ -83,8 +78,11 @@ class UserSearch extends BaseUserSearch
                 'lastname',
                 'birthday',
                 'email',
-                'created_at',
-            ]
+                'created_at'
+            ],
+            'defaultOrder' => [
+                'created_at' => SORT_DESC
+            ],
         ]);
 
         // Print SQL query
