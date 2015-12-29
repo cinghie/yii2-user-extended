@@ -10,17 +10,45 @@
  * @version 0.4.0
  */
 
-use cinghie\yii2userextended\models\UserSearch;
-use yii\data\ActiveDataProvider;
 use kartik\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\jui\DatePicker;
-use yii\web\View;
 use yii\widgets\Pjax;
 
 $this->title = Yii::t('user', 'Manage users');
 $this->params['breadcrumbs'][] = $this->title;
+
+$this->registerJs('
+    $(document).ready(function()
+    {
+        $("a.btn-update").click(function() {
+            var selectedId = $("#w3").yiiGridView("getSelectedRows");
+
+            if(selectedId.length>1){
+                alert("'.Yii::t("userextended", "Select only 1 item").'");
+            } else {
+                var url = "'.Url::to(['/user/admin/update']).'&id="+selectedId[0];
+                window.location.href= url;
+            }
+        });
+        $("a.btn-delete").click(function() {
+            var selectedId     = $("#w3").yiiGridView("getSelectedRows");
+            var choose = confirm("'.Yii::t("userextended", "Do you want delete selected items?").'");
+
+            if (choose == true) {
+                $.ajax({
+                    type: \'POST\',
+                    url : "'.Url::to(['/user/admin/delete-multiple']).'&id="+selectedId,
+                    data : {ids: selectedId},
+                    success : function() {
+                        $.pjax.reload({container:"#w3"});
+                    }
+                });
+            }
+        });
+    });
+');
 
 ?>
 
@@ -38,6 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
     'dataProvider' 	=> $dataProvider,
     'filterModel'  	=> $searchModel,
     'layout'  		=> "{items}\n{pager}",
+    'containerOptions' => ['class' => 'users-pjax-container'],
     'columns' => [
         [
             'class' => '\kartik\grid\CheckboxColumn'
@@ -123,23 +152,19 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'id',
         ],
-        [
-            'class' => 'yii\grid\ActionColumn',
-            'template' => '{delete}',
-        ],
     ],
     'responsive' => true,
     'hover' => true,
     'panel' => [
         'before' => '<span style="margin-right: 5px;">'.
             Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('userextended', 'New'),
-                ['create'], ['class' => 'btn btn-success']
+                ['create'], ['class' => 'btn btn-new btn-success']
             ).'</span><span style="margin-right: 5px;">'.
             Html::a('<i class="glyphicon glyphicon-pencil"></i> '.Yii::t('userextended', 'Modify'),
-                ['update'], ['class' => 'btn btn-warning']
+                '#', ['class' => 'btn btn-update btn-warning']
             ).'</span><span style="margin-right: 5px;">'.
             Html::a('<i class="glyphicon glyphicon-minus-sign"></i> '.Yii::t('userextended', 'Delete'),
-                ['delete'], ['class' => 'btn btn-danger']
+                '#', ['class' => 'btn btn-delete btn-danger']
             ).'</span>',
         'heading'    => '<h3 class="panel-title"><i class="fa fa-user-plus"></i></h3>',
         'type'       => 'success',
