@@ -62,8 +62,10 @@ class UserSearch extends BaseUserSearch
     {
         $query = $this->finder->getUserQuery();
 
+        $query->select('*');
         $query->joinWith('profile');
 
+        // Add default Order
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
@@ -72,6 +74,21 @@ class UserSearch extends BaseUserSearch
                 ],
             ],
         ]);
+
+        // Override Sort Attributes
+        $dataProvider->setSort([
+            'attributes' => [
+                'username',
+                'firstname',
+                'lastname',
+                'birthday',
+                'email',
+                'created_at',
+            ]
+        ]);
+
+        // Print SQL query
+        //var_dump($query->createCommand()->sql); exit();
 
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
