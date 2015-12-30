@@ -33,13 +33,18 @@ $this->params['breadcrumbs'][] = $this->title;
     'columns'      => [
         [
             'attribute' => 'name',
+            'format' => 'html',
             'hAlign' => 'center',
-            'header'    => Yii::t('rbac', 'Name'),
+            'header' => Yii::t('rbac', 'Name'),
+            'value' => function ($model) {
+                $url = Url::to(['/rbac/permission/update', 'name' => $model['name']]);
+                return Html::a($model['name'],$url);
+            }
         ],
         [
             'attribute' => 'description',
             'hAlign' => 'center',
-            'header'    => Yii::t('rbac', 'Description'),
+            'header' => Yii::t('rbac', 'Description'),
         ],
         [
             'attribute' => 'rule_name',
@@ -47,8 +52,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'header'    => Yii::t('rbac', 'Rule name'),
         ],
         [
-            'class'      => ActionColumn::className(),
-            'template'   => '{update} {delete}',
+            'class' => ActionColumn::className(),
+            'template' => '{delete}',
             'urlCreator' => function ($action, $model) {
                 return Url::to(['/rbac/permission/' . $action, 'name' => $model['name']]);
             },
