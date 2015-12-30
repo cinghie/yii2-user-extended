@@ -55,6 +55,18 @@ $this->registerJs('
                 }
             }
         });
+        $("a.btn-profile").click(function() {
+            var selectedId = $("#w3").yiiGridView("getSelectedRows");
+
+            if(selectedId.length == 0) {
+                alert("'.Yii::t("userextended", "Select at least one item").'");
+            } else if(selectedId.length>1){
+                alert("'.Yii::t("userextended", "Select only 1 item").'");
+            } else {
+                var url = "'.Url::to(['/user/profile/show']).'&id="+selectedId[0];
+                window.location.href= url;
+            }
+        });
     });
 ');
 
@@ -173,8 +185,11 @@ $this->registerJs('
             ).'</span><span style="margin-right: 5px;">'.
             Html::a('<i class="glyphicon glyphicon-minus-sign"></i> '.Yii::t('userextended', 'Delete'),
                 '#', ['class' => 'btn btn-delete btn-danger']
+            ).'</span><span style="margin-right: 5px;">'.
+            Html::a('<i class="glyphicon glyphicon-minus-sign"></i> '.Yii::t('user', 'Profile'),
+                '#', ['class' => 'btn btn-profile btn-info']
             ).'</span>',
-        'after'      => Html::a('<i class="glyphicon glyphicon-repeat"></i> '.Yii::t('articles', 'Reset Grid'),
+        'after'      => Html::a('<i class="glyphicon glyphicon-repeat"></i> '.Yii::t('userextended', 'Reset'),
             ['index'], ['class' => 'btn btn-info']
         ),
         'heading'    => '<h3 class="panel-title"><i class="fa fa-user-plus"></i></h3>',

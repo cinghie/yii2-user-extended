@@ -31,9 +31,10 @@ return [
     'Manage permissions' => 'Gestione Permessi',
     'Manage roles' => 'Gestione Ruoli',
     'Manage users' => 'Gestione Utenti',
-    'Modify' => 'Modifica',
     'Name' => 'Utente',
     'New' => 'Nuovo',
+    'Reset' => 'Annulla',
     'Select only 1 item' => 'Seleziona solo 1 elemento!',
     'Select at least one item' => 'Seleziona almeno 1 elemento!',
+    'Update' => 'Modifica',
 ];

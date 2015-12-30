@@ -32,9 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
     'layout'       => "{items}\n{pager}",
     'columns'      => [
         [
-            'class' => '\kartik\grid\CheckboxColumn'
-        ],
-        [
             'attribute' => 'name',
             'format' => 'html',
             'hAlign' => 'center',

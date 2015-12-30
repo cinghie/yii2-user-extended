@@ -32,9 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
     'layout'       => "{items}\n{pager}",
     'columns'      => [
         [
-            'class' => '\kartik\grid\CheckboxColumn'
-        ],
-        [
             'attribute' => 'name',
             'hAlign' => 'center',
             'header'    => Yii::t('rbac', 'Name'),
