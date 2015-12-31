@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.5.0
+ * @version 0.5.2
  */
 
 use yii\bootstrap\ActiveForm;

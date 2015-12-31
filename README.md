@@ -134,6 +134,8 @@ Changelog
 -----------------
 
 <ul>
+  <li>Version 0.5.2 - Adding Login view for AdminLTE Template</li>
+  <li>Version 0.5.1 - Minor Update</li>
   <li>Version 0.5.0 - Manage Users, Roles, Permissions</li>
   <li>Version 0.4.0 - Adding migrations</li>
   <li>Version 0.3.8 - Fixing upload on avatar not set</li>
