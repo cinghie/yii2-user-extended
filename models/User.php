@@ -15,9 +15,28 @@ namespace cinghie\yii2userextended\models;
 use cinghie\yii2userextended\models\Assignments;
 use dektrium\user\models\User as BaseUser;
 use yii\db\Query;
+use Yii;
 
 class User extends BaseUser
 {
+    /** @inheritdoc */
+    public function attributeLabels()
+    {
+        return [
+            'username'          => Yii::t('user', 'Username'),
+            'firstname'         => Yii::t('userextended', 'Firstname'),
+            'lastname'          => Yii::t('userextended', 'Lastname'),
+            'birthday'          => Yii::t('userextended', 'Birthday'),
+            'roles'             => Yii::t('userextended', 'Roles'),
+            'email'             => Yii::t('user', 'Email'),
+            'registration_ip'   => Yii::t('user', 'Registration ip'),
+            'unconfirmed_email' => Yii::t('user', 'New email'),
+            'password'          => Yii::t('user', 'Password'),
+            'created_at'        => Yii::t('user', 'Registration time'),
+            'confirmed_at'      => Yii::t('user', 'Confirmation time'),
+        ];
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
