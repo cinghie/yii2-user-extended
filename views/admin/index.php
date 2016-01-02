@@ -116,6 +116,18 @@ $this->registerJs('
             'value' => 'profile.birthday',
         ],
         [
+            'attribute' => Yii::t("user", "Roles"),
+            'format' => 'html',
+            'hAlign' => 'center',
+            'value' => function ($model) {
+                $html = "";
+                foreach($model->getRolesHTML() as $role){
+                    $html .= $role['item_name']."<br>";
+                }
+                return $html;
+            },
+        ],
+        [
             'attribute' => 'email',
             'format' => 'email',
             'hAlign' => 'center',
