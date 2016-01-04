@@ -38,6 +38,11 @@ class Module extends BaseUser
     public $captcha = true;
 
     /**
+     * @var boolean showAlert in views
+     */
+    public $showAlert = true;
+
+    /**
      * @var boolean showTitles in views
      */
     public $showTitles = true;

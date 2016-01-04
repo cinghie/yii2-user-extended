@@ -76,7 +76,9 @@ $this->registerJs('
     <h1><?= Yii::t('user', 'Manage users') ?></h1>
 <?php endif ?>
 
-<?= $this->render('/_alert', [ 'module' => Yii::$app->getModule('user'), ]) ?>
+<?php if(Yii::$app->getModule('userextended')->showAlert): ?>
+    <?= $this->render('/_alert', [ 'module' => Yii::$app->getModule('user'), ]) ?>
+<?php endif ?>
 
 <?= $this->render('/admin/_menu') ?>
 
