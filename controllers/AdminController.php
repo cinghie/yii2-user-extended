@@ -83,4 +83,34 @@ class AdminController extends BaseController
         ]);
     }
 
+    /**
+     * Blocks the user.
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function actionBlock($id)
+    {
+        if ($id == Yii::$app->user->getId()) {
+            Yii::$app->getSession()->setFlash('danger', Yii::t('user', 'You can not block your own account'));
+        } else {
+            $user  = $this->findModel($id);
+            $event = $this->getUserEvent($user);
+            if ($user->getIsBlocked()) {
+                $this->trigger(self::EVENT_BEFORE_UNBLOCK, $event);
+                $user->unblock();
+                $this->trigger(self::EVENT_AFTER_UNBLOCK, $event);
+                Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been unblocked'));
+            } else {
+                $this->trigger(self::EVENT_BEFORE_BLOCK, $event);
+                $user->block();
+                $this->trigger(self::EVENT_AFTER_BLOCK, $event);
+                Yii::$app->getSession()->setFlash('warning', Yii::t('user', 'User has been blocked'));
+            }
+        }
+
+        return $this->redirect(Url::previous('actions-redirect'));
+    }
+
 }
