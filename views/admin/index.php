@@ -89,6 +89,9 @@ $this->registerJs('
     'filterModel'  	=> $searchModel,
     'layout'  		=> "{items}\n{pager}",
     'containerOptions' => ['class' => 'users-pjax-container'],
+    'pjaxSettings'=>[
+        'neverTimeout' => true,
+    ],
     'columns' => [
         [
             'class' => '\kartik\grid\CheckboxColumn'
