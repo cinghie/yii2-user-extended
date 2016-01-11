@@ -15,6 +15,8 @@ namespace cinghie\yii2userextended\controllers;
 use cinghie\yii2userextended\models\UserSearch;
 use dektrium\user\controllers\AdminController as BaseController;
 use Yii;
+use yii\filters\AccessControl;
+use yii\filters\AccessRule;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 
@@ -26,10 +28,25 @@ class AdminController extends BaseController
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'ruleConfig' => [
+                    'class' => AccessRule::className(),
+                ],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['admin'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
+                    'delete'  => ['post'],
                     'delete-multiple' => ['post'],
+                    'confirm' => ['post'],
+                    'block'   => ['post'],
                 ],
             ],
         ];
