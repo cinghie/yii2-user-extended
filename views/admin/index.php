@@ -31,7 +31,7 @@ $this->registerJs('
             } else if(selectedId.length>1){
                 alert("'.Yii::t("userextended", "Select only 1 item").'");
             } else {
-                var url = "'.Url::to(['/user/admin/update']).'&id="+selectedId[0];
+                var url = "'.Url::to(['/user/admin/update']).'?id="+selectedId[0];
                 window.location.href= url;
             }
         });
@@ -46,7 +46,7 @@ $this->registerJs('
                 if (choose == true) {
                     $.ajax({
                         type: \'POST\',
-                        url : "'.Url::to(['/user/admin/delete-multiple']).'&id="+selectedId,
+                        url : "'.Url::to(['/user/admin/delete-multiple']).'?id="+selectedId,
                         data : {ids: selectedId},
                         success : function() {
                             $.pjax.reload({container:"#w3"});
