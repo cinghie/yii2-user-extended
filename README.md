@@ -148,7 +148,7 @@ Changelog
 -----------------
 
 <ul>
-  <li>Version 0.5.3 - Fixing javascript error</li>
+  <li>Version 0.5.3 - Fixing javascript error, adding Backend Filter</li>
   <li>Version 0.5.2 - Adding Login view for AdminLTE Template</li>
   <li>Version 0.5.1 - Minor Update</li>
   <li>Version 0.5.0 - Manage Users, Roles, Permissions</li>
