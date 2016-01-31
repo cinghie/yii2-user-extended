@@ -148,6 +148,7 @@ Changelog
 -----------------
 
 <ul>
+  <li>Version 0.5.5 - Fixing registration captcha</li>
   <li>Version 0.5.4 - Fixing javascript error, adding Backend Filter</li>
   <li>Version 0.5.3 - Improve security</li>
   <li>Version 0.5.2 - Adding Login view for AdminLTE Template</li>
