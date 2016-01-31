@@ -27,8 +27,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?php $form = ActiveForm::begin([
                     'id'                     => 'registration-form',
-                    'enableAjaxValidation'   => true,
-                    'enableClientValidation' => false,
+                    'enableAjaxValidation'   => false,
+                    'enableClientValidation' => true,
                 ]); ?>
 
                 <div class="col-md-12">
@@ -57,11 +57,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <div class="col-md-12">
 
-                        <?php /*<?= $form->field($model, 'captcha')->widget(Captcha::className(), [
+                        <?= $form->field($model, 'captcha')->widget(Captcha::className(), [
                             'captchaAction' => ['/site/captcha'],
                             'options' => ['class' => 'form-control'],
                             'template' => '<div class="row"><div class="col-md-6">{input}</div><div class="col-md-6">{image}</div></div>'
-                        ]) ?> */ ?>
+                        ]) ?>
 
                     </div>
 

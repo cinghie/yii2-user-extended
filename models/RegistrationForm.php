@@ -41,8 +41,7 @@ class RegistrationForm extends BaseRegistrationForm
         $rules[] = [['firstname','lastname'], 'string', 'max' => 255];
         $rules[] = [['birthday'], 'safe'];
         $rules[] = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
-        //$rules[] = ['captcha', 'required'];
-        //$rules[] = ['captcha', 'captcha'];
+        $rules[] = ['captcha', 'captcha'];
         $rules[] = ['terms', 'required', 'requiredValue' => true, 'message' => 'You must agree to the terms and conditions'];
 
         return $rules;
