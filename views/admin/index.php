@@ -119,11 +119,13 @@ $this->registerJs('
             'attribute' => 'birthday',
             'hAlign' => 'center',
             'value' => 'profile.birthday',
+            'width' => '9%',
         ],
         [
             'attribute' => Yii::t("user", "Roles"),
             'format' => 'html',
             'hAlign' => 'center',
+            'width' => '9%',
             'value' => function ($model) {
                 $html = "";
                 foreach($model->getRolesHTML() as $role){
@@ -156,6 +158,7 @@ $this->registerJs('
             'header' => Yii::t('userextended', 'Enabled'),
             'format' => 'raw',
             'hAlign' => 'center',
+            'width' => '5%',
             'value' => function ($model) {
                 if ($model->isBlocked) {
                     return Html::a('<span class="glyphicon glyphicon-remove text-danger"></span>', ['block', 'id' => $model->id], [
@@ -175,6 +178,7 @@ $this->registerJs('
             'format' => 'raw',
             'hAlign' => 'center',
             'visible' => Yii::$app->getModule('user')->enableConfirmation,
+            'width' => '5%',
             'value' => function ($model) {
                 if ($model->isConfirmed) {
                     return '<span class="glyphicon glyphicon-ok text-success"></span>';
@@ -188,6 +192,8 @@ $this->registerJs('
         ],
         [
             'attribute' => 'id',
+            'hAlign' => 'center',
+            'width' => '5%',
         ],
     ],
     'responsive' => true,
@@ -203,7 +209,7 @@ $this->registerJs('
             Html::a('<i class="glyphicon glyphicon-minus-sign"></i> '.Yii::t('userextended', 'Delete'),
                 '#', ['class' => 'btn btn-delete btn-danger']
             ).'</span><span style="margin-right: 5px;">'.
-            Html::a('<i class="glyphicon glyphicon-minus-sign"></i> '.Yii::t('user', 'Profile'),
+            Html::a('<i class="glyphicon glyphicon-user"></i> '.Yii::t('user', 'Profile'),
                 '#', ['class' => 'btn btn-profile btn-info']
             ).'</span>',
         'after'      => Html::a('<i class="glyphicon glyphicon-repeat"></i> '.Yii::t('userextended', 'Reset'),
