@@ -54,7 +54,7 @@ class User extends BaseUser
     }
 
     /**
-     * @return user roles
+     * @return user roles from userid
      */
     public function getRulesByUserID($userid)
     {
