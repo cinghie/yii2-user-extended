@@ -148,7 +148,7 @@ Changelog
 -----------------
 
 <ul>
-  <li>Version 0.5.6 - Adding to get User Rules from userid</li>
+  <li>Version 0.5.6 - Adding function to get User Rules from userid</li>
   <li>Version 0.5.5 - Fixing registration captcha</li>
   <li>Version 0.5.4 - Fixing javascript error, adding Backend Filter</li>
   <li>Version 0.5.3 - Improve security</li>
