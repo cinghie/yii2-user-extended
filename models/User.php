@@ -12,10 +12,10 @@
 
 namespace cinghie\yii2userextended\models;
 
+use Yii;
 use cinghie\yii2userextended\models\Assignments;
 use dektrium\user\models\User as BaseUser;
 use yii\db\Query;
-use Yii;
 
 class User extends BaseUser
 {
@@ -51,6 +51,14 @@ class User extends BaseUser
     public function getRoles()
     {
         return $this->hasMany(Assignment::className(), ['user_id' => 'id'])->from(Assignment::tableName() . ' AS role');
+    }
+
+    /**
+     * @return user roles
+     */
+    public function getRulesByUserID($userid)
+    {
+        return Yii::$app->authManager->getRolesByUser($userid);
     }
 
     /**
