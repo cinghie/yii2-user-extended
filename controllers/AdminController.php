@@ -104,7 +104,6 @@ class AdminController extends BaseController
      * Blocks the user.
      *
      * @param int $id
-     *
      * @return Response
      */
     public function actionBlock($id)
@@ -128,6 +127,56 @@ class AdminController extends BaseController
         }
 
         return $this->redirect(Url::previous('actions-redirect'));
+    }
+
+    /**
+     * Active selected User models.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     *
+     * @return mixed
+     */
+    public function actionActivemultiple()
+    {
+        $ids = Yii::$app->request->post('ids');
+
+        if (!$ids) {
+            return;
+        }
+
+        foreach ($ids as $id)
+        {
+            $model = $this->findModel($id);
+
+            if($model->getIsBlocked()) {
+                $model->unblock();
+                Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been unblocked'));
+            }
+        }
+    }
+
+    /**
+     * Deactive selected User models.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     *
+     * @return mixed
+     */
+    public function actionDeactivemultiple()
+    {
+        $ids = Yii::$app->request->post('ids');
+
+        if (!$ids) {
+            return;
+        }
+
+        foreach ($ids as $id)
+        {
+            $model = $this->findModel($id);
+
+            if(!$model->getIsBlocked()) {
+                $model->block();
+                Yii::$app->getSession()->setFlash('warning', Yii::t('user', 'User has been blocked'));
+            }
+        }
     }
 
 }

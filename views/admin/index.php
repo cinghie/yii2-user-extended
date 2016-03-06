@@ -55,6 +55,38 @@ $this->registerJs('
                 }
             }
         });
+        $("a.btn-active").click(function() {
+            var selectedId = $("#w3").yiiGridView("getSelectedRows");
+
+            if(selectedId.length == 0) {
+                alert("'.Yii::t("userextended", "Select at least one item").'");
+            } else {
+                $.ajax({
+                    type: \'POST\',
+                    url : "'.Url::to(['/user/admin/activemultiple']).'?id="+selectedId,
+                    data : {ids: selectedId},
+                    success : function() {
+                        $.pjax.reload({container:"#w3"});
+                    }
+                });
+            }
+        });
+        $("a.btn-deactive").click(function() {
+            var selectedId = $("#w3").yiiGridView("getSelectedRows");
+
+            if(selectedId.length == 0) {
+                alert("'.Yii::t("userextended", "Select at least one item").'");
+            } else {
+                $.ajax({
+                    type: \'POST\',
+                    url : "'.Url::to(['/user/admin/deactivemultiple']).'?id="+selectedId,
+                    data : {ids: selectedId},
+                    success : function() {
+                        $.pjax.reload({container:"#w3"});
+                    }
+                });
+            }
+        });
         $("a.btn-profile").click(function() {
             var selectedId = $("#w3").yiiGridView("getSelectedRows");
 
@@ -211,6 +243,12 @@ $this->registerJs('
             ).'</span><span style="margin-right: 5px;">'.
             Html::a('<i class="glyphicon glyphicon-user"></i> '.Yii::t('user', 'Profile'),
                 '#', ['class' => 'btn btn-profile btn-info']
+            ).'</span><span style="float: right; margin-right: 5px;">'.
+            Html::a('<i class="glyphicon glyphicon-remove"></i> '.Yii::t('userextended', 'Disable'),
+                '#', ['class' => 'btn btn-deactive btn-danger']
+            ).'</span><span style="float: right; margin-right: 5px;">'.
+            Html::a('<i class="glyphicon glyphicon-ok"></i> '.Yii::t('userextended', 'Enable'),
+                ['#'], ['class' => 'btn btn-active btn-success']
             ).'</span>',
         'after'      => Html::a('<i class="glyphicon glyphicon-repeat"></i> '.Yii::t('userextended', 'Reset'),
             ['index'], ['class' => 'btn btn-info']
