@@ -11,26 +11,34 @@
  */
 
 use yii\helpers\Html;
+use kartik\widgets\ActiveForm;
 use kartik\widgets\FileInput;
 
 $this->title = Yii::t('user', 'Profile settings');
 $this->params['breadcrumbs'][] = $this->title;
-
 ?>
 
-<?= $this->render('/_alert', ['module' => Yii::$app->getModule('user')]) ?>
+<?php if(Yii::$app->getModule('userextended')->showAlert): ?>
+    <?= $this->render('/_alert', [ 'module' => Yii::$app->getModule('user'), ]) ?>
+<?php endif ?>
 
 <div class="row">
+
     <div class="col-md-3">
         <?= $this->render('_menu') ?>
     </div>
+
     <div class="col-md-9">
+
         <div class="panel panel-default">
+
             <div class="panel-heading">
                 <?= Html::encode($this->title) ?>
             </div>
+
             <div class="panel-body">
-                <?php $form = \yii\widgets\ActiveForm::begin([
+
+                <?php $form = ActiveForm::begin([
                     'id' => 'profile-form',
                     'options' => ['class' => 'form-horizontal','enctype'=>'multipart/form-data'],
                     'fieldConfig' => [
@@ -56,21 +64,36 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 ]) ?>
 
-                <?= $form->field($model, 'name') ?>
+                <?= $form->field($model, 'name')->textInput([
+                    'placeholder' => Yii::t('user', 'Name'),
+                    'readonly' => true
+                ]) ?>
 
-                <?= $form->field($model, 'firstname') ?>
+                <?= $form->field($model, 'firstname')->textInput([
+                    'placeholder' => Yii::t('user', 'Firstname')
+                ]) ?>
 
-                <?= $form->field($model, 'lastname') ?>
+                <?= $form->field($model, 'lastname')->textInput([
+                    'placeholder' => Yii::t('user', 'Lastname')
+                ]) ?>
 
                 <?= $form->field($model, 'birthday') ?>
 
-                <?= $form->field($model, 'public_email') ?>
+                <?= $form->field($model, 'public_email')->textInput([
+                    'placeholder' => Yii::t('userextended', 'Public Email')
+                ]) ?>
 
-                <?= $form->field($model, 'gravatar_email')->hint(\yii\helpers\Html::a(Yii::t('user', 'Change your avatar at Gravatar.com'), 'http://gravatar.com')) ?>
+                <?= $form->field($model, 'gravatar_email')->textInput([
+                    'placeholder' => Yii::t('userextended', 'Gravatar Email')
+                ])->hint(\yii\helpers\Html::a(Yii::t('user', 'Change your avatar at Gravatar.com'), 'http://gravatar.com')) ?>
 
-                <?= $form->field($model, 'website') ?>
+                <?= $form->field($model, 'website')->textInput([
+                    'placeholder' => Yii::t('user', 'Website')
+                ]) ?>
 
-                <?= $form->field($model, 'location') ?>
+                <?= $form->field($model, 'location')->textInput([
+                    'placeholder' => Yii::t('user', 'Location')
+                ]) ?>
 
                 <?= $form->field($model, 'bio')->textarea() ?>
 
@@ -80,8 +103,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
 
-                <?php \yii\widgets\ActiveForm::end(); ?>
+                <?php ActiveForm::end(); ?>
+
             </div>
+
         </div>
+
     </div>
+
 </div>

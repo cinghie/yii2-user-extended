@@ -84,6 +84,7 @@ class Profile extends BaseProfile
     /**
      * Upload file
      *
+     * @param $filePath
      * @return mixed the uploaded image instance
      */
     public function uploadAvatar($filePath)
@@ -96,7 +97,7 @@ class Profile extends BaseProfile
         } else {
 
             // file extension
-            $fileExt = end((explode(".", $file->name)));
+            $fileExt = $file->extension;
             // purge filename
             $fileName = Yii::$app->security->generateRandomString();
             // update file->name
