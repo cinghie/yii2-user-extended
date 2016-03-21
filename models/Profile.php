@@ -129,8 +129,17 @@ class Profile extends BaseProfile
      */
     public function getImageUrl()
     {
-        $avatar = $this->avatar ? $this->avatar : 'default.png';
-        return Yii::getAlias(Yii::$app->getModule('userextended')->avatarURL).$avatar;
+        if ( !is_null($this->getAccountAttributes()) && !$this->avatar )
+        {
+            $imageURL = $this->getSocialImage();
+
+        } else {
+
+            $avatar   = $this->avatar ? $this->avatar : 'default.png';
+            $imageURL = Yii::getAlias(Yii::$app->getModule('userextended')->avatarURL).$avatar;
+        }
+
+        return $imageURL;
     }
 
     /**
@@ -156,6 +165,37 @@ class Profile extends BaseProfile
         $this->avatar = null;
 
         return true;
+    }
+
+    public function getSocialImage()
+    {
+        $imageURL = "";
+        $account  = $this->getAccountAttributes();
+
+        switch($account['provider'])
+        {
+            case "facebook":
+                $imageURL = "https://graph.facebook.com/".$account['client_id']."/picture?type=large";
+                break;
+        }
+
+        return $imageURL;
+    }
+
+    /**
+     * @return \yii\db\ActiveQueryInterface
+     */
+    public function getAccount()
+    {
+        return $this->hasOne($this->module->modelMap['Account'], ['user_id' => 'user_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQueryInterface
+     */
+    public function getAccountAttributes()
+    {
+        return $this->hasOne($this->module->modelMap['Account'], ['user_id' => 'user_id'])->asArray()->one();
     }
 
 }
