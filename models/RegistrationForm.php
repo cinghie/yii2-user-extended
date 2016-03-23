@@ -66,7 +66,7 @@ class RegistrationForm extends BaseRegistrationForm
     /**
      * @inheritdoc
      */
-    public function loadAttributes(User $user)
+    protected function loadAttributes(\dektrium\user\models\User $user)
     {
         $user->setAttributes([
             'email'    => $this->email,
