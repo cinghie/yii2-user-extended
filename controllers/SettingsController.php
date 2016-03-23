@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.5.6
+ * @version 0.5.7
  */
 
 namespace cinghie\yii2userextended\controllers;
