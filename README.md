@@ -148,7 +148,8 @@ Changelog
 -----------------
 
 <ul>
-  <li>Version 0.5.7 - Fixing loadAttributes()</li>
+  <li>Version 0.5.8 - Fixing loadAttributes()</li>
+  <li>Version 0.5.7 - Adding enable/disable button in user admin</li>  
   <li>Version 0.5.6 - Adding function to get User Rules from userid</li>
   <li>Version 0.5.5 - Fixing registration captcha</li>
   <li>Version 0.5.4 - Fixing javascript error, adding Backend Filter</li>
