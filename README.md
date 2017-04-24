@@ -150,7 +150,7 @@ Changelog
 -----------------
 
 <ul>
-  <li>Version 0.5.9 - Purge Code</li>
+  <li>Version 0.5.9 - Adding option socialLogin to Login View, Update Dipendences</li>
   <li>Version 0.5.8 - Fixing loadAttributes()</li>
   <li>Version 0.5.7 - Adding enable/disable button in user admin</li>  
   <li>Version 0.5.6 - Adding function to get User Rules from userid</li>
