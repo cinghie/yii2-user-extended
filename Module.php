@@ -48,6 +48,11 @@ class Module extends BaseUser
     public $showTitles = true;
 
     /**
+     * @var boolean showTitles in views
+     */
+    public $socialLogin = false;
+
+    /**
      * @inheritdoc
      */
     public function init()
