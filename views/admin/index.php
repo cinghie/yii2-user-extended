@@ -187,6 +187,27 @@ $this->registerJs('
             },
         ],
         [
+            'attribute' => 'last_login_at',
+            'hAlign' => 'center',
+            'filter' => DatePicker::widget([
+                'model'      => $searchModel,
+                'attribute'  => 'last_login_at',
+                'dateFormat' => 'php:Y-m-d',
+                'options' => [
+                    'class' => 'form-control',
+                ],
+            ]),
+            'value' => function ($model) {
+                if (!$model->last_login_at || $model->last_login_at == 0) {
+                    return Yii::t('userextended', 'Never');
+                } else if (extension_loaded('intl')) {
+                    return Yii::t('userextended', '{0, date, YYYY-MM-dd HH:mm}', [$model->last_login_at]);
+                } else {
+                    return date('Y-m-d G:i:s', $model->last_login_at);
+                }
+            },
+        ],
+        [
             'header' => Yii::t('userextended', 'Enabled'),
             'format' => 'raw',
             'hAlign' => 'center',

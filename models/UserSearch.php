@@ -21,6 +21,12 @@ class UserSearch extends BaseUserSearch
     public $id;
 
     /** @var string */
+    public $username;
+
+    /** @var string */
+    public $email;
+
+    /** @var string */
     public $firstname;
 
     /** @var string */
@@ -29,12 +35,19 @@ class UserSearch extends BaseUserSearch
     /** @var string */
     public $birthday;
 
+    /** @var int */
+    public $created_at;
+
+    /** @var int */
+    public $last_login_at;
+
     /** @inheritdoc */
     public function rules()
     {
         return [
-            'fieldsSafe' => [['username', 'firstname', 'lastname', 'birthday','email', 'registration_ip', 'created_at'], 'safe'],
+            'fieldsSafe' => [['username', 'firstname', 'lastname', 'birthday','email', 'registration_ip', 'created_at', 'last_login_at'], 'safe'],
             'createdDefault' => ['created_at', 'default', 'value' => null],
+            'lastloginDefault' => ['last_login_at', 'default', 'value' => null],
         ];
     }
 
@@ -42,14 +55,15 @@ class UserSearch extends BaseUserSearch
     public function attributeLabels()
     {
         return [
-            'id'              => Yii::t('user', 'ID'),
-            'username'        => Yii::t('user', 'Username'),
-            'firstname'       => Yii::t('userextended', 'Firstname'),
-            'lastname'        => Yii::t('userextended', 'Lastname'),
-            'birthday'        => Yii::t('userextended', 'Birthday'),
-            'email'           => Yii::t('user', 'Email'),
-            'created_at'      => Yii::t('user', 'Registration time'),
-            'registration_ip' => Yii::t('user', 'Registration ip'),
+            'id'              => \Yii::t('user', 'ID'),
+            'username'        => \Yii::t('user', 'Username'),
+            'firstname'       => \Yii::t('userextended', 'Firstname'),
+            'lastname'        => \Yii::t('userextended', 'Lastname'),
+            'birthday'        => \Yii::t('userextended', 'Birthday'),
+            'email'           => \Yii::t('user', 'Email'),
+            'created_at'      => \Yii::t('user', 'Registration time'),
+            'registration_ip' => \Yii::t('user', 'Registration ip'),
+            'last_login_at'   => \Yii::t('userextended', 'Last Login')
         ];
     }
 
@@ -61,7 +75,6 @@ class UserSearch extends BaseUserSearch
     public function search($params)
     {
         $query = $this->finder->getUserQuery();
-
         $query->select('*');
         $query->joinWith('profile');
 
@@ -78,7 +91,8 @@ class UserSearch extends BaseUserSearch
                 'lastname',
                 'birthday',
                 'email',
-                'created_at'
+                'created_at',
+                'last_login_at'
             ],
             'defaultOrder' => [
                 'created_at' => SORT_DESC
