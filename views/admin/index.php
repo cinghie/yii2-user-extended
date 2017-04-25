@@ -17,7 +17,7 @@ use yii\helpers\Url;
 use yii\jui\DatePicker;
 use yii\widgets\Pjax;
 
-$this->title = Yii::t('user', 'Manage users');
+$this->title = \Yii::t('user', 'Manage users');
 $this->params['breadcrumbs'][] = $this->title;
 
 // Register action buttons js
@@ -105,12 +105,12 @@ $this->registerJs('
 
 ?>
 
-<?php if(Yii::$app->getModule('userextended')->showTitles): ?>
-    <h1><?= Yii::t('user', 'Manage users') ?></h1>
+<?php if(\Yii::$app->getModule('userextended')->showTitles): ?>
+    <h1><?= \Yii::t('user', 'Manage users') ?></h1>
 <?php endif ?>
 
-<?php if(Yii::$app->getModule('userextended')->showAlert): ?>
-    <?= $this->render('/_alert', [ 'module' => Yii::$app->getModule('user'), ]) ?>
+<?php if(\Yii::$app->getModule('userextended')->showAlert): ?>
+    <?= $this->render('/_alert', [ 'module' => \Yii::$app->getModule('user'), ]) ?>
 <?php endif ?>
 
 <?= $this->render('/admin/_menu') ?>
@@ -187,22 +187,22 @@ $this->registerJs('
             ]),
             'value' => function ($model) {
                 if (!$model->last_login_at || $model->last_login_at == 0) {
-                    return Yii::t('userextended', 'Never');
+                    return \Yii::t('userextended', 'Never');
                 } else if (extension_loaded('intl')) {
-                    return Yii::t('userextended', '{0, date, YYYY-MM-dd HH:mm}', [$model->last_login_at]);
+                    return \Yii::t('userextended', '{0, date, YYYY-MM-dd HH:mm}', [$model->last_login_at]);
                 } else {
                     return date('Y-m-d G:i:s', $model->last_login_at);
                 }
             },
         ],
         [
-            'attribute' => Yii::t("user", "Roles"),
+            'attribute' => \Yii::t("user", "Roles"),
             'filter' => Select2::widget([
                 'model'     => $searchModel,
                 'attribute' => 'rule_name',
                 'data'      => $searchModel->getNameList(),
                 'options'   => [
-                    'placeholder' => Yii::t('rbac', 'Select role'),
+                    'placeholder' => \Yii::t('rbac', 'Select role'),
                 ],
                 'pluginOptions' => [
                     'allowClear' => true,
@@ -220,7 +220,7 @@ $this->registerJs('
             },
         ],
         [
-            'header' => Yii::t('userextended', 'Enabled'),
+            'header' => \Yii::t('userextended', 'Enabled'),
             'format' => 'raw',
             'hAlign' => 'center',
             'width' => '5%',
@@ -228,21 +228,21 @@ $this->registerJs('
                 if ($model->isBlocked) {
                     return Html::a('<span class="glyphicon glyphicon-remove text-danger"></span>', ['block', 'id' => $model->id], [
                         'data-method' => 'post',
-                        'data-confirm' => Yii::t('user', 'Are you sure you want to unblock this user?'),
+                        'data-confirm' => \Yii::t('user', 'Are you sure you want to unblock this user?'),
                     ]);
                 } else {
                     return Html::a('<span class="glyphicon glyphicon-ok text-success">', ['block', 'id' => $model->id], [
                         'data-method' => 'post',
-                        'data-confirm' => Yii::t('user', 'Are you sure you want to block this user?'),
+                        'data-confirm' => \Yii::t('user', 'Are you sure you want to block this user?'),
                     ]);
                 }
             },
         ],
         [
-            'header' => Yii::t('userextended', 'Actived'),
+            'header' => \Yii::t('userextended', 'Actived'),
             'format' => 'raw',
             'hAlign' => 'center',
-            'visible' => Yii::$app->getModule('user')->enableConfirmation,
+            'visible' => \Yii::$app->getModule('user')->enableConfirmation,
             'width' => '5%',
             'value' => function ($model) {
                 if ($model->isConfirmed) {
@@ -250,7 +250,7 @@ $this->registerJs('
                 } else {
                     return Html::a('<span class="glyphicon glyphicon-remove text-danger"></span>', ['confirm', 'id' => $model->id], [
                         'data-method' => 'post',
-                        'data-confirm' => Yii::t('user', 'Are you sure you want to confirm this user?'),
+                        'data-confirm' => \Yii::t('user', 'Are you sure you want to confirm this user?'),
                     ]);
                 }
             },

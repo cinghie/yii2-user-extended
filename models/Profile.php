@@ -74,10 +74,10 @@ class Profile extends BaseProfile
     public function attributeLabels()
     {
         return [
-            'name' => Yii::t('userextended', 'Name'),
-            'firstname' => Yii::t('userextended', 'Firstname'),
-            'lastname' => Yii::t('userextended', 'Lastname'),
-            'birthday' => Yii::t('userextended', 'Birthday'),
+            'name' => \Yii::t('userextended', 'Name'),
+            'firstname' => \Yii::t('userextended', 'Firstname'),
+            'lastname' => \Yii::t('userextended', 'Lastname'),
+            'birthday' => \Yii::t('userextended', 'Birthday'),
         ];
     }
 
@@ -99,7 +99,7 @@ class Profile extends BaseProfile
             // file extension
             $fileExt = $file->extension;
             // purge filename
-            $fileName = Yii::$app->security->generateRandomString();
+            $fileName = \Yii::$app->security->generateRandomString();
             // update file->name
             $file->name = $fileName.".{$fileExt}";
             // update avatar field
@@ -119,7 +119,7 @@ class Profile extends BaseProfile
      */
     public function getImagePath()
     {
-        return $this->avatar ? Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath).$this->avatar : null;
+        return $this->avatar ? \Yii::getAlias(\Yii::$app->getModule('userextended')->avatarPath).$this->avatar : null;
     }
 
     /**
@@ -136,7 +136,7 @@ class Profile extends BaseProfile
         } else {
 
             $avatar   = $this->avatar ? $this->avatar : 'default.png';
-            $imageURL = Yii::getAlias(Yii::$app->getModule('userextended')->avatarURL).$avatar;
+            $imageURL = \Yii::getAlias(\Yii::$app->getModule('userextended')->avatarURL).$avatar;
         }
 
         return $imageURL;
@@ -149,7 +149,7 @@ class Profile extends BaseProfile
      */
     public function deleteImage($avatarOld)
     {
-        $avatarURL = Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath).$avatarOld;
+        $avatarURL = \Yii::getAlias(\Yii::$app->getModule('userextended')->avatarPath).$avatarOld;
 
         // check if file exists on server
         if (empty($avatarURL) || !file_exists($avatarURL)) {

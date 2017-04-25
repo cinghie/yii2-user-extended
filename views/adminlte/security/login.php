@@ -14,7 +14,7 @@ use dektrium\user\widgets\Connect;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-$this->title = Yii::t('user', 'Sign in');
+$this->title = \Yii::t('user', 'Sign in');
 $this->params['breadcrumbs'][] = $this->title;
 
 $fieldOptions1 = [
@@ -29,11 +29,11 @@ $fieldOptions2 = [
 
 ?>
 
-<?= $this->render('/_alert', ['module' => Yii::$app->getModule('user')]) ?>
+<?= $this->render('/_alert', ['module' => \Yii::$app->getModule('user')]) ?>
 
 <div class="login-box">
     <div class="login-logo">
-        <a href="#"><b><?= Yii::$app->name ?></b></a>
+        <a href="#"><b><?= \Yii::$app->name ?></b></a>
     </div>
     <div class="login-box-body">
         <p class="login-box-msg"><?= Html::encode($this->title) ?></p>
@@ -48,7 +48,7 @@ $fieldOptions2 = [
 
         <?= $form->field($model, 'login', $fieldOptions1)
                  ->label(false)
-                 ->textInput(['placeholder' => Yii::t('user', 'Email')]) ?>
+                 ->textInput(['placeholder' => \Yii::t('user', 'Email')]) ?>
 
         <?= $form
             ->field($model, 'password', $fieldOptions2)
@@ -64,13 +64,13 @@ $fieldOptions2 = [
                 </div>
             </div>
             <div class="col-xs-4">
-                <?= Html::submitButton(Yii::t('user', 'Sign in'), ['class' => 'btn btn-primary btn-block btn-flat']) ?>
+                <?= Html::submitButton(\Yii::t('user', 'Sign in'), ['class' => 'btn btn-primary btn-block btn-flat']) ?>
             </div>
         </div>
 
         <?php ActiveForm::end(); ?>
 
-        <?php if (Yii::$app->getModule('userextended')->socialLogin): ?>
+        <?php if (\Yii::$app->getModule('userextended')->socialLogin): ?>
             <div class="social-auth-links text-center">
                 <p>- OR -</p>
                 <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i>
@@ -82,13 +82,13 @@ $fieldOptions2 = [
 
         <?php if ($module->enableConfirmation): ?>
             <p class="text-center">
-                <?= Html::a(Yii::t('user', 'Didn\'t receive confirmation message?'), ['/user/registration/resend']) ?>
+                <?= Html::a(\Yii::t('user', 'Didn\'t receive confirmation message?'), ['/user/registration/resend']) ?>
             </p>
         <?php endif ?>
 
         <?php if ($module->enableRegistration): ?>
             <p class="text-center">
-                <?= Html::a(Yii::t('user', 'Don\'t have an account? Sign up!'), ['/user/registration/register']) ?>
+                <?= Html::a(\Yii::t('user', 'Don\'t have an account? Sign up!'), ['/user/registration/register']) ?>
             </p>
         <?php endif ?>
 

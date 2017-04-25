@@ -24,7 +24,7 @@ class Assignment extends BaseAssignment
      */
     public static function find()
     {
-        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
+        return \Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**
@@ -48,7 +48,7 @@ class Assignment extends BaseAssignment
      */
     public static function getDb()
     {
-        return Yii::$app->getDb();
+        return \Yii::$app->getDb();
     }
 
 }

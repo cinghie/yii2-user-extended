@@ -28,7 +28,7 @@ class Migration extends \yii\db\Migration
     {
         parent::init();
 		
-        switch (Yii::$app->db->driverName) {
+        switch (\Yii::$app->db->driverName) {
             case 'mysql':
             case 'pgsql':
                 $this->tableOptions = null;

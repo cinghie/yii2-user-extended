@@ -14,7 +14,7 @@ use yii\captcha\Captcha;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-$this->title = Yii::t('user', 'Sign up');
+$this->title = \Yii::t('user', 'Sign up');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <div class="col-md-9">
 
-                            <?= Yii::t('user', 'By clicking Register, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
+                            <?= \Yii::t('user', 'By clicking Register, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
 
                         </div>
 
@@ -85,13 +85,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <div class="col-md-6">
 
-                            <?= Html::submitButton(Yii::t('user', 'Register'), ['class' => 'btn btn-success btn-block btn-lg']) ?>
+                            <?= Html::submitButton(\Yii::t('user', 'Register'), ['class' => 'btn btn-success btn-block btn-lg']) ?>
 
                         </div>
 
                         <div class="col-md-6">
 
-                            <?= Html::a(Yii::t('user', 'Login'), ['/user/login'], ['class' => 'btn btn-primary btn-block btn-lg']) ?>
+                            <?= Html::a(\Yii::t('user', 'Login'), ['/user/login'], ['class' => 'btn btn-primary btn-block btn-lg']) ?>
 
                         </div>
 

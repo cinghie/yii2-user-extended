@@ -78,9 +78,9 @@ class Module extends BaseUser
      */
     public function registerTranslations()
     {
-        if (empty(Yii::$app->i18n->translations['userextended']))
+        if (empty(\Yii::$app->i18n->translations['userextended']))
         {
-            Yii::$app->i18n->translations['userextended'] = [
+            \Yii::$app->i18n->translations['userextended'] = [
                 'class' => 'yii\i18n\PhpMessageSource',
                 'basePath' => __DIR__ . '/messages',
                 //'forceTranslation' => true,

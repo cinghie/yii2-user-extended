@@ -14,12 +14,12 @@ use yii\helpers\Html;
 use kartik\widgets\ActiveForm;
 use kartik\widgets\FileInput;
 
-$this->title = Yii::t('user', 'Profile settings');
+$this->title = \Yii::t('user', 'Profile settings');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<?php if(Yii::$app->getModule('userextended')->showAlert): ?>
-    <?= $this->render('/_alert', [ 'module' => Yii::$app->getModule('user'), ]) ?>
+<?php if(\Yii::$app->getModule('userextended')->showAlert): ?>
+    <?= $this->render('/_alert', [ 'module' => \Yii::$app->getModule('user'), ]) ?>
 <?php endif ?>
 
 <div class="row">
@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'allowedFileExtensions'=> ['jpg','gif','png'],
                         'browseClass' => 'btn btn-primary btn-block',
                         'browseIcon' => '<i class="glyphicon glyphicon-camera"></i> ',
-                        'browseLabel' =>  Yii::t('user', 'Change Avatar'),
+                        'browseLabel' =>  \Yii::t('user', 'Change Avatar'),
                         'previewFileType' => 'image',
                         'showCaption' => false,
                         'showRemove' => false,
@@ -65,41 +65,41 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]) ?>
 
                 <?= $form->field($model, 'name')->textInput([
-                    'placeholder' => Yii::t('user', 'Name'),
+                    'placeholder' => \Yii::t('user', 'Name'),
                     'readonly' => true
                 ]) ?>
 
                 <?= $form->field($model, 'firstname')->textInput([
-                    'placeholder' => Yii::t('user', 'Firstname')
+                    'placeholder' => \Yii::t('user', 'Firstname')
                 ]) ?>
 
                 <?= $form->field($model, 'lastname')->textInput([
-                    'placeholder' => Yii::t('user', 'Lastname')
+                    'placeholder' => \Yii::t('user', 'Lastname')
                 ]) ?>
 
                 <?= $form->field($model, 'birthday') ?>
 
                 <?= $form->field($model, 'public_email')->textInput([
-                    'placeholder' => Yii::t('userextended', 'Public Email')
+                    'placeholder' => \Yii::t('userextended', 'Public Email')
                 ]) ?>
 
                 <?= $form->field($model, 'gravatar_email')->textInput([
-                    'placeholder' => Yii::t('userextended', 'Gravatar Email')
-                ])->hint(\yii\helpers\Html::a(Yii::t('user', 'Change your avatar at Gravatar.com'), 'http://gravatar.com')) ?>
+                    'placeholder' => \Yii::t('userextended', 'Gravatar Email')
+                ])->hint(\yii\helpers\Html::a(\Yii::t('user', 'Change your avatar at Gravatar.com'), 'http://gravatar.com')) ?>
 
                 <?= $form->field($model, 'website')->textInput([
-                    'placeholder' => Yii::t('user', 'Website')
+                    'placeholder' => \Yii::t('user', 'Website')
                 ]) ?>
 
                 <?= $form->field($model, 'location')->textInput([
-                    'placeholder' => Yii::t('user', 'Location')
+                    'placeholder' => \Yii::t('user', 'Location')
                 ]) ?>
 
                 <?= $form->field($model, 'bio')->textarea() ?>
 
                 <div class="form-group">
                     <div class="col-lg-offset-3 col-lg-9">
-                        <?= \yii\helpers\Html::submitButton(Yii::t('user', 'Save'), ['class' => 'btn btn-block btn-success']) ?><br>
+                        <?= \yii\helpers\Html::submitButton(\Yii::t('user', 'Save'), ['class' => 'btn btn-block btn-success']) ?><br>
                     </div>
                 </div>
 

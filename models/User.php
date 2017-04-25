@@ -59,7 +59,7 @@ class User extends BaseUser
      */
     public function getRulesByUserID($userid)
     {
-        return Yii::$app->authManager->getRolesByUser($userid);
+        return \Yii::$app->authManager->getRolesByUser($userid);
     }
 
     /**
