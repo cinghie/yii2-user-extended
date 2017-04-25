@@ -11,6 +11,7 @@
  */
 
 use kartik\grid\GridView;
+use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\jui\DatePicker;
@@ -24,7 +25,7 @@ $this->registerJs('
     $(document).ready(function()
     {
         $("a.btn-update").click(function() {
-            var selectedId = $("#w3").yiiGridView("getSelectedRows");
+            var selectedId = $("#w2").yiiGridView("getSelectedRows");
 
             if(selectedId.length == 0) {
                 alert("'.Yii::t("userextended", "Select at least one item").'");
@@ -36,7 +37,7 @@ $this->registerJs('
             }
         });
         $("a.btn-delete").click(function() {
-            var selectedId = $("#w3").yiiGridView("getSelectedRows");
+            var selectedId = $("#w2").yiiGridView("getSelectedRows");
 
             if(selectedId.length == 0) {
                 alert("'.Yii::t("userextended", "Select at least one item").'");
@@ -49,14 +50,14 @@ $this->registerJs('
                         url : "'.Url::to(['/user/admin/delete-multiple']).'?id="+selectedId,
                         data : {ids: selectedId},
                         success : function() {
-                            $.pjax.reload({container:"#w3"});
+                            $.pjax.reload({container:"#w2"});
                         }
                     });
                 }
             }
         });
         $("a.btn-active").click(function() {
-            var selectedId = $("#w3").yiiGridView("getSelectedRows");
+            var selectedId = $("#w2").yiiGridView("getSelectedRows");
 
             if(selectedId.length == 0) {
                 alert("'.Yii::t("userextended", "Select at least one item").'");
@@ -66,13 +67,13 @@ $this->registerJs('
                     url : "'.Url::to(['/user/admin/activemultiple']).'?id="+selectedId,
                     data : {ids: selectedId},
                     success : function() {
-                        $.pjax.reload({container:"#w3"});
+                        $.pjax.reload({container:"#w2"});
                     }
                 });
             }
         });
         $("a.btn-deactive").click(function() {
-            var selectedId = $("#w3").yiiGridView("getSelectedRows");
+            var selectedId = $("#w2").yiiGridView("getSelectedRows");
 
             if(selectedId.length == 0) {
                 alert("'.Yii::t("userextended", "Select at least one item").'");
@@ -82,13 +83,13 @@ $this->registerJs('
                     url : "'.Url::to(['/user/admin/deactivemultiple']).'?id="+selectedId,
                     data : {ids: selectedId},
                     success : function() {
-                        $.pjax.reload({container:"#w3"});
+                        $.pjax.reload({container:"#w2"});
                     }
                 });
             }
         });
         $("a.btn-profile").click(function() {
-            var selectedId = $("#w3").yiiGridView("getSelectedRows");
+            var selectedId = $("#w2").yiiGridView("getSelectedRows");
 
             if(selectedId.length == 0) {
                 alert("'.Yii::t("userextended", "Select at least one item").'");
@@ -154,19 +155,6 @@ $this->registerJs('
             'width' => '9%',
         ],
         [
-            'attribute' => Yii::t("user", "Roles"),
-            'format' => 'html',
-            'hAlign' => 'center',
-            'width' => '9%',
-            'value' => function ($model) {
-                $html = "";
-                foreach($model->getRolesHTML() as $role){
-                    $html .= $role['item_name']."<br>";
-                }
-                return $html;
-            },
-        ],
-        [
             'attribute' => 'email',
             'format' => 'email',
             'hAlign' => 'center',
@@ -205,6 +193,30 @@ $this->registerJs('
                 } else {
                     return date('Y-m-d G:i:s', $model->last_login_at);
                 }
+            },
+        ],
+        [
+            'attribute' => Yii::t("user", "Roles"),
+            'filter' => Select2::widget([
+                'model'     => $searchModel,
+                'attribute' => 'rule_name',
+                'data'      => $searchModel->getNameList(),
+                'options'   => [
+                    'placeholder' => Yii::t('rbac', 'Select role'),
+                ],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                ],
+            ]),
+            'format' => 'html',
+            'hAlign' => 'center',
+            'width' => '9%',
+            'value' => function ($model) {
+                $html = "";
+                foreach($model->getRolesHTML() as $role){
+                    $html .= $role['item_name']."<br>";
+                }
+                return $html;
             },
         ],
         [

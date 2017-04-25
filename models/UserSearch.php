@@ -14,6 +14,8 @@ namespace cinghie\yii2userextended\models;
 
 use dektrium\user\models\UserSearch as BaseUserSearch;
 use yii\data\ActiveDataProvider;
+use yii\db\Query;
+use yii\helpers\ArrayHelper;
 
 class UserSearch extends BaseUserSearch
 {
@@ -41,11 +43,14 @@ class UserSearch extends BaseUserSearch
     /** @var int */
     public $last_login_at;
 
+    /** @var string */
+    public $rule_name;
+
     /** @inheritdoc */
     public function rules()
     {
         return [
-            'fieldsSafe' => [['username', 'firstname', 'lastname', 'birthday','email', 'registration_ip', 'created_at', 'last_login_at'], 'safe'],
+            'fieldsSafe' => [['username', 'firstname', 'lastname', 'birthday','email', 'rule', 'registration_ip', 'created_at', 'last_login_at'], 'safe'],
             'createdDefault' => ['created_at', 'default', 'value' => null],
             'lastloginDefault' => ['last_login_at', 'default', 'value' => null],
         ];
@@ -61,6 +66,7 @@ class UserSearch extends BaseUserSearch
             'lastname'        => \Yii::t('userextended', 'Lastname'),
             'birthday'        => \Yii::t('userextended', 'Birthday'),
             'email'           => \Yii::t('user', 'Email'),
+            'rule'            => \Yii::t('rbac', 'Rule'),
             'created_at'      => \Yii::t('user', 'Registration time'),
             'registration_ip' => \Yii::t('user', 'Registration ip'),
             'last_login_at'   => \Yii::t('userextended', 'Last Login')
@@ -91,6 +97,7 @@ class UserSearch extends BaseUserSearch
                 'lastname',
                 'birthday',
                 'email',
+                'rule_name',
                 'created_at',
                 'last_login_at'
             ],
@@ -98,9 +105,6 @@ class UserSearch extends BaseUserSearch
                 'created_at' => SORT_DESC
             ],
         ]);
-
-        // Print SQL query
-        //var_dump($query->createCommand()->sql); exit();
 
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
@@ -116,9 +120,29 @@ class UserSearch extends BaseUserSearch
               ->andFilterWhere(['like', 'profile.lastname', $this->lastname])
               ->andFilterWhere(['like', 'profile.birthday', $this->birthday])
               ->andFilterWhere(['like', 'email', $this->email])
+              ->andFilterWhere(['like', 'rule_name', $this->rule_name])
               ->andFilterWhere(['registration_ip' => $this->registration_ip]);
 
+        // Print SQL query
+        //var_dump($query->createCommand()->sql); exit();
+
         return $dataProvider;
+    }
+
+    /**
+     * Returns list of item names.
+     *
+     * @return array
+     */
+    public function getNameList()
+    {
+        $rows = (new Query)
+            ->select(['name'])
+            ->andWhere(['type' => 1])
+            ->from(\Yii::$app->authManager->itemTable)
+            ->all();
+
+        return ArrayHelper::map($rows, 'name', 'name');
     }
 
 }
