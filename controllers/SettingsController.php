@@ -26,28 +26,42 @@ class SettingsController extends BaseController
     public function actionProfile()
     {
         // Load Model
-        $model       = $this->finder->findProfileById(Yii::$app->user->identity->getId());
+        $model = $this->finder->findProfileById(\Yii::$app->user->identity->getId());
+
+        // If Profile not exist create it
+        if ($model == null) {
+            $model = \Yii::createObject(Profile::className());
+            $model->link('user', \Yii::$app->user->identity);
+        }
+
         // Load Old Image
-        $oldImage    = $model->avatar;
+        $oldImage = $model->avatar;
+
         // Load avatarPath from Module Params
-        $avatarPath  = Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath);
+        $avatarPath = \Yii::getAlias(\Yii::$app->getModule('userextended')->avatarPath);
 
         // Create uploadAvatar Instance
         $image = $model->uploadAvatar($avatarPath);
 
+        // Profile Event
+        $event = $this->getProfileEvent($model);
+
         // Ajax Validation
         $this->performAjaxValidation($model);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $this->trigger(self::EVENT_BEFORE_PROFILE_UPDATE, $event);
+
+        if ($model->load(\Yii::$app->request->post()) && $model->save()) {
 
             // revert back if no valid file instance uploaded
             if ($image === false) {
+
                 $model->avatar = $oldImage;
+
             } else {
                 
                 // if is there an old image, delete it
-                if($oldImage)
-                {
+                if($oldImage) {
                     $model->deleteImage($oldImage);
                 }
 
@@ -55,7 +69,9 @@ class SettingsController extends BaseController
                 $model->avatar = $image->name;
             }
 
-            Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Your profile has been updated'));
+            \Yii::$app->getSession()->setFlash('success', \Yii::t('user', 'Your profile has been updated'));
+
+            $this->trigger(self::EVENT_AFTER_PROFILE_UPDATE, $event);
 
             return $this->refresh();
         }
