@@ -12,13 +12,14 @@
 
 namespace cinghie\yii2userextended\controllers;
 
-use cinghie\yii2userextended\models\UserSearch;
-use dektrium\user\controllers\AdminController as BaseController;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\AccessRule;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
+
+use cinghie\yii2userextended\models\UserSearch;
+use dektrium\user\controllers\AdminController as BaseController;
 
 class AdminController extends BaseController
 {
@@ -28,6 +29,16 @@ class AdminController extends BaseController
     public function behaviors()
     {
         return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete'          => ['post'],
+                    'confirm'         => ['post'],
+                    'resend-password' => ['post'],
+                    'block'           => ['post'],
+                    'switch'          => ['post'],
+                ],
+            ],
             'access' => [
                 'class' => AccessControl::className(),
                 'ruleConfig' => [
@@ -36,19 +47,15 @@ class AdminController extends BaseController
                 'rules' => [
                     [
                         'allow' => true,
+                        'actions' => ['switch'],
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'allow' => true,
                         'roles' => ['admin'],
                     ],
                 ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete'  => ['post'],
-                    'delete-multiple' => ['post'],
-                    'confirm' => ['post'],
-                    'block'   => ['post'],
-                ],
-            ],
+            ]
         ];
     }
 
@@ -60,8 +67,8 @@ class AdminController extends BaseController
     public function actionIndex()
     {
         Url::remember('', 'actions-redirect');
-        $searchModel  = Yii::createObject(UserSearch::className());
-        $dataProvider = $searchModel->search(Yii::$app->request->get());
+        $searchModel  = \Yii::createObject(UserSearch::className());
+        $dataProvider = $searchModel->search(\Yii::$app->request->get());
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -77,7 +84,7 @@ class AdminController extends BaseController
      */
     public function actionDeleteMultiple()
     {
-        $ids = Yii::$app->request->post('ids');
+        $ids = \Yii::$app->request->post('ids');
 
         if (!$ids) {
             return;
@@ -89,10 +96,10 @@ class AdminController extends BaseController
         }
 
         // Set Success Message
-        Yii::$app->session->setFlash('success', Yii::t('userextended', 'Delete Success!'));
+        \Yii::$app->session->setFlash('success', \Yii::t('userextended', 'Delete Success!'));
 
-        $searchModel  = Yii::createObject(UserSearch::className());
-        $dataProvider = $searchModel->search(Yii::$app->request->get());
+        $searchModel  = \Yii::createObject(UserSearch::className());
+        $dataProvider = $searchModel->search(\Yii::$app->request->get());
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -108,8 +115,8 @@ class AdminController extends BaseController
      */
     public function actionBlock($id)
     {
-        if ($id == Yii::$app->user->getId()) {
-            Yii::$app->getSession()->setFlash('danger', Yii::t('user', 'You can not block your own account'));
+        if ($id == \Yii::$app->user->getId()) {
+            \Yii::$app->getSession()->setFlash('danger', \Yii::t('user', 'You can not block your own account'));
         } else {
             $user  = $this->findModel($id);
             $event = $this->getUserEvent($user);
@@ -117,12 +124,12 @@ class AdminController extends BaseController
                 $this->trigger(self::EVENT_BEFORE_UNBLOCK, $event);
                 $user->unblock();
                 $this->trigger(self::EVENT_AFTER_UNBLOCK, $event);
-                Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been unblocked'));
+                \Yii::$app->getSession()->setFlash('success', \Yii::t('user', 'User has been unblocked'));
             } else {
                 $this->trigger(self::EVENT_BEFORE_BLOCK, $event);
                 $user->block();
                 $this->trigger(self::EVENT_AFTER_BLOCK, $event);
-                Yii::$app->getSession()->setFlash('warning', Yii::t('user', 'User has been blocked'));
+                \Yii::$app->getSession()->setFlash('warning', \Yii::t('user', 'User has been blocked'));
             }
         }
 
@@ -137,7 +144,7 @@ class AdminController extends BaseController
      */
     public function actionActivemultiple()
     {
-        $ids = Yii::$app->request->post('ids');
+        $ids = \Yii::$app->request->post('ids');
 
         if (!$ids) {
             return;
@@ -149,7 +156,7 @@ class AdminController extends BaseController
 
             if($model->getIsBlocked()) {
                 $model->unblock();
-                Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been unblocked'));
+                \Yii::$app->getSession()->setFlash('success', \Yii::t('user', 'User has been unblocked'));
             }
         }
     }
@@ -162,7 +169,7 @@ class AdminController extends BaseController
      */
     public function actionDeactivemultiple()
     {
-        $ids = Yii::$app->request->post('ids');
+        $ids = \Yii::$app->request->post('ids');
 
         if (!$ids) {
             return;
@@ -174,7 +181,7 @@ class AdminController extends BaseController
 
             if(!$model->getIsBlocked()) {
                 $model->block();
-                Yii::$app->getSession()->setFlash('warning', Yii::t('user', 'User has been blocked'));
+                \Yii::$app->getSession()->setFlash('warning', \Yii::t('user', 'User has been blocked'));
             }
         }
     }
