@@ -12,12 +12,14 @@
 
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+use kartik\widgets\FileInput;
 
 ?>
 
 <?php $this->beginContent('@dektrium/user/views/admin/update.php', ['user' => $user]) ?>
 
 <?php $form = ActiveForm::begin([
+    'options' => ['enctype'=>'multipart/form-data'],
     'layout' => 'horizontal',
     'enableAjaxValidation' => true,
     'enableClientValidation' => false,
@@ -28,7 +30,26 @@ use yii\helpers\Html;
     ],
 ]); ?>
 
-<?= $form->field($profile, 'avatar') ?>
+<div class="form-group field-profile-avatar-view">
+    <label class="control-label col-sm-3" for="profile-avatar-view">Avatar</label>
+    <div class="col-sm-9">
+        <input id="profile-avatar-view" class="form-control" name="Profile[avatar-view]" value="<?= $profile->avatar ?>" disabled="" type="text">
+        <div class="help-block help-block-error "></div>
+    </div>
+</div>
+<?= $form->field($profile, 'avatar')->widget(FileInput::classname(), [
+    'options' => ['accept'=>'image/*'],
+    'pluginOptions' => [
+        'allowedFileExtensions'=> ['jpg','gif','png'],
+        'browseClass' => 'btn btn-primary btn-block',
+        'browseIcon' => '<i class="glyphicon glyphicon-camera"></i> ',
+        'browseLabel' =>  \Yii::t('user', 'Change Avatar'),
+        'previewFileType' => 'image',
+        'showCaption' => false,
+        'showRemove' => false,
+        'showUpload' => false,
+    ]
+])->label(false) ?>
 <?= $form->field($profile, 'name') ?>
 <?= $form->field($profile, 'firstname') ?>
 <?= $form->field($profile, 'lastname') ?>
