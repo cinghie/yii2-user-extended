@@ -150,6 +150,7 @@ Changelog
 -----------------
 
 <ul>
+  <li>Version 0.6.0 - Adding User Rule select in Users index, Fix Updating Avatar in Profile Admin</li>
   <li>Version 0.5.9 - Adding option socialLogin to Login View, Update Dipendences</li>
   <li>Version 0.5.8 - Fixing loadAttributes()</li>
   <li>Version 0.5.7 - Adding enable/disable button in user admin</li>  
