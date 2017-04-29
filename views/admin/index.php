@@ -199,7 +199,7 @@ $this->registerJs('
             'attribute' => \Yii::t("user", "Roles"),
             'filter' => Select2::widget([
                 'model'     => $searchModel,
-                'attribute' => 'rule_name',
+                'attribute' => 'rule',
                 'data'      => $searchModel->getNameList(),
                 'options'   => [
                     'placeholder' => \Yii::t('rbac', 'Select role'),

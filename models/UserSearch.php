@@ -44,7 +44,7 @@ class UserSearch extends BaseUserSearch
     public $last_login_at;
 
     /** @var string */
-    public $rule_name;
+    public $rule;
 
     /** @inheritdoc */
     public function rules()
@@ -97,7 +97,7 @@ class UserSearch extends BaseUserSearch
                 'lastname',
                 'birthday',
                 'email',
-                'rule_name',
+                'rule',
                 'created_at',
                 'last_login_at'
             ],
@@ -120,11 +120,17 @@ class UserSearch extends BaseUserSearch
               ->andFilterWhere(['like', 'profile.lastname', $this->lastname])
               ->andFilterWhere(['like', 'profile.birthday', $this->birthday])
               ->andFilterWhere(['like', 'email', $this->email])
-              ->andFilterWhere(['like', 'rule_name', $this->rule_name])
               ->andFilterWhere(['registration_ip' => $this->registration_ip]);
 
+        if ($this->rule !== "") {
+            $query->andWhere('`id` IN (
+                SELECT {{%auth_assignment}}.user_id FROM {{%auth_assignment}} 
+                WHERE {{%auth_assignment}}.`item_name` = "'.$this->rule.'")'
+            );
+        }
+
         // Print SQL query
-        //var_dump($query->createCommand()->sql); exit();
+        //Svar_dump($query->createCommand()->sql); exit();
 
         return $dataProvider;
     }
