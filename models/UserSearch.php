@@ -145,6 +145,7 @@ class UserSearch extends BaseUserSearch
         $rows = (new Query)
             ->select(['name'])
             ->andWhere(['type' => 1])
+            ->andWhere('name != "public"')
             ->from(\Yii::$app->authManager->itemTable)
             ->all();
 
