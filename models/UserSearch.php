@@ -50,7 +50,7 @@ class UserSearch extends BaseUserSearch
     public function rules()
     {
         return [
-            'fieldsSafe' => [['username', 'firstname', 'lastname', 'birthday','email', 'rule', 'registration_ip', 'created_at', 'last_login_at'], 'safe'],
+            'fieldsSafe' => [['id', 'username', 'firstname', 'lastname', 'birthday','email', 'rule', 'registration_ip', 'created_at', 'last_login_at'], 'safe'],
             'createdDefault' => ['created_at', 'default', 'value' => null],
             'lastloginDefault' => ['last_login_at', 'default', 'value' => null],
         ];
@@ -92,6 +92,7 @@ class UserSearch extends BaseUserSearch
         // Override Sort Attributes
         $dataProvider->setSort([
             'attributes' => [
+                'id',
                 'username',
                 'firstname',
                 'lastname',
@@ -112,8 +113,12 @@ class UserSearch extends BaseUserSearch
 
         if ($this->created_at !== null) {
             $date = strtotime($this->created_at);
-            $query->andFilterWhere(['between', 'created_at', $date, $date + 3600 * 24]);
+            $query->andFilterWhere(['between', $table_name . '.created_at', $date, $date + 3600 * 24]);
         }
+
+        $query->andFilterWhere([
+            'id' => $this->id
+        ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])
               ->andFilterWhere(['like', 'profile.firstname', $this->firstname])
