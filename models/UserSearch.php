@@ -111,8 +111,8 @@ class UserSearch extends BaseUserSearch
             return $dataProvider;
         }
 
-        $table_name = $query->modelClass;
-        $table_name = $table_name->tableName();
+        $model = $query->modelClass;
+        $table_name = $model->tableName();
 
         if ($this->created_at !== null) {
             $date = strtotime($this->created_at);
