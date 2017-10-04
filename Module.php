@@ -33,7 +33,7 @@ class Module extends BaseUser
     public $avatarURL  = '@web/img/users/';
 
 	/**
-	 * @var boolean Captcha
+	 * @var boolean onlyEmail
 	 */
 	public $onlyEmail = false;
 
