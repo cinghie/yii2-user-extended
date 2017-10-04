@@ -31,7 +31,12 @@ class Module extends BaseUser
      * @var string URL to avatar file
      */
     public $avatarURL  = '@web/img/users/';
-	
+
+	/**
+	 * @var boolean Captcha
+	 */
+	public $onlyEmail = false;
+
     /**
      * @var boolean Captcha
      */

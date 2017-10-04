@@ -39,6 +39,19 @@ class User extends BaseUser
         ];
     }
 
+	/**
+	 * If onlyEmail is true, username is email
+	 *
+	 * @return bool
+	 */
+	public function beforeValidate()
+	{
+		if($this->getModule()->onlyEmail) {
+			$this->username = $this->email;
+			return parent::beforeValidate();
+		}
+	}
+
     /**
      * @return \yii\db\ActiveQuery
      */
