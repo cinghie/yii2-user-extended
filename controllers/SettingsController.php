@@ -10,7 +10,7 @@
  * @version 0.6.0
  */
 
-namespace cinghie\yii2userextended\controllers;
+namespace cinghie\userextended\controllers;
 
 use Yii;
 use dektrium\user\controllers\SettingsController as BaseController;

@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "cinghie\\yii2userextended\\": ""
+            "cinghie\\userextended\\": ""
         }
     }
 }

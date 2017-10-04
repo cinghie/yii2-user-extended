@@ -62,20 +62,20 @@ Set on your configuration file, in modules section
         'class' => 'dektrium\user\Module',
         // Yii2 User Controllers Overrides
         'controllerMap' => [
-            'admin' => 'cinghie\yii2userextended\controllers\AdminController',
-            'settings' => 'cinghie\yii2userextended\controllers\SettingsController'
+            'admin' => 'cinghie\userextended\controllers\AdminController',
+            'settings' => 'cinghie\userextended\controllers\SettingsController'
         ],
         // Yii2 User Models Overrides
         'modelMap' => [
-            'RegistrationForm' => 'cinghie\yii2userextended\models\RegistrationForm',
-            'Profile' => 'cinghie\yii2userextended\models\Profile',
-            'SettingsForm' => 'cinghie\yii2userextended\models\SettingsForm',
-            'User' => 'cinghie\yii2userextended\models\User',
+            'RegistrationForm' => 'cinghie\userextended\models\RegistrationForm',
+            'Profile' => 'cinghie\userextended\models\Profile',
+            'SettingsForm' => 'cinghie\userextended\models\SettingsForm',
+            'User' => 'cinghie\userextended\models\User',
         ],
     ],
     // Yii2 User Extended
     'userextended' => [
-        'class' => 'cinghie\yii2userextended\Module',
+        'class' => 'cinghie\userextended\Module',
         'avatarPath' => '@webroot/img/users/', // Path to your avatar files
         'avatarURL' => '@web/img/users/', // Url to your avatar files
         'showTitles' => true, // Set false in adminLTE
@@ -106,7 +106,7 @@ If you have a Yii2 App Advanced add in Yii2 User Module config
     'user' => [
         'class' => 'dektrium\user\Module',
         // restrict access to recovery and registration controllers from backend
-        'as backend' => 'cinghie\yii2userextended\filters\BackendFilter',
+        'as backend' => 'cinghie\userextended\filters\BackendFilter',
         // Settings
         'enableRegistration' => false,
     ],

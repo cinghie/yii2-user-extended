@@ -10,7 +10,7 @@
  * @version 0.6.0
  */
 
-namespace cinghie\yii2userextended;
+namespace cinghie\userextended;
 
 use Yii;
 use dektrium\user\Module as BaseUser;
@@ -31,7 +31,7 @@ class Module extends BaseUser
      * @var string URL to avatar file
      */
     public $avatarURL  = '@web/img/users/';
-
+	
     /**
      * @var boolean Captcha
      */

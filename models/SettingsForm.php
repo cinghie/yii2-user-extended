@@ -10,7 +10,7 @@
  * @version 0.6.0
  */
 
-namespace cinghie\yii2userextended\models;
+namespace cinghie\userextended\models;
 
 use dektrium\user\models\SettingsForm as BaseSettingsForm;
 

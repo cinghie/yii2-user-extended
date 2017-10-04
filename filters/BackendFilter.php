@@ -10,7 +10,7 @@
  * @version 0.6.0
  */
 
-namespace cinghie\yii2userextended\filters;
+namespace cinghie\userextended\filters;
 
 use yii\base\ActionFilter;
 use yii\web\ForbiddenHttpException;

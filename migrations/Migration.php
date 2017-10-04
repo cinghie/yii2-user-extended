@@ -10,7 +10,7 @@
  * @version 0.6.0
  */
 
-namespace cinghie\yii2userextended\migrations;
+namespace cinghie\userextended\migrations;
 
 use Yii;
 

@@ -10,15 +10,16 @@
  * @version 0.6.0
  */
 
-namespace cinghie\yii2userextended\models;
+namespace cinghie\userextended\models;
 
 use Yii;
-use cinghie\yii2userextended\models\Assignments;
+use cinghie\userextended\models\Assignments;
 use dektrium\user\models\User as BaseUser;
 use yii\db\Query;
 
 class User extends BaseUser
 {
+
     /** @inheritdoc */
     public function attributeLabels()
     {

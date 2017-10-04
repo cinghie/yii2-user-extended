@@ -10,8 +10,9 @@
  * @version 0.6.0
  */
 
-namespace cinghie\yii2userextended\models;
+namespace cinghie\userextended\models;
 
+use dektrium\rbac\models\Assignment;
 use dektrium\user\models\RegistrationForm as BaseRegistrationForm;
 
 class RegistrationForm extends BaseRegistrationForm

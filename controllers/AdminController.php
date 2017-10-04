@@ -10,7 +10,7 @@
  * @version 0.6.0
  */
 
-namespace cinghie\yii2userextended\controllers;
+namespace cinghie\userextended\controllers;
 
 use Yii;
 use yii\filters\AccessControl;
@@ -18,7 +18,7 @@ use yii\filters\AccessRule;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 
-use cinghie\yii2userextended\models\UserSearch;
+use cinghie\userextended\models\UserSearch;
 use dektrium\user\controllers\AdminController as BaseController;
 
 class AdminController extends BaseController
