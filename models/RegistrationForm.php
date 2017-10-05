@@ -17,6 +17,7 @@ use dektrium\user\models\RegistrationForm as BaseRegistrationForm;
 
 class RegistrationForm extends BaseRegistrationForm
 {
+
     /**
      * Add a new fields
      * string name
