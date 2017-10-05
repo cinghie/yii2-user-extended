@@ -17,12 +17,17 @@ use yii\widgets\ActiveForm;
 $this->title = \Yii::t('user', 'Sign up');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="row">
+
     <div class="col-md-8 col-md-offset-2">
+
         <div class="panel panel-default">
+
             <div class="panel-heading">
                 <h3 class="panel-title"><?= Html::encode($this->title) ?></h3>
             </div>
+
             <div class="panel-body">
 
                 <?php $form = ActiveForm::begin([
@@ -33,55 +38,67 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <div class="col-md-12">
 
-                    <div class="col-md-6">
+                    <div class="row">
 
-                        <?= $form->field($model, 'firstname') ?>
+                        <div class="col-md-6">
 
-                        <?= $form->field($model, 'email') ?>
+                            <?= $form->field($model, 'firstname') ?>
 
-                        <?= $form->field($model, 'username') ?>
+                            <?= $form->field($model, 'email') ?>
 
-                    </div>
-
-                    <div class="col-md-6">
-
-                        <?= $form->field($model, 'lastname') ?>
-
-                        <?= $form->field($model, 'birthday') ?>
-
-                        <?php if ($module->enableGeneratingPassword == false): ?>
-                            <?= $form->field($model, 'password')->passwordInput() ?>
-                        <?php endif ?>
-
-                    </div>
-
-                    <div class="col-md-12">
-
-                        <?= $form->field($model, 'captcha')->widget(Captcha::className(), [
-                            'captchaAction' => ['/site/captcha'],
-                            'options' => ['class' => 'form-control'],
-                            'template' => '<div class="row"><div class="col-md-6">{input}</div><div class="col-md-6">{image}</div></div>'
-                        ]) ?>
-
-                    </div>
-
-                    <div class="col-md-12">
-
-                        <div class="col-md-3">
-
-                            <?= $form->field($model, 'terms')->checkbox(['uncheck' => false, 'checked' => true]) ?>
+                            <?= $form->field($model, 'username') ?>
 
                         </div>
 
-                        <div class="col-md-9">
+                        <div class="col-md-6">
 
-                            <?= \Yii::t('user', 'By clicking Register, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
+                            <?= $form->field($model, 'lastname') ?>
+
+                            <?= $form->field($model, 'birthday') ?>
+
+                            <?php if ($module->enableGeneratingPassword == false): ?>
+                                <?= $form->field($model, 'password')->passwordInput() ?>
+                            <?php endif ?>
 
                         </div>
 
                     </div>
 
-                    <div class="col-md-12">
+                    <div class="row">
+
+                        <div class="col-md-12">
+
+                            <?= $form->field($model, 'captcha')->widget(Captcha::className(), [
+                                'captchaAction' => ['/site/captcha'],
+                                'options' => ['class' => 'form-control'],
+                                'template' => '<div class="row"><div class="col-md-6">{input}</div><div class="col-md-6">{image}</div></div>'
+                            ]) ?>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+
+                            <div class="col-md-3">
+
+                                <?= $form->field($model, 'terms')->checkbox(['uncheck' => false, 'checked' => true]) ?>
+
+                            </div>
+
+                            <div class="col-md-9">
+
+                                <?= \Yii::t('user', 'By clicking Register, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
 
                         <div class="col-md-6">
 
