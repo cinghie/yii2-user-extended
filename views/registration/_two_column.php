@@ -28,11 +28,11 @@ use yii\helpers\Html;
 
 			<div class="col-md-6">
 
-				<? if(Yii::$app->getModule('userextended')->firstname): ?>
+				<?php if(Yii::$app->getModule('userextended')->firstname): ?>
 
 					<?= $form->field($model, 'firstname') ?>
 
-				<? endif ?>
+				<?php endif ?>
 
 				<?= $form->field($model, 'email') ?>
 
@@ -42,17 +42,17 @@ use yii\helpers\Html;
 
 			<div class="col-md-6">
 
-				<? if(Yii::$app->getModule('userextended')->lastname): ?>
+				<?php if(Yii::$app->getModule('userextended')->lastname): ?>
 
 					<?= $form->field($model, 'lastname') ?>
 
-				<? endif ?>
+				<?php endif ?>
 
-				<? if(Yii::$app->getModule('userextended')->birthday): ?>
+				<?php if(Yii::$app->getModule('userextended')->birthday): ?>
 
 					<?= $form->field($model, 'birthday') ?>
 
-				<? endif ?>
+				<?php endif ?>
 
 				<?php if ($module->enableGeneratingPassword == false): ?>
 					<?= $form->field($model, 'password')->passwordInput() ?>
@@ -62,7 +62,7 @@ use yii\helpers\Html;
 
 		</div>
 
-		<? if(Yii::$app->getModule('userextended')->captcha): ?>
+		<?php if(Yii::$app->getModule('userextended')->captcha): ?>
 
 			<div class="row">
 
@@ -78,9 +78,9 @@ use yii\helpers\Html;
 
 			</div>
 
-		<? endif ?>
+		<?php endif ?>
 
-		<? if(Yii::$app->getModule('userextended')->terms): ?>
+		<?php if(Yii::$app->getModule('userextended')->terms): ?>
 
 			<div class="row">
 
@@ -102,7 +102,7 @@ use yii\helpers\Html;
 
 			</div>
 
-		<? endif ?>
+		<?php endif ?>
 
 		<div class="row">
 
