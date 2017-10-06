@@ -48,7 +48,6 @@ class User extends BaseUser
 	{
 		if(Yii::$app->getModule('userextended')->onlyEmail) {
 			$this->username = $this->email;
-			return parent::beforeValidate();
 		}
 
 		return parent::beforeValidate();
