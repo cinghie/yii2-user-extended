@@ -31,8 +31,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="panel-body">
 
                 <?php $form = ActiveForm::begin([
-                    'id'                     => 'registration-form',
-                    'enableAjaxValidation'   => false,
+                    'id' => 'registration-form',
+                    'enableAjaxValidation' => false,
                     'enableClientValidation' => true,
                 ]); ?>
 
@@ -42,7 +42,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <div class="col-md-6">
 
-                            <?= $form->field($model, 'firstname') ?>
+	                        <? if(Yii::$app->getModule('userextended')->firstname): ?>
+
+                                <?= $form->field($model, 'firstname') ?>
+
+	                        <? endif ?>
 
                             <?= $form->field($model, 'email') ?>
 
@@ -52,9 +56,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <div class="col-md-6">
 
-                            <?= $form->field($model, 'lastname') ?>
+                            <? if(Yii::$app->getModule('userextended')->lastname): ?>
 
-                            <?= $form->field($model, 'birthday') ?>
+                                <?= $form->field($model, 'lastname') ?>
+
+                            <? endif ?>
+
+                            <? if(Yii::$app->getModule('userextended')->birthday): ?>
+
+	                            <?= $form->field($model, 'birthday') ?>
+
+                            <? endif ?>
 
                             <?php if ($module->enableGeneratingPassword == false): ?>
                                 <?= $form->field($model, 'password')->passwordInput() ?>
@@ -64,39 +76,47 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     </div>
 
-                    <div class="row">
+	                <? if(Yii::$app->getModule('userextended')->captcha): ?>
 
-                        <div class="col-md-12">
+                        <div class="row">
 
-                            <?= $form->field($model, 'captcha')->widget(Captcha::className(), [
-                                'captchaAction' => ['/site/captcha'],
-                                'options' => ['class' => 'form-control'],
-                                'template' => '<div class="row"><div class="col-md-6">{input}</div><div class="col-md-6">{image}</div></div>'
-                            ]) ?>
+                            <div class="col-md-12">
 
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-md-12">
-
-                            <div class="col-md-3">
-
-                                <?= $form->field($model, 'terms')->checkbox(['uncheck' => false, 'checked' => true]) ?>
-
-                            </div>
-
-                            <div class="col-md-9">
-
-                                <?= \Yii::t('user', 'By clicking Register, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
+                                <?= $form->field($model, 'captcha')->widget(Captcha::className(), [
+                                    'captchaAction' => ['/site/captcha'],
+                                    'options' => ['class' => 'form-control'],
+                                    'template' => '<div class="row"><div class="col-md-6">{input}</div><div class="col-md-6">{image}</div></div>'
+                                ]) ?>
 
                             </div>
 
                         </div>
 
-                    </div>
+	                <? endif ?>
+
+                    <? if(Yii::$app->getModule('userextended')->terms): ?>
+
+                        <div class="row">
+
+                            <div class="col-md-12">
+
+                                <div class="col-md-3">
+
+                                    <?= $form->field($model, 'terms')->checkbox(['uncheck' => false, 'checked' => true]) ?>
+
+                                </div>
+
+                                <div class="col-md-9">
+
+                                    <?= \Yii::t('user', 'By clicking Register, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    <? endif ?>
 
                     <div class="row">
 
@@ -117,7 +137,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
 
                 <?php ActiveForm::end(); ?>
+
             </div>
+
         </div>
+
     </div>
+
 </div>

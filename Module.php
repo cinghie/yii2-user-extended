@@ -33,14 +33,34 @@ class Module extends BaseUser
     public $avatarURL  = '@web/img/users/';
 
 	/**
+	 * @var boolean birthday
+	 */
+	public $birthday = true;
+
+	/**
+	 * @var boolean firstname
+	 */
+	public $firstname = true;
+
+	/**
+	 * @var boolean lastname
+	 */
+	public $lastname = true;
+
+	/**
+	 * @var boolean Captcha
+	 */
+	public $captcha = true;
+
+	/**
 	 * @var boolean onlyEmail
 	 */
 	public $onlyEmail = false;
 
-    /**
-     * @var boolean Captcha
-     */
-    public $captcha = true;
+	/**
+	 * @var boolean onlyEmail
+	 */
+	public $terms = true;
 
     /**
      * @var boolean showAlert in views

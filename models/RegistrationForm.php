@@ -39,12 +39,31 @@ class RegistrationForm extends BaseRegistrationForm
     public function rules()
     {
         $rules = parent::rules();
-        $rules[] = [['firstname','lastname','birthday','terms'], 'required'];
-        $rules[] = [['firstname','lastname'], 'string', 'max' => 255];
-        $rules[] = [['birthday'], 'safe'];
-        $rules[] = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
-        $rules[] = ['captcha', 'captcha'];
-        $rules[] = ['terms', 'required', 'requiredValue' => true, 'message' => 'You must agree to the terms and conditions'];
+
+	    if(\Yii::$app->getModule('userextended')->birthday) {
+		    $rules[] = ['birthday', 'required'];
+		    $rules[] = ['birthday', 'safe'];
+		    $rules[] = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
+	    }
+
+	    if(\Yii::$app->getModule('userextended')->captcha) {
+		    $rules[] = ['captcha', 'required'];
+		    $rules[] = ['captcha', 'captcha'];
+	    }
+
+	    if(\Yii::$app->getModule('userextended')->firstname) {
+		    $rules[] = ['firstname', 'required'];
+		    $rules[] = ['firstname', 'string', 'max' => 255];
+	    }
+
+	    if(\Yii::$app->getModule('userextended')->lastname) {
+		    $rules[] = ['lastname', 'required'];
+		    $rules[] = ['lastname', 'string', 'max' => 255];
+	    }
+
+	    if(\Yii::$app->getModule('userextended')->terms) {
+		    $rules[] = ['terms', 'required', 'requiredValue' => true, 'message' => \Yii::t('userextended','You must agree to the terms and conditions')];
+	    }
 
         return $rules;
     }
@@ -77,13 +96,37 @@ class RegistrationForm extends BaseRegistrationForm
         ]);
 
         $profile = \Yii::createObject(Profile::className());
-        $profile->setAttributes([
-            'name'      => ucwords(strtolower($this->firstname))." ".ucwords(strtolower($this->lastname)),
-            'firstname' => ucwords(strtolower($this->firstname)),
-            'lastname'  => ucwords(strtolower($this->lastname)),
-            'birthday'  => $this->birthday,
-            'terms'     => $this->terms,
-        ]);
+
+	    if(\Yii::$app->getModule('userextended')->birthday) {
+		    $profile->setAttributes([
+			    'birthday'  => $this->birthday
+		    ]);
+	    }
+
+	    if(\Yii::$app->getModule('userextended')->firstname) {
+		    $profile->setAttributes([
+			    'firstname' => ucwords(strtolower($this->firstname))
+		    ]);
+	    }
+
+	    if(\Yii::$app->getModule('userextended')->lastname) {
+		    $profile->setAttributes([
+			    'lastname'  => ucwords(strtolower($this->lastname))
+		    ]);
+	    }
+
+	    if(\Yii::$app->getModule('userextended')->firstname && \Yii::$app->getModule('userextended')->lastname) {
+		    $profile->setAttributes([
+			    'name'      => ucwords(strtolower($this->firstname))." ".ucwords(strtolower($this->lastname))
+		    ]);
+	    }
+
+	    if(\Yii::$app->getModule('userextended')->terms) {
+		    $profile->setAttributes([
+			    'terms' => $this->terms
+		    ]);
+	    }
+
         $user->setProfile($profile);
     }
 

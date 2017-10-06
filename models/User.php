@@ -50,6 +50,8 @@ class User extends BaseUser
 			$this->username = $this->email;
 			return parent::beforeValidate();
 		}
+
+		return parent::beforeValidate();
 	}
 
     /**
