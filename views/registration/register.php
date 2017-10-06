@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="panel-body">
 
-                <?= $this->render('_one_column', [
+                <?= $this->render(Yii::$app->getModule('userextended')->templateRegister, [
                     'model' => $model,
                     'module' => $module
                 ]) ?>

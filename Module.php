@@ -62,6 +62,11 @@ class Module extends BaseUser
 	 */
 	public $terms = true;
 
+	/**
+	 * @var boolean showAlert in views
+	 */
+	public $templateRegister = '_two_column';
+
     /**
      * @var boolean showAlert in views
      */
