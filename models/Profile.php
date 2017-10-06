@@ -12,10 +12,8 @@
 
 namespace cinghie\userextended\models;
 
-use Yii;
-use yii\web\UploadedFile;
-
 use dektrium\user\models\Profile as BaseProfile;
+use yii\web\UploadedFile;
 
 class Profile extends BaseProfile
 {
@@ -24,25 +22,28 @@ class Profile extends BaseProfile
     {
         $scenarios = parent::scenarios();
 
-        // add firstname to scenarios
-        $scenarios['create'][]   = 'firstname';
-        $scenarios['update'][]   = 'firstname';
-        $scenarios['register'][] = 'firstname';
+	    if(\Yii::$app->getModule('userextended')->birthday) {
+		    $scenarios['create'][]   = 'birthday';
+		    $scenarios['update'][]   = 'birthday';
+		    $scenarios['register'][] = 'birthday';
+	    }
 
-        // add lastname to scenarios
-        $scenarios['create'][]   = 'lastname';
-        $scenarios['update'][]   = 'lastname';
-        $scenarios['register'][] = 'lastname';
+	    if(\Yii::$app->getModule('userextended')->firstname) {
+		    $scenarios['create'][]   = 'firstname';
+		    $scenarios['update'][]   = 'firstname';
+		    $scenarios['register'][] = 'firstname';
+	    }
 
-        // add birthday to scenarios
-        $scenarios['create'][]   = 'birthday';
-        $scenarios['update'][]   = 'birthday';
-        $scenarios['register'][] = 'birthday';
+	    if(\Yii::$app->getModule('userextended')->lastname) {
+		    $scenarios['create'][]   = 'lastname';
+		    $scenarios['update'][]   = 'lastname';
+		    $scenarios['register'][] = 'lastname';
+	    }
 
         // add avatar to scenarios
         $scenarios['create'][]   = 'avatar';
         $scenarios['update'][]   = 'avatar';
-        $scenarios['register'][]   = 'avatar';
+        $scenarios['register'][] = 'avatar';
 
         return $scenarios;
     }
@@ -51,21 +52,20 @@ class Profile extends BaseProfile
     {
         $rules = parent::rules();
 
-        // add firstname rules
-        $rules['firstnameRequired'] = ['firstname', 'required'];
-        $rules['firstnameLength']   = ['firstname', 'string', 'max' => 255];
+	    if(\Yii::$app->getModule('userextended')->birthday) {
+		    $rules['birthdayRequired']  = ['birthday', 'required'];
+		    $rules['birthdayLength']    = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
+	    }
 
-        // add lastname rules
-        $rules['lastnameRequired']  = ['lastname', 'required'];
-        $rules['lastnameLength']    = ['lastname', 'string', 'max' => 255];
+	    if(\Yii::$app->getModule('userextended')->firstname) {
+		    $rules['firstnameRequired'] = ['firstname', 'required'];
+		    $rules['firstnameLength']   = ['firstname', 'string', 'max' => 255];
+	    }
 
-        // add birthday rules
-        $rules['birthdayRequired']  = ['birthday', 'required'];
-        $rules['birthdayLength']    = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
-
-        // add terms checkbox
-        $rules['termsRequired']     = ['terms', 'required', 'requiredValue' => true, 'message' => 'You must agree to the terms and conditions'];
-        $rules['termsLength']       = ['terms', 'integer'];
+	    if(\Yii::$app->getModule('userextended')->lastname) {
+		    $rules['lastnameRequired'] = ['lastname', 'required'];
+		    $rules['lastnameLength']   = ['lastname', 'string', 'max' => 255];
+	    }
 
         return $rules;
     }
