@@ -20,6 +20,7 @@ class RegistrationForm extends BaseRegistrationForm
 
     /**
      * Add a new fields
+     *
      * string name
      * string firstname
      * string lastname
@@ -41,24 +42,26 @@ class RegistrationForm extends BaseRegistrationForm
         $rules = parent::rules();
 
 	    if(\Yii::$app->getModule('userextended')->birthday) {
-		    $rules[] = ['birthday', 'required'];
 		    $rules[] = ['birthday', 'safe'];
 		    $rules[] = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
+		    $rules[] = ['birthday', 'required'];
 	    }
 
 	    if(\Yii::$app->getModule('userextended')->captcha) {
-		    $rules[] = ['captcha', 'required'];
 		    $rules[] = ['captcha', 'captcha'];
+		    $rules[] = ['captcha', 'required'];
 	    }
 
 	    if(\Yii::$app->getModule('userextended')->firstname) {
-		    $rules[] = ['firstname', 'required'];
+		    $rules[] = ['firstname', 'trim'];
 		    $rules[] = ['firstname', 'string', 'max' => 255];
+		    $rules[] = ['firstname', 'required'];
 	    }
 
 	    if(\Yii::$app->getModule('userextended')->lastname) {
-		    $rules[] = ['lastname', 'required'];
+		    $rules[] = ['lastname', 'trim'];
 		    $rules[] = ['lastname', 'string', 'max' => 255];
+		    $rules[] = ['lastname', 'required'];
 	    }
 
 	    if(\Yii::$app->getModule('userextended')->terms) {
@@ -99,7 +102,7 @@ class RegistrationForm extends BaseRegistrationForm
 
 	    if(\Yii::$app->getModule('userextended')->birthday) {
 		    $profile->setAttributes([
-			    'birthday'  => $this->birthday
+			    'birthday' => $this->birthday
 		    ]);
 	    }
 
@@ -111,13 +114,13 @@ class RegistrationForm extends BaseRegistrationForm
 
 	    if(\Yii::$app->getModule('userextended')->lastname) {
 		    $profile->setAttributes([
-			    'lastname'  => ucwords(strtolower($this->lastname))
+			    'lastname' => ucwords(strtolower($this->lastname))
 		    ]);
 	    }
 
 	    if(\Yii::$app->getModule('userextended')->firstname && \Yii::$app->getModule('userextended')->lastname) {
 		    $profile->setAttributes([
-			    'name'      => ucwords(strtolower($this->firstname))." ".ucwords(strtolower($this->lastname))
+			    'name' => ucwords(strtolower($this->firstname))." ".ucwords(strtolower($this->lastname))
 		    ]);
 	    }
 

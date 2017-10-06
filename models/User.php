@@ -20,7 +20,9 @@ use yii\db\Query;
 class User extends BaseUser
 {
 
-    /** @inheritdoc */
+    /**
+     * @inheritdoc
+     */
     public function attributeLabels()
     {
         return [

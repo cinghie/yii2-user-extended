@@ -17,6 +17,4 @@ use dektrium\user\models\SettingsForm as BaseSettingsForm;
 class SettingsForm extends BaseSettingsForm
 {
 
-
-
 }

@@ -19,6 +19,7 @@ use yii\helpers\ArrayHelper;
 
 class UserSearch extends BaseUserSearch
 {
+
     /** @var int */
     public $id;
 
@@ -46,7 +47,9 @@ class UserSearch extends BaseUserSearch
     /** @var string */
     public $rule;
 
-    /** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
     public function rules()
     {
         return [
@@ -56,7 +59,9 @@ class UserSearch extends BaseUserSearch
         ];
     }
 
-    /** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
     public function attributeLabels()
     {
         return [

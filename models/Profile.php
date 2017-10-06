@@ -18,6 +18,9 @@ use yii\web\UploadedFile;
 class Profile extends BaseProfile
 {
 
+	/**
+	 * @inheritdoc
+	 */
     public function scenarios()
     {
         $scenarios = parent::scenarios();
@@ -48,29 +51,37 @@ class Profile extends BaseProfile
         return $scenarios;
     }
 
+	/**
+	 * @inheritdoc
+	 */
     public function rules()
     {
         $rules = parent::rules();
 
 	    if(\Yii::$app->getModule('userextended')->birthday) {
-		    $rules['birthdayRequired']  = ['birthday', 'required'];
-		    $rules['birthdayLength']    = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
+		    $rules['birthdayLength'] = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
+		    $rules['birthdayRequired'] = ['birthday', 'required'];
+		    $rules['birthdayTrim'] = ['birthday', 'trim'];
 	    }
 
 	    if(\Yii::$app->getModule('userextended')->firstname) {
-		    $rules['firstnameRequired'] = ['firstname', 'required'];
 		    $rules['firstnameLength']   = ['firstname', 'string', 'max' => 255];
+		    $rules['firstnameRequired'] = ['firstname', 'required'];
+		    $rules['firstnameTrim'] = ['firstname', 'trim'];
 	    }
 
 	    if(\Yii::$app->getModule('userextended')->lastname) {
 		    $rules['lastnameRequired'] = ['lastname', 'required'];
-		    $rules['lastnameLength']   = ['lastname', 'string', 'max' => 255];
+		    $rules['lastnameLength'] = ['lastname', 'string', 'max' => 255];
+		    $rules['lastnameTrim'] = ['lastname', 'trim'];
 	    }
 
         return $rules;
     }
 
-    /** @inheritdoc */
+    /**
+     * @inheritdoc
+     */
     public function attributeLabels()
     {
         return [
@@ -167,6 +178,11 @@ class Profile extends BaseProfile
         return true;
     }
 
+    /**
+     * Get image form Social
+     *
+     * @return \external_url
+     */
     public function getSocialImage()
     {
         $imageURL = "";
