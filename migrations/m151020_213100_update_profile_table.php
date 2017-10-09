@@ -10,8 +10,8 @@
  * @version 0.6.0
  */
 
+use cinghie\traits\migrations\Migration;
 use yii\db\Schema;
-use yii\db\Migration;
 
 class m151020_213100_update_profile_table extends Migration
 {
