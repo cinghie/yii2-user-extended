@@ -13,22 +13,39 @@
 namespace cinghie\userextended\controllers;
 
 use Yii;
+use cinghie\userextended\models\UserSearch;
+use dektrium\user\controllers\AdminController as BaseController;
 use yii\filters\AccessControl;
 use yii\filters\AccessRule;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 
-use cinghie\userextended\models\UserSearch;
-use dektrium\user\controllers\AdminController as BaseController;
-
 class AdminController extends BaseController
 {
+
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
         return [
+	        'access' => [
+		        'class' => AccessControl::className(),
+		        'ruleConfig' => [
+			        'class' => AccessRule::className(),
+		        ],
+		        'rules' => [
+			        [
+				        'allow' => true,
+				        'actions' => ['switch'],
+				        'roles' => ['@'],
+			        ],
+			        [
+				        'allow' => true,
+				        'roles' => ['admin'],
+			        ],
+		        ],
+	        ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -37,23 +54,6 @@ class AdminController extends BaseController
                     'resend-password' => ['post'],
                     'block'           => ['post'],
                     'switch'          => ['post'],
-                ],
-            ],
-            'access' => [
-                'class' => AccessControl::className(),
-                'ruleConfig' => [
-                    'class' => AccessRule::className(),
-                ],
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => ['switch'],
-                        'roles' => ['@'],
-                    ],
-                    [
-                        'allow' => true,
-                        'roles' => ['admin'],
-                    ],
                 ],
             ]
         ];
@@ -80,7 +80,6 @@ class AdminController extends BaseController
      * Updates an existing profile.
      *
      * @param int $id
-     *
      * @return mixed
      */
     public function actionUpdateProfile($id)

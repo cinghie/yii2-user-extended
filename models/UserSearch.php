@@ -12,6 +12,7 @@
 
 namespace cinghie\userextended\models;
 
+use cinghie\traits\ViewsHelpersTrait;
 use dektrium\user\models\UserSearch as BaseUserSearch;
 use yii\data\ActiveDataProvider;
 use yii\db\Query;
@@ -19,6 +20,8 @@ use yii\helpers\ArrayHelper;
 
 class UserSearch extends BaseUserSearch
 {
+
+	use ViewsHelpersTrait;
 
     /** @var int */
     public $id;
@@ -116,8 +119,8 @@ class UserSearch extends BaseUserSearch
             return $dataProvider;
         }
 
-        $model = $query->modelClass;
-        $table_name = $model->tableName();
+	    $table_name = $query->modelClass;
+	    $table_name = $table_name::tableName();
 
         if ($this->created_at !== null) {
             $date = strtotime($this->created_at);

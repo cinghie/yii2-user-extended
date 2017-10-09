@@ -16,6 +16,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->title = \Yii::t('userextended', 'Manage permissions');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('userextended', 'Manage users'), 'url' => ['/user/admin/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
