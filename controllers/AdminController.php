@@ -147,7 +147,7 @@ class AdminController extends BaseController
      *
      * @return mixed
      */
-    public function actionDeleteMultiple()
+    public function actionDeletemultiple()
     {
         $ids = \Yii::$app->request->post('ids');
 
