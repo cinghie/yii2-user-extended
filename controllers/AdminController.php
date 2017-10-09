@@ -13,6 +13,7 @@
 namespace cinghie\userextended\controllers;
 
 use Yii;
+use cinghie\userextended\models\Assignment;
 use cinghie\userextended\models\UserSearch;
 use dektrium\user\controllers\AdminController as BaseController;
 use yii\filters\AccessControl;
@@ -155,8 +156,7 @@ class AdminController extends BaseController
             return;
         }
 
-        foreach ($ids as $id)
-        {
+        foreach ($ids as $id) {
             $this->findModel($id)->delete();
         }
 
@@ -215,8 +215,7 @@ class AdminController extends BaseController
             return;
         }
 
-        foreach ($ids as $id)
-        {
+        foreach ($ids as $id) {
             $model = $this->findModel($id);
 
             if($model->getIsBlocked()) {
