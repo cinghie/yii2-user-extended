@@ -12,9 +12,9 @@
 
 namespace cinghie\userextended\models;
 
+use Yii;
 use dektrium\rbac\models\Assignment as BaseAssignment;
 use yii\db\ActiveQuery;
-use Yii;
 
 class Assignment extends BaseAssignment
 {
