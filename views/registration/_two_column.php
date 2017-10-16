@@ -16,110 +16,120 @@ use yii\helpers\Html;
 
 ?>
 
-<?php $form = ActiveForm::begin([
-	'id' => 'registration-form',
-	'enableAjaxValidation' => false,
-	'enableClientValidation' => true,
-]); ?>
+    <div class="col-md-8 col-md-offset-2">
 
-	<div class="col-md-12">
+        <div class="panel panel-default">
 
-		<div class="row">
+            <div class="panel-heading">
+                <h3 class="panel-title"><?= Html::encode($this->title) ?></h3>
+            </div>
 
-			<div class="col-md-6">
+            <div class="panel-body">
 
-				<?php if(Yii::$app->getModule('userextended')->firstname): ?>
+	            <?php $form = ActiveForm::begin([
+		            'id' => 'registration-form',
+		            'enableAjaxValidation' => false,
+		            'enableClientValidation' => true,
+	            ]); ?>
 
-					<?= $form->field($model, 'firstname') ?>
+                <div class="col-md-12 form-register">
 
-				<?php endif ?>
+                    <div class="row form-register-fields">
 
-				<?= $form->field($model, 'email') ?>
+                        <div class="col-md-6">
 
-				<?= $form->field($model, 'username') ?>
+				            <?php if(Yii::$app->getModule('userextended')->firstname): ?>
 
-			</div>
+					            <?= $form->field($model, 'firstname') ?>
 
-			<div class="col-md-6">
+				            <?php endif ?>
 
-				<?php if(Yii::$app->getModule('userextended')->lastname): ?>
+				            <?= $form->field($model, 'email') ?>
 
-					<?= $form->field($model, 'lastname') ?>
+				            <?= $form->field($model, 'username') ?>
 
-				<?php endif ?>
+                        </div>
 
-				<?php if(Yii::$app->getModule('userextended')->birthday): ?>
+                        <div class="col-md-6">
 
-					<?= $form->field($model, 'birthday') ?>
+				            <?php if(Yii::$app->getModule('userextended')->lastname): ?>
 
-				<?php endif ?>
+					            <?= $form->field($model, 'lastname') ?>
 
-				<?php if ($module->enableGeneratingPassword == false): ?>
-					<?= $form->field($model, 'password')->passwordInput() ?>
-				<?php endif ?>
+				            <?php endif ?>
 
-			</div>
+				            <?php if(Yii::$app->getModule('userextended')->birthday): ?>
 
-		</div>
+					            <?= $form->field($model, 'birthday') ?>
 
-		<?php if(Yii::$app->getModule('userextended')->captcha): ?>
+				            <?php endif ?>
 
-			<div class="row">
+				            <?php if ($module->enableGeneratingPassword == false): ?>
+					            <?= $form->field($model, 'password')->passwordInput() ?>
+				            <?php endif ?>
 
-				<div class="col-md-12">
+                        </div>
 
-					<?= $form->field($model, 'captcha')->widget(Captcha::className(), [
-						'captchaAction' => ['/site/captcha'],
-						'options' => ['class' => 'form-control'],
-						'template' => '<div class="row"><div class="col-md-6">{input}</div><div class="col-md-6">{image}</div></div>'
-					]) ?>
+                    </div>
 
-				</div>
+		            <?php if(Yii::$app->getModule('userextended')->captcha): ?>
 
-			</div>
+                        <div class="row form-register-captcha">
 
-		<?php endif ?>
+                            <div class="col-md-12">
 
-		<?php if(Yii::$app->getModule('userextended')->terms): ?>
+					            <?= $form->field($model, 'captcha')->widget(Captcha::className(), [
+						            'captchaAction' => ['/site/captcha'],
+						            'options' => ['class' => 'form-control'],
+						            'template' => '<div class="row"><div class="col-md-6">{input}</div><div class="col-md-6">{image}</div></div>'
+					            ]) ?>
 
-			<div class="row">
+                            </div>
 
-				<div class="col-md-12">
+                        </div>
 
-					<div class="col-md-3">
+		            <?php endif ?>
 
-						<?= $form->field($model, 'terms')->checkbox(['uncheck' => false, 'checked' => true]) ?>
+		            <?php if(Yii::$app->getModule('userextended')->terms): ?>
 
-					</div>
+                        <div class="row form-register-terms">
 
-					<div class="col-md-9">
+                            <div class="col-md-12">
 
-						<?= \Yii::t('userextended', 'By clicking I Agree, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
+                                <div class="col-md-4">
 
-					</div>
+						            <?= $form->field($model, 'terms')->checkbox(['uncheck' => false, 'checked' => true]) ?>
 
-				</div>
+                                </div>
 
-			</div>
+                                <div class="col-md-8">
 
-		<?php endif ?>
+						            <?= \Yii::t('userextended', 'By clicking I Agree, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
 
-		<div class="row">
+                                </div>
 
-			<div class="col-md-6">
+                            </div>
 
-				<?= Html::submitButton(\Yii::t('user', 'Register'), ['class' => 'btn btn-success btn-block btn-lg']) ?>
+                        </div>
 
-			</div>
+		            <?php endif ?>
 
-			<div class="col-md-6">
+                    <div class="row form-register-buttons">
 
-				<?= Html::a(\Yii::t('user', 'Login'), ['/user/login'], ['class' => 'btn btn-primary btn-block btn-lg']) ?>
+                        <div class="col-md-12">
 
-			</div>
+				            <?= Html::submitButton(\Yii::t('userextended', 'Register'), ['class' => 'btn btn-success btn-block btn-lg']) ?>
 
-		</div>
+                        </div>
 
-	</div>
+                    </div>
 
-<?php ActiveForm::end(); ?>
+                </div>
+
+	            <?php ActiveForm::end(); ?>
+
+            </div>
+
+        </div>
+
+    </div>

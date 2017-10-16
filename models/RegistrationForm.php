@@ -77,12 +77,12 @@ class RegistrationForm extends BaseRegistrationForm
     public function attributeLabels()
     {
         $labels = parent::attributeLabels();
-        $labels['name']      = \Yii::t('user', 'Name');
-        $labels['firstname'] = \Yii::t('user', 'Firstname');
-        $labels['lastname']  = \Yii::t('user', 'Lastname');
-        $labels['birthday']  = \Yii::t('user', 'Birthday');
-        $labels['terms']     = \Yii::t('user', 'I Agree');
-        $labels['captcha']   = \Yii::t('user', 'Captcha');
+        $labels['name']      = \Yii::t('userextended', 'Name');
+        $labels['firstname'] = \Yii::t('userextended', 'Firstname');
+        $labels['lastname']  = \Yii::t('userextended', 'Lastname');
+        $labels['birthday']  = \Yii::t('userextended', 'Birthday');
+        $labels['terms']     = \Yii::t('userextended', 'I Agree');
+        $labels['captcha']   = \Yii::t('userextended', 'Captcha');
 
         return $labels;
     }

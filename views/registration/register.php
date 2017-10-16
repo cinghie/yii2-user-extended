@@ -18,25 +18,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="row">
 
-    <div class="col-md-8 col-md-offset-2">
-
-        <div class="panel panel-default">
-
-            <div class="panel-heading">
-                <h3 class="panel-title"><?= Html::encode($this->title) ?></h3>
-            </div>
-
-            <div class="panel-body">
-
-                <?= $this->render(Yii::$app->getModule('userextended')->templateRegister, [
-                    'model' => $model,
-                    'module' => $module
-                ]) ?>
-
-            </div>
-
-        </div>
-
-    </div>
+	<?= $this->render(Yii::$app->getModule('userextended')->templateRegister, [
+		'model' => $model,
+		'module' => $module
+	]) ?>
 
 </div>
