@@ -94,19 +94,15 @@ use yii\helpers\Html;
 
                         <div class="row form-register-terms">
 
-                            <div class="col-md-12">
+                            <div class="col-md-4">
 
-                                <div class="col-md-4">
+		                        <?= $form->field($model, 'terms')->checkbox(['uncheck' => false, 'checked' => true]) ?>
 
-						            <?= $form->field($model, 'terms')->checkbox(['uncheck' => false, 'checked' => true]) ?>
+                            </div>
 
-                                </div>
+                            <div class="col-md-8">
 
-                                <div class="col-md-8">
-
-						            <?= \Yii::t('userextended', 'By clicking I Agree, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
-
-                                </div>
+		                        <?= \Yii::t('userextended', 'By clicking I Agree, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
 
                             </div>
 
