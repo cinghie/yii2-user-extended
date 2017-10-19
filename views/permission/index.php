@@ -63,10 +63,6 @@ $this->params['breadcrumbs'][] = $this->title;
     'responsive' => true,
     'hover' => true,
     'panel' => [
-        'before' => '<span style="margin-right: 5px;">'.
-            Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('userextended', 'New'),
-                ['create'], ['class' => 'btn btn-success']
-            ).'</span>',
         'heading'    => '<h3 class="panel-title"><i class="fa fa-user-secret"></i></h3>',
         'type'       => 'success',
         'showFooter' => false
