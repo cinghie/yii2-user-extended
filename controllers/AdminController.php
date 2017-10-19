@@ -23,8 +23,7 @@ use yii\helpers\Url;
 
 class AdminController extends BaseController
 {
-
-    /**
+	/**
      * @inheritdoc
      */
     public function behaviors()
@@ -50,11 +49,14 @@ class AdminController extends BaseController
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete'          => ['post'],
-                    'confirm'         => ['post'],
-                    'resend-password' => ['post'],
-                    'block'           => ['post'],
-                    'switch'          => ['post'],
+                    'activemultiple'   => ['post'],
+                    'deactivemultiple' => ['post'],
+                    'delete'           => ['post'],
+                    'deletemultiple'   => ['post'],
+                    'confirm'          => ['post'],
+                    'resend-password'  => ['post'],
+                    'block'            => ['post'],
+                    'switch'           => ['post'],
                 ],
             ]
         ];
