@@ -137,27 +137,32 @@ in your SiteController set in actions() function
 Features
 -----------------
 
-Add new fields to user profile
-<ul>
-  <li>firstname</li>
-  <li>lastname</li>
-  <li>name (firstname + lastname)</li>  
-  <li>birthday</li>
-  <li>terms</li>
-  <li>captcha</li>
-  <li>avatar</li>  
-  <ol>
-	<li>The avatar can be uploaded</li>
-	<li>The avatar can be updated</li>
-	<li>On update avatar old image was deleted</li>
-  </ol>
-</ul>
-
+<ol>
+    <li>Add new fields to user profile (optional params)
+        <ul>
+            <li>firstname</li>
+            <li>lastname</li>
+            <li>name (firstname + lastname)</li>  
+            <li>birthday</li>
+            <li>terms</li>
+            <li>captcha</li>
+            <li>avatar:
+                <ol>
+                    <li>The avatar can be uploaded</li>
+                    <li>The avatar can be updated</li>
+                    <li>On update avatar old image was deleted</li>
+                </ol>
+            </li>
+        </ul>
+    </li>
+    <li>Add default Role on User Registration</li>
+</ol>
 
 Changelog
 -----------------
 
 <ul>
+  <li>Version 0.6.1 - Adding User field optional on config, Adding default Role on User Registration, Improve Views</li>
   <li>Version 0.6.0 - Adding User Rule select in Users index, Fix Updating Avatar in Profile Admin</li>
   <li>Version 0.5.9 - Adding option socialLogin to Login View, Update Dipendences</li>
   <li>Version 0.5.8 - Fixing loadAttributes()</li>
