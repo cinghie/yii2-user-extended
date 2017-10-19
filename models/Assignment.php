@@ -12,7 +12,6 @@
 
 namespace cinghie\userextended\models;
 
-use Yii;
 use dektrium\rbac\models\Assignment as BaseAssignment;
 use yii\db\ActiveQuery;
 
@@ -20,39 +19,39 @@ class Assignment extends BaseAssignment
 {
 
 	/**
-     * @inheritdoc
-     *
-     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
-     */
-    public static function find()
-    {
-        return \Yii::createObject(ActiveQuery::className(), [get_called_class()]);
-    }
+	 * @inheritdoc
+	 *
+	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+	 */
+	public static function find()
+	{
+		return \Yii::createObject(ActiveQuery::className(), [get_called_class()]);
+	}
 
-    /**
-     * Declares the name of the database table associated with this AR class.
-     * By default this method returns the class name as the table name by calling [[Inflector::camel2id()]]
-     * with prefix [[Connection::tablePrefix]]. For example if [[Connection::tablePrefix]] is 'tbl_',
-     * 'Customer' becomes 'tbl_customer', and 'OrderItem' becomes 'tbl_order_item'. You may override this method
-     * if the table is not named after this convention.
-     *
-     * @return string the table name
-     */
-    public static function tableName()
-    {
-        return '{{%auth_assignment}}';
-    }
+	/**
+	 * Declares the name of the database table associated with this AR class.
+	 * By default this method returns the class name as the table name by calling [[Inflector::camel2id()]]
+	 * with prefix [[Connection::tablePrefix]]. For example if [[Connection::tablePrefix]] is 'tbl_',
+	 * 'Customer' becomes 'tbl_customer', and 'OrderItem' becomes 'tbl_order_item'. You may override this method
+	 * if the table is not named after this convention.
+	 *
+	 * @return string the table name
+	 */
+	public static function tableName()
+	{
+		return '{{%auth_assignment}}';
+	}
 
-    /**
-     * Returns the database connection used by this AR class.
-     * By default, the "db" application component is used as the database connection.
-     * You may override this method if you want to use a different database connection.
-     *
-     * @return Connection the database connection used by this AR class.
-     */
-    public static function getDb()
-    {
-        return \Yii::$app->getDb();
-    }
+	/**
+	 * Returns the database connection used by this AR class.
+	 * By default, the "db" application component is used as the database connection.
+	 * You may override this method if you want to use a different database connection.
+	 *
+	 * @return \yii\db\Connection the database connection used by this AR class.
+	 */
+	public static function getDb()
+	{
+		return \Yii::$app->getDb();
+	}
 
 }

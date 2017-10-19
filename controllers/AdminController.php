@@ -12,8 +12,6 @@
 
 namespace cinghie\userextended\controllers;
 
-use Yii;
-use cinghie\userextended\models\Assignment;
 use cinghie\userextended\models\UserSearch;
 use dektrium\user\controllers\AdminController as BaseController;
 use yii\filters\AccessControl;

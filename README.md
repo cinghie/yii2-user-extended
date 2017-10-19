@@ -78,6 +78,14 @@ Set on your configuration file, in modules section
         'class' => 'cinghie\userextended\Module',
         'avatarPath' => '@webroot/img/users/', // Path to your avatar files
         'avatarURL' => '@web/img/users/', // Url to your avatar files
+        'defaultRole' => '',
+        'captcha' => true,
+        'birthday' => true,
+        'firstname' => true,
+        'lastname' => true,
+        'onlyEmail' => false,
+        'templateRegister' => '_two_column',
+        'terms' => true,
         'showTitles' => true, // Set false in adminLTE
     ],
 ]

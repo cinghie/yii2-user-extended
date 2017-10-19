@@ -33,6 +33,11 @@ class Module extends BaseUser
     public $avatarURL  = '@web/img/users/';
 
 	/**
+	 * @var string default User Role
+	 */
+	public $defaultRole = '';
+
+	/**
 	 * @var boolean birthday
 	 */
 	public $birthday = true;

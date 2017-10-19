@@ -12,7 +12,7 @@
 
 namespace cinghie\userextended\models;
 
-use dektrium\rbac\models\Assignment;
+use Yii;
 use dektrium\user\models\RegistrationForm as BaseRegistrationForm;
 
 class RegistrationForm extends BaseRegistrationForm
@@ -21,11 +21,11 @@ class RegistrationForm extends BaseRegistrationForm
     /**
      * Add a new fields
      *
-     * string name
-     * string firstname
-     * string lastname
-     * integer terms
-     * string captcha
+     * string $name
+     * string $firstname
+     * string $lastname
+     * integer $terms
+     * string $captcha
      */
     public $name;
     public $firstname;
@@ -87,9 +87,46 @@ class RegistrationForm extends BaseRegistrationForm
         return $labels;
     }
 
-    /**
-     * @inheritdoc
-     */
+	/**
+	 * Registers a new user account. If registration was successful it will set flash message.
+	 *
+	 * @return bool
+	 */
+	public function register()
+	{
+		if (!$this->validate()) {
+			return false;
+		}
+
+		/** @var User $user */
+		$user = Yii::createObject(User::className());
+		$user->setScenario('register');
+		$this->loadAttributes($user);
+
+		if (!$user->register()) {
+			return false;
+		}
+
+		if(\Yii::$app->getModule('userextended')->defaultRole !== '') {
+			$user->setRole(Yii::$app->getModule('userextended')->defaultRole);
+		}
+
+		Yii::$app->session->setFlash(
+			'info',
+			Yii::t(
+				'user',
+				'Your account has been created and a message with further instructions has been sent to your email'
+			)
+		);
+
+		return true;
+	}
+
+	/**
+	 * @inheritdoc
+	 *
+	 * @throws \yii\base\InvalidConfigException
+	 */
     protected function loadAttributes(\dektrium\user\models\User $user)
     {
         $user->setAttributes([
@@ -98,7 +135,7 @@ class RegistrationForm extends BaseRegistrationForm
             'password' => $this->password,
         ]);
 
-        $profile = \Yii::createObject(Profile::className());
+	    $profile = \Yii::createObject(Profile::className());
 
 	    if(\Yii::$app->getModule('userextended')->birthday) {
 		    $profile->setAttributes([

@@ -13,7 +13,7 @@
 namespace cinghie\userextended\models;
 
 use Yii;
-use cinghie\userextended\models\Assignments;
+use cinghie\userextended\models\Assignment;
 use dektrium\user\models\User as BaseUser;
 use yii\db\Query;
 
@@ -45,6 +45,7 @@ class User extends BaseUser
 	 * If onlyEmail is true, username is email
 	 *
 	 * @return bool
+	 * @throws \Exception
 	 */
 	public function beforeValidate()
 	{
@@ -55,7 +56,7 @@ class User extends BaseUser
 		return parent::beforeValidate();
 	}
 
-    /**
+	/**
      * @return \yii\db\ActiveQuery
      */
     public function getProfile()
@@ -64,7 +65,7 @@ class User extends BaseUser
     }
 
     /**
-     * @return user roles
+     * @return \yii\db\ActiveQuery
      */
     public function getRoles()
     {
@@ -72,15 +73,32 @@ class User extends BaseUser
     }
 
     /**
-     * @return user roles from userid
+     * @return \yii\rbac\Role[]
      */
     public function getRulesByUserID($userid)
     {
         return \Yii::$app->authManager->getRolesByUser($userid);
     }
 
+	/**
+	 * Set Role to User
+	 *
+	 * @param $role
+	 */
+    public function setRole($role)
+    {
+	    $auth = Yii::$app->authManager;
+	    $roleObject = $auth->getRole('registered');
+
+	    if (!$roleObject) {
+		    throw new \yii\base\InvalidParamException ("There is no role \"$role\".");
+	    }
+
+	    $auth->assign($roleObject, $this->id);
+    }
+
     /**
-     * @return html roles for roles column in admin index
+     * @return [] roles for roles column in admin index
      */
     public function getRolesHTML()
     {
@@ -89,9 +107,8 @@ class User extends BaseUser
               ->from('{{%auth_assignment}}')
               ->where('user_id='.$this->id);
         $command = $query->createCommand();
-        $roles   = $command->queryAll();
 
-        return $roles;
+        return $command->queryAll();
     }
 
 }
