@@ -12,6 +12,8 @@
 
 namespace cinghie\userextended\controllers;
 
+use cinghie\userextended\models\Profile;
+use cinghie\userextended\models\User;
 use cinghie\userextended\models\UserSearch;
 use dektrium\user\controllers\AdminController as BaseController;
 use yii\filters\AccessControl;
@@ -58,11 +60,13 @@ class AdminController extends BaseController
         ];
     }
 
-    /**
-     * Lists all User models.
-     *
-     * @return mixed
-     */
+	/**
+	 * Lists all User models.
+	 *
+	 * @return mixed
+	 * @throws \yii\base\InvalidConfigException
+	 * @throws \yii\base\InvalidParamException
+	 */
     public function actionIndex()
     {
         Url::remember('', 'actions-redirect');
@@ -75,19 +79,26 @@ class AdminController extends BaseController
         ]);
     }
 
-    /**
-     * Updates an existing profile.
-     *
-     * @param int $id
-     * @return mixed
-     */
+	/**
+	 * Updates an existing profile.
+	 *
+	 * @param int $id
+	 *
+	 * @return mixed
+	 * @throws \yii\base\ExitException
+	 * @throws \yii\base\InvalidCallException
+	 * @throws \yii\base\InvalidConfigException
+	 * @throws \yii\base\InvalidParamException
+	 * @throws \yii\web\NotFoundHttpException
+	 */
     public function actionUpdateProfile($id)
     {
+	    /** @var User $user */
         Url::remember('', 'actions-redirect');
-        $user    = $this->findModel($id);
+	    $user    = $this->findModel($id);
         $profile = $user->profile;
 
-        if ($profile == null) {
+        if ($profile === null) {
             $profile = \Yii::createObject(Profile::className());
             $profile->link('user', $user);
         }
@@ -140,12 +151,17 @@ class AdminController extends BaseController
         ]);
     }
 
-    /**
-     * Deletes selected User models.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     *
-     * @return mixed
-     */
+	/**
+	 * Deletes selected User models.
+	 * If deletion is successful, the browser will be redirected to the 'index' page.
+	 *
+	 * @return mixed
+	 * @throws \Exception
+	 * @throws \yii\base\InvalidConfigException
+	 * @throws \yii\base\InvalidParamException
+	 * @throws \yii\db\StaleObjectException
+	 * @throws \yii\web\NotFoundHttpException
+	 */
     public function actionDeletemultiple()
     {
         $ids = \Yii::$app->request->post('ids');
@@ -170,18 +186,21 @@ class AdminController extends BaseController
         ]);
     }
 
-    /**
-     * Blocks the user.
-     *
-     * @param int $id
-     * @return Response
-     */
+	/**
+	 * Blocks the user.
+	 *
+	 * @param int $id
+	 *
+	 * @return \yii\Web\Response
+	 * @throws \yii\base\InvalidConfigException
+	 * @throws \yii\web\NotFoundHttpException
+	 */
     public function actionBlock($id)
     {
-        if ($id == \Yii::$app->user->getId()) {
+        if ( \Yii::$app->user->getId() === $id ) {
             \Yii::$app->getSession()->setFlash('danger', \Yii::t('user', 'You can not block your own account'));
         } else {
-            $user  = $this->findModel($id);
+	        $user  = $this->findModel($id);
             $event = $this->getUserEvent($user);
             if ($user->getIsBlocked()) {
                 $this->trigger(self::EVENT_BEFORE_UNBLOCK, $event);
@@ -199,12 +218,13 @@ class AdminController extends BaseController
         return $this->redirect(Url::previous('actions-redirect'));
     }
 
-    /**
-     * Active selected User models.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     *
-     * @return mixed
-     */
+	/**
+	 * Active selected User models.
+	 * If deletion is successful, the browser will be redirected to the 'index' page.
+	 *
+	 * @return mixed
+	 * @throws \yii\web\NotFoundHttpException
+	 */
     public function actionActivemultiple()
     {
         $ids = \Yii::$app->request->post('ids');
@@ -223,12 +243,13 @@ class AdminController extends BaseController
         }
     }
 
-    /**
-     * Deactive selected User models.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     *
-     * @return mixed
-     */
+	/**
+	 * Deactive selected User models.
+	 * If deletion is successful, the browser will be redirected to the 'index' page.
+	 *
+	 * @return mixed
+	 * @throws \yii\web\NotFoundHttpException
+	 */
     public function actionDeactivemultiple()
     {
         $ids = \Yii::$app->request->post('ids');

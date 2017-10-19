@@ -23,15 +23,6 @@ class UserSearch extends BaseUserSearch
 
 	use ViewsHelpersTrait;
 
-    /** @var int */
-    public $id;
-
-    /** @var string */
-    public $username;
-
-    /** @var string */
-    public $email;
-
     /** @var string */
     public $firstname;
 
@@ -40,12 +31,6 @@ class UserSearch extends BaseUserSearch
 
     /** @var string */
     public $birthday;
-
-    /** @var int */
-    public $created_at;
-
-    /** @var int */
-    public $last_login_at;
 
     /** @var string */
     public $rule;
@@ -68,7 +53,7 @@ class UserSearch extends BaseUserSearch
     public function attributeLabels()
     {
         return [
-            'id'              => \Yii::t('user', 'ID'),
+            'id'              => \Yii::t('userextended', 'ID'),
             'username'        => \Yii::t('user', 'Username'),
             'firstname'       => \Yii::t('userextended', 'Firstname'),
             'lastname'        => \Yii::t('userextended', 'Lastname'),
@@ -81,11 +66,12 @@ class UserSearch extends BaseUserSearch
         ];
     }
 
-    /**
-     * @param $params
-     *
-     * @return ActiveDataProvider
-     */
+	/**
+	 * @param $params
+	 *
+	 * @return ActiveDataProvider
+	 * @throws \yii\base\InvalidParamException
+	 */
     public function search($params)
     {
         $query = $this->finder->getUserQuery();
@@ -138,7 +124,7 @@ class UserSearch extends BaseUserSearch
               ->andFilterWhere(['like', 'email', $this->email])
               ->andFilterWhere(['registration_ip' => $this->registration_ip]);
 
-        if ($this->rule !== "") {
+        if ($this->rule !== '') {
             $query->andWhere('`id` IN (
                 SELECT {{%auth_assignment}}.user_id FROM {{%auth_assignment}} 
                 WHERE {{%auth_assignment}}.`item_name` = "'.$this->rule.'")'

@@ -13,7 +13,6 @@
 namespace cinghie\userextended\models;
 
 use Yii;
-use cinghie\userextended\models\Assignment;
 use dektrium\user\models\User as BaseUser;
 use yii\db\Query;
 
@@ -72,9 +71,12 @@ class User extends BaseUser
         return $this->hasMany(Assignment::className(), ['user_id' => 'id'])->from(Assignment::tableName() . ' AS role');
     }
 
-    /**
-     * @return \yii\rbac\Role[]
-     */
+	/**
+	 * Get Rules by UserID
+	 *
+	 * @param $userid
+	 * @return \yii\rbac\Role[]
+	 */
     public function getRulesByUserID($userid)
     {
         return \Yii::$app->authManager->getRolesByUser($userid);
@@ -84,6 +86,9 @@ class User extends BaseUser
 	 * Set Role to User
 	 *
 	 * @param $role
+	 *
+	 * @throws \Exception
+	 * @throws \yii\base\InvalidParamException
 	 */
     public function setRole($role)
     {
@@ -91,15 +96,18 @@ class User extends BaseUser
 	    $roleObject = $auth->getRole('registered');
 
 	    if (!$roleObject) {
-		    throw new \yii\base\InvalidParamException ("There is no role \"$role\".");
+		    throw new yii\base\InvalidParamException ("There is no role \"$role\".");
 	    }
 
 	    $auth->assign($roleObject, $this->id);
     }
 
-    /**
-     * @return [] roles for roles column in admin index
-     */
+	/**
+	 * Array roles for roles column in admin index
+	 *
+	 * @return array []
+	 * @throws \yii\db\Exception
+	 */
     public function getRolesHTML()
     {
         $query = new Query;

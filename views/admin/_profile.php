@@ -10,9 +10,9 @@
  * @version 0.6.1
  */
 
+use kartik\widgets\FileInput;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
-use kartik\widgets\FileInput;
 
 ?>
 

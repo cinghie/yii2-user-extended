@@ -92,12 +92,13 @@ class Profile extends BaseProfile
         ];
     }
 
-    /**
-     * Upload file
-     *
-     * @param $filePath
-     * @return mixed the uploaded image instance
-     */
+	/**
+	 * Upload file
+	 *
+	 * @param $filePath
+	 * @return mixed the uploaded image instance
+	 * @throws \yii\base\Exception
+	 */
     public function uploadAvatar($filePath)
     {
         $file = UploadedFile::getInstance($this, 'avatar');
@@ -123,21 +124,23 @@ class Profile extends BaseProfile
         }
     }
 
-    /**
-     * fetch stored image file name with complete path
-     *
-     * @return string
-     */
+	/**
+	 * fetch stored image file name with complete path
+	 *
+	 * @return string
+	 * @throws \yii\base\InvalidParamException
+	 */
     public function getImagePath()
     {
         return $this->avatar ? \Yii::getAlias(\Yii::$app->getModule('userextended')->avatarPath).$this->avatar : null;
     }
 
-    /**
-     * fetch stored image url
-     *
-     * @return string
-     */
+	/**
+	 * fetch stored image url
+	 *
+	 * @return string
+	 * @throws \yii\base\InvalidParamException
+	 */
     public function getImageUrl()
     {
         if ( !is_null($this->getAccountAttributes()) && !$this->avatar )
@@ -153,11 +156,13 @@ class Profile extends BaseProfile
         return $imageURL;
     }
 
-    /**
-     * Process deletion of image
-     *
-     * @return boolean the status of deletion
-     */
+	/**
+	 * Process deletion of image
+	 *
+	 * @param $avatarOld
+	 * @return bool the status of deletion
+	 * @throws \yii\base\InvalidParamException
+	 */
     public function deleteImage($avatarOld)
     {
         $avatarURL = \Yii::getAlias(\Yii::$app->getModule('userextended')->avatarPath).$avatarOld;
@@ -181,18 +186,19 @@ class Profile extends BaseProfile
     /**
      * Get image form Social
      *
-     * @return \external_url
+     * @return string
      */
     public function getSocialImage()
     {
-        $imageURL = "";
         $account  = $this->getAccountAttributes();
 
-        switch($account['provider'])
-        {
-            case "facebook":
-                $imageURL = "https://graph.facebook.com/".$account['client_id']."/picture?type=large";
+        switch($account['provider']) {
+	        case 'facebook':
+	            /** @var Account $account */
+	            $imageURL = 'https://graph.facebook.com/' . $account['client_id'] . '/picture?type=large';
                 break;
+	        default:
+		        $imageURL = null;
         }
 
         return $imageURL;
@@ -206,9 +212,9 @@ class Profile extends BaseProfile
         return $this->hasOne($this->module->modelMap['Account'], ['user_id' => 'user_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQueryInterface
-     */
+	/**
+	 * @return array|Profile|null|\yii\db\ActiveRecord []
+	 */
     public function getAccountAttributes()
     {
         return $this->hasOne($this->module->modelMap['Account'], ['user_id' => 'user_id'])->asArray()->one();

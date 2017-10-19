@@ -91,6 +91,8 @@ class RegistrationForm extends BaseRegistrationForm
 	 * Registers a new user account. If registration was successful it will set flash message.
 	 *
 	 * @return bool
+	 * @throws \yii\base\InvalidConfigException
+	 * @throws \yii\base\InvalidParamException
 	 */
 	public function register()
 	{
@@ -157,7 +159,7 @@ class RegistrationForm extends BaseRegistrationForm
 
 	    if(\Yii::$app->getModule('userextended')->firstname && \Yii::$app->getModule('userextended')->lastname) {
 		    $profile->setAttributes([
-			    'name' => ucwords(strtolower($this->firstname))." ".ucwords(strtolower($this->lastname))
+			    'name' => ucwords(strtolower($this->firstname)).' '.ucwords(strtolower($this->lastname))
 		    ]);
 	    }
 

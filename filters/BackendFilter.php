@@ -17,17 +17,18 @@ use yii\web\ForbiddenHttpException;
 
 class BackendFilter extends ActionFilter
 {
+	
     /**
      * @var array
      */
     public $controllers = ['recovery', 'registration'];
 
-    /**
-     * @param \yii\base\Action $action
-     *
-     * @return bool
-     * @throws \yii\web\NotFoundHttpException
-     */
+	/**
+	 * @param \yii\base\Action $action
+	 *
+	 * @return bool
+	 * @throws ForbiddenHttpException
+	 */
     public function beforeAction($action)
     {
         if (in_array($action->controller->id, $this->controllers)) {
@@ -35,4 +36,5 @@ class BackendFilter extends ActionFilter
         }
         return true;
     }
+
 }

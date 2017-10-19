@@ -12,24 +12,28 @@
 
 namespace cinghie\userextended\controllers;
 
-use Yii;
+use cinghie\userextended\models\Profile;
 use dektrium\user\controllers\SettingsController as BaseController;
 
 class SettingsController extends BaseController
 {
 
-    /**
-     * Shows profile settings form.
-     *
-     * @return string|\yii\web\Response
-     */
+	/**
+	 * Shows profile settings form.
+	 *
+	 * @return string|\yii\web\Response
+	 * @throws \yii\base\ExitException
+	 * @throws \yii\base\InvalidCallException
+	 * @throws \yii\base\InvalidConfigException
+	 * @throws \yii\base\InvalidParamException
+	 */
     public function actionProfile()
     {
         // Load Model
         $model = $this->finder->findProfileById(\Yii::$app->user->identity->getId());
 
         // If Profile not exist create it
-        if ($model == null) {
+        if ($model === null) {
             $model = \Yii::createObject(Profile::className());
             $model->link('user', \Yii::$app->user->identity);
         }

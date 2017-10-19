@@ -10,6 +10,7 @@
  * @version 0.6.1
  */
 
+use kartik\grid\CheckboxColumn;
 use kartik\grid\GridView;
 use kartik\select2\Select2;
 use yii\helpers\Html;
@@ -82,7 +83,7 @@ $this->registerJs('$(document).ready(function()
         ],
         'columns' => [
             [
-                'class' => '\kartik\grid\CheckboxColumn'
+                'class' => CheckboxColumn::class
             ],
             [
                 'attribute' => 'username',
@@ -141,7 +142,7 @@ $this->registerJs('$(document).ready(function()
                     ],
                 ]),
                 'value' => function ($model) {
-                    if (!$model->last_login_at || $model->last_login_at == 0) {
+                    if (!$model->last_login_at || $model->last_login_at === 0) {
                         return \Yii::t('userextended', 'Never');
                     } else if (extension_loaded('intl')) {
                         return \Yii::t('userextended', '{0, date, YYYY-MM-dd HH:mm}', [$model->last_login_at]);
@@ -151,7 +152,7 @@ $this->registerJs('$(document).ready(function()
                 },
             ],
             [
-                'attribute' => \Yii::t("user", "Roles"),
+                'attribute' => \Yii::t( 'user', 'Roles' ),
                 'filter' => Select2::widget([
                     'model'     => $searchModel,
                     'attribute' => 'rule',
@@ -167,9 +168,10 @@ $this->registerJs('$(document).ready(function()
                 'hAlign' => 'center',
                 'width' => '9%',
                 'value' => function ($model) {
-                    $html = "";
-                    foreach($model->getRolesHTML() as $role){
-                        $html .= $role['item_name']."<br>";
+                    $html = '';
+                    /** @var \cinghie\userextended\models\User $model */
+	                foreach($model->getRolesHTML() as $role){
+                        $html .= $role['item_name'] . '<br>';
                     }
                     return $html;
                 },
