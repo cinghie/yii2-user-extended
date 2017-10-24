@@ -114,7 +114,7 @@ If you have a Yii2 App Advanced add in Yii2 User Module config
     'user' => [
         'class' => 'dektrium\user\Module',
         // restrict access to recovery and registration controllers from backend
-        'as backend' => 'cinghie\userextended\filters\BackendFilter',
+        'as backend' => 'dektrium\user\filters\BackendFilter',
         // Settings
         'enableRegistration' => false,
     ],
@@ -155,6 +155,15 @@ Features
             </li>
         </ul>
     </li>
+    <li>Add yii2-user fields to user profile like optional params
+        <ul>
+            <li>bio</li>
+            <li>gravatar email</li>
+            <li>location</li>
+            <li>public email</li>
+            <li>website</li>
+        </ul>
+    </li>
     <li>Add default Role on User Registration</li>
 </ol>
 
@@ -162,6 +171,7 @@ Changelog
 -----------------
 
 <ul>
+  <li>Version 0.6.2 - Adding Yii2-User field optional on Profile</li>
   <li>Version 0.6.1 - Adding User field optional on config, Adding default Role on User Registration, Improve Views</li>
   <li>Version 0.6.0 - Adding User Rule select in Users index, Fix Updating Avatar in Profile Admin</li>
   <li>Version 0.5.9 - Adding option socialLogin to Login View, Update Dipendences</li>

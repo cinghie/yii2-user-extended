@@ -20,7 +20,7 @@ class Module extends BaseUser
     /**
      * @var string Module version
      */
-    protected $_version = "0.6.0";
+    protected $_version = "0.6.2";
 
     /**
      * @var string Path to avatar file
