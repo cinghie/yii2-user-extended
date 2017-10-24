@@ -10,7 +10,8 @@
  * @version 0.5.2
  */
 
-use yii\widgets\ActiveForm;
+use kartik\widgets\ActiveForm;
+use kartik\widgets\DatePicker;
 use yii\captcha\Captcha;
 use yii\helpers\Html;
 
@@ -60,7 +61,12 @@ use yii\helpers\Html;
 
 				            <?php if(Yii::$app->getModule('userextended')->birthday): ?>
 
-					            <?= $form->field($model, 'birthday') ?>
+					            <?= $form->field($model, 'birthday')->widget(DatePicker::className(), [
+						            'pluginOptions' => [
+							            'autoclose' => true,
+							            'format' => 'yyyy-mm-dd',
+						            ]
+					            ]); ?>
 
 				            <?php endif ?>
 
