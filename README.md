@@ -79,11 +79,17 @@ Set on your configuration file, in modules section
         'avatarPath' => '@webroot/img/users/', // Path to your avatar files
         'avatarURL' => '@web/img/users/', // Url to your avatar files
         'defaultRole' => '',
+        'avatar' => true,
+        'bio' => false,
         'captcha' => true,
         'birthday' => true,
         'firstname' => true,
+        'gravatarEmail' => false,
         'lastname' => true,
+        'location' => false,
         'onlyEmail' => false,
+        'publicEmail' => false,
+        'website' => false,
         'templateRegister' => '_two_column',
         'terms' => true,
         'showTitles' => true, // Set false in adminLTE
