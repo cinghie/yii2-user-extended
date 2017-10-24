@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="panel-body">
 
-                <?php $form = ActiveForm::begin([
+                <? $form = ActiveForm::begin([
                     'id' => 'profile-form',
                     'options' => ['class' => 'form-horizontal','enctype'=>'multipart/form-data'],
                     'fieldConfig' => [
@@ -50,52 +50,72 @@ $this->params['breadcrumbs'][] = $this->title;
                     'validateOnBlur'         => false,
                 ]); ?>
 
-                <?= $form->field($model, 'avatar')->widget(FileInput::classname(), [
-                    'options' => ['accept'=>'image/*'],
-                    'pluginOptions' => [
-                        'allowedFileExtensions'=> ['jpg','gif','png'],
-                        'browseClass' => 'btn btn-primary btn-block',
-                        'browseIcon' => '<i class="glyphicon glyphicon-camera"></i> ',
-                        'browseLabel' =>  \Yii::t('user', 'Change Avatar'),
-                        'previewFileType' => 'image',
-                        'showCaption' => false,
-                        'showRemove' => false,
-                        'showUpload' => false,
-                    ]
-                ]) ?>
+                <?  if(\Yii::$app->getModule('userextended')->firstname && \Yii::$app->getModule('userextended')->avatar) {
+	                echo $form->field( $model, 'avatar' )->widget( FileInput::classname(), [
+		                'options'       => [ 'accept' => 'image/*' ],
+		                'pluginOptions' => [
+			                'allowedFileExtensions' => [ 'jpg', 'gif', 'png' ],
+			                'browseClass'           => 'btn btn-primary btn-block',
+			                'browseIcon'            => '<i class="glyphicon glyphicon-camera"></i> ',
+			                'browseLabel'           => \Yii::t( 'user', 'Change Avatar' ),
+			                'previewFileType'       => 'image',
+			                'showCaption'           => false,
+			                'showRemove'            => false,
+			                'showUpload'            => false,
+		                ]
+	                ]);
+                } ?>
 
-                <?= $form->field($model, 'name')->textInput([
-                    'placeholder' => \Yii::t('user', 'Name'),
-                    'readonly' => true
-                ]) ?>
+                <? if(\Yii::$app->getModule('userextended')->firstname && \Yii::$app->getModule('userextended')->lastname) {
+                    echo $form->field($model, 'name')->textInput([
+		                'placeholder' => \Yii::t('user', 'Name'),
+		                'readonly' => true
+	                ]);
+                }  ?>
 
-                <?= $form->field($model, 'firstname')->textInput([
-                    'placeholder' => \Yii::t('user', 'Firstname')
-                ]) ?>
+	            <? if(\Yii::$app->getModule('userextended')->firstname) {
+		            echo $form->field($model, 'firstname')->textInput([
+		                'placeholder' => \Yii::t('user', 'Firstname')
+                    ]);
+	            } ?>
 
-                <?= $form->field($model, 'lastname')->textInput([
-                    'placeholder' => \Yii::t('user', 'Lastname')
-                ]) ?>
+	            <? if(\Yii::$app->getModule('userextended')->lastname) {
+		            echo $form->field($model, 'lastname')->textInput([
+                        'placeholder' => \Yii::t('user', 'Lastname')
+                    ]);
+	            } ?>
 
-                <?= $form->field($model, 'birthday') ?>
+                <? if(\Yii::$app->getModule('userextended')->birthday) {
+	                echo $form->field($model, 'birthday');
+                } ?>
 
-                <?= $form->field($model, 'public_email')->textInput([
-                    'placeholder' => \Yii::t('userextended', 'Public Email')
-                ]) ?>
+	            <? if(\Yii::$app->getModule('userextended')->publicEmail) {
+		            echo $form->field($model, 'public_email')->textInput([
+                        'placeholder' => \Yii::t('userextended', 'Public Email')
+                    ]);
+	            } ?>
 
-                <?= $form->field($model, 'gravatar_email')->textInput([
-                    'placeholder' => \Yii::t('userextended', 'Gravatar Email')
-                ])->hint(\yii\helpers\Html::a(\Yii::t('user', 'Change your avatar at Gravatar.com'), 'http://gravatar.com')) ?>
+                <? if(\Yii::$app->getModule('userextended')->gravatarEmail) {
+                    echo $form->field($model, 'gravatar_email')->textInput([
+	                    'placeholder' => \Yii::t('userextended', 'Gravatar Email')
+                    ])->hint(\yii\helpers\Html::a(\Yii::t('user', 'Change your avatar at Gravatar.com'), 'http://gravatar.com'));
+                } ?>
 
-                <?= $form->field($model, 'website')->textInput([
-                    'placeholder' => \Yii::t('user', 'Website')
-                ]) ?>
+	            <? if(\Yii::$app->getModule('userextended')->website) {
+	                echo $form->field($model, 'website')->textInput([
+		                'placeholder' => \Yii::t('user', 'Website')
+	                ]);
+                } ?>
 
-                <?= $form->field($model, 'location')->textInput([
-                    'placeholder' => \Yii::t('user', 'Location')
-                ]) ?>
+	            <? if(\Yii::$app->getModule('userextended')->location) {
+                    echo $form->field($model, 'location')->textInput([
+	                    'placeholder' => \Yii::t('user', 'Location')
+                    ]);
+                } ?>
 
-                <?= $form->field($model, 'bio')->textarea() ?>
+	            <? if(\Yii::$app->getModule('userextended')->bio) {
+	                echo $form->field($model, 'bio')->textarea() ;
+                } ?>
 
                 <div class="form-group">
                     <div class="col-lg-offset-3 col-lg-9">

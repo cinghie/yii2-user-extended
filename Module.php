@@ -38,6 +38,16 @@ class Module extends BaseUser
 	public $defaultRole = '';
 
 	/**
+	 * @var boolean avatar
+	 */
+	public $avatar = true;
+
+	/**
+	 * @var boolean bio
+	 */
+	public $bio = false;
+
+	/**
 	 * @var boolean birthday
 	 */
 	public $birthday = true;
@@ -53,9 +63,19 @@ class Module extends BaseUser
 	public $lastname = true;
 
 	/**
-	 * @var boolean Captcha
+	 * @var boolean captcha
 	 */
 	public $captcha = true;
+
+	/**
+	 * @var boolean gravatar
+	 */
+	public $gravatarEmail = false;
+
+	/**
+	 * @var boolean location
+	 */
+	public $location = false;
 
 	/**
 	 * @var boolean onlyEmail
@@ -63,12 +83,22 @@ class Module extends BaseUser
 	public $onlyEmail = false;
 
 	/**
-	 * @var boolean onlyEmail
+	 * @var boolean publicEmail
+	 */
+	public $publicEmail = false;
+
+	/**
+	 * @var boolean terms
 	 */
 	public $terms = true;
 
 	/**
-	 * @var boolean showAlert in views
+	 * @var boolean website
+	 */
+	public $website = false;
+
+	/**
+	 * @var string register template
 	 */
 	public $templateRegister = '_two_column';
 
@@ -83,7 +113,7 @@ class Module extends BaseUser
     public $showTitles = true;
 
     /**
-     * @var boolean showTitles in views
+     * @var boolean socialLogin
      */
     public $socialLogin = false;
 
