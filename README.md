@@ -177,7 +177,7 @@ Changelog
 -----------------
 
 <ul>
-  <li>Version 0.6.2 - Adding Yii2-User field optional on Profile</li>
+  <li>Version 0.6.2 - Adding Yii2-User field optional on Profile, Update birthday input form</li>
   <li>Version 0.6.1 - Adding User field optional on config, Adding default Role on User Registration, Improve Views</li>
   <li>Version 0.6.0 - Adding User Rule select in Users index, Fix Updating Avatar in Profile Admin</li>
   <li>Version 0.5.9 - Adding option socialLogin to Login View, Update Dipendences</li>
