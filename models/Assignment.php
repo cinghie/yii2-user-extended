@@ -22,6 +22,7 @@ class Assignment extends BaseAssignment
 	 * @inheritdoc
 	 *
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+	 * @throws \yii\base\InvalidConfigException
 	 */
 	public static function find()
 	{

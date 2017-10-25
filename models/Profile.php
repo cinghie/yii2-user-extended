@@ -104,7 +104,7 @@ class Profile extends BaseProfile
         $file = UploadedFile::getInstance($this, 'avatar');
 
         // if no file was uploaded abort the upload
-        if (empty($file)) {
+        if ( null === $file ) {
             return false;
         } else {
 
@@ -143,7 +143,7 @@ class Profile extends BaseProfile
 	 */
     public function getImageUrl()
     {
-        if ( !is_null($this->getAccountAttributes()) && !$this->avatar )
+	    if ( !$this->avatar && $this->getAccountAttributes() !== null )
         {
             $imageURL = $this->getSocialImage();
 
