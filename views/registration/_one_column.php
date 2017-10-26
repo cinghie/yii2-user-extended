@@ -10,6 +10,7 @@
  * @version 0.5.2
  */
 
+use dektrium\user\widgets\Connect;
 use kartik\widgets\ActiveForm;
 use kartik\widgets\DatePicker;
 use yii\captcha\Captcha;
@@ -116,6 +117,18 @@ use yii\helpers\Html;
                         <div class="col-md-12">
 
 				            <?= Html::submitButton(\Yii::t('userextended', 'Register'), ['class' => 'btn btn-success btn-block btn-lg']) ?>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row social-login-button">
+
+                        <div class="col-md-12">
+
+	                        <?= Connect::widget([
+		                        'baseAuthUrl' => ['/user/security/auth'],
+	                        ]) ?>
 
                         </div>
 
