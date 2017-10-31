@@ -30,35 +30,67 @@ use yii\helpers\Html;
     ],
 ]); ?>
 
-<div class="form-group field-profile-avatar-view">
-    <label class="control-label col-sm-3" for="profile-avatar-view">Avatar</label>
-    <div class="col-sm-9">
-        <input id="profile-avatar-view" class="form-control" name="Profile[avatar-view]" value="<?= $profile->avatar ?>" disabled="" type="text">
-        <div class="help-block help-block-error "></div>
+<?php if(Yii::$app->getModule('userextended')->avatar): ?>
+
+    <div class="form-group field-profile-avatar-view">
+        <label class="control-label col-sm-3" for="profile-avatar-view">Avatar</label>
+        <div class="col-sm-9">
+            <input id="profile-avatar-view" class="form-control" name="Profile[avatar-view]" value="<?= $profile->avatar ?>" disabled="" type="text">
+            <div class="help-block help-block-error "></div>
+        </div>
     </div>
-</div>
-<?= $form->field($profile, 'avatar')->widget(FileInput::classname(), [
-    'options' => ['accept'=>'image/*'],
-    'pluginOptions' => [
-        'allowedFileExtensions'=> ['jpg','gif','png'],
-        'browseClass' => 'btn btn-primary btn-block',
-        'browseIcon' => '<i class="glyphicon glyphicon-camera"></i> ',
-        'browseLabel' =>  \Yii::t('user', 'Change Avatar'),
-        'previewFileType' => 'image',
-        'showCaption' => false,
-        'showRemove' => false,
-        'showUpload' => false,
-    ]
-])->label(false) ?>
-<?= $form->field($profile, 'name') ?>
-<?= $form->field($profile, 'firstname') ?>
-<?= $form->field($profile, 'lastname') ?>
-<?= $form->field($profile, 'birthday') ?>
-<?= $form->field($profile, 'public_email') ?>
-<?= $form->field($profile, 'website') ?>
-<?= $form->field($profile, 'location') ?>
-<?= $form->field($profile, 'gravatar_email') ?>
-<?= $form->field($profile, 'bio')->textarea() ?>
+
+    <?= $form->field($profile, 'avatar')->widget(FileInput::classname(), [
+        'options' => ['accept'=>'image/*'],
+        'pluginOptions' => [
+            'allowedFileExtensions'=> ['jpg','gif','png'],
+            'browseClass' => 'btn btn-primary btn-block',
+            'browseIcon' => '<i class="glyphicon glyphicon-camera"></i> ',
+            'browseLabel' =>  \Yii::t('user', 'Change Avatar'),
+            'previewFileType' => 'image',
+            'showCaption' => false,
+            'showRemove' => false,
+            'showUpload' => false,
+        ]
+    ])->label(false) ?>
+    
+<?php endif ?>
+
+<?php if(Yii::$app->getModule('userextended')->firstname && Yii::$app->getModule('userextended')->lastname): ?>
+    <?= $form->field($profile, 'name') ?>
+<?php endif ?>
+
+<?php if(Yii::$app->getModule('userextended')->firstname): ?>
+    <?= $form->field($profile, 'firstname') ?>
+<?php endif ?>
+
+<?php if(Yii::$app->getModule('userextended')->lastname): ?>
+    <?= $form->field($profile, 'lastname') ?>
+<?php endif ?>
+
+<?php if(Yii::$app->getModule('userextended')->birthday): ?>
+    <?= $form->field($profile, 'birthday') ?>
+<?php endif ?>
+
+<?php if(Yii::$app->getModule('userextended')->publicEmail): ?>
+    <?= $form->field($profile, 'public_email') ?>
+<?php endif ?>
+
+<?php if(Yii::$app->getModule('userextended')->website): ?>
+    <?= $form->field($profile, 'website') ?>
+<?php endif ?>
+
+<?php if(Yii::$app->getModule('userextended')->location): ?>
+    <?= $form->field($profile, 'location') ?>
+<?php endif ?>
+
+<?php if(Yii::$app->getModule('userextended')->gravatarEmail): ?>
+    <?= $form->field($profile, 'gravatar_email') ?>
+<?php endif ?>
+
+<?php if(Yii::$app->getModule('userextended')->bio): ?>
+    <?= $form->field($profile, 'bio')->textarea() ?>
+<?php endif ?>
 
 
 <div class="form-group">
