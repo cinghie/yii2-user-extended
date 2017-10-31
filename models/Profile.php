@@ -25,6 +25,12 @@ class Profile extends BaseProfile
     {
         $scenarios = parent::scenarios();
 
+	    if(\Yii::$app->getModule('userextended')->avatar) {
+		    $scenarios['create'][]   = 'avatar';
+		    $scenarios['update'][]   = 'avatar';
+		    $scenarios['register'][] = 'avatar';
+	    }
+
 	    if(\Yii::$app->getModule('userextended')->birthday) {
 		    $scenarios['create'][]   = 'birthday';
 		    $scenarios['update'][]   = 'birthday';
@@ -42,11 +48,6 @@ class Profile extends BaseProfile
 		    $scenarios['update'][]   = 'lastname';
 		    $scenarios['register'][] = 'lastname';
 	    }
-
-        // add avatar to scenarios
-        $scenarios['create'][]   = 'avatar';
-        $scenarios['update'][]   = 'avatar';
-        $scenarios['register'][] = 'avatar';
 
         return $scenarios;
     }
@@ -85,6 +86,7 @@ class Profile extends BaseProfile
     public function attributeLabels()
     {
         return [
+            'avatar' => \Yii::t('userextended', 'Avatar'),
             'name' => \Yii::t('userextended', 'Name'),
             'firstname' => \Yii::t('userextended', 'Firstname'),
             'lastname' => \Yii::t('userextended', 'Lastname'),

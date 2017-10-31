@@ -53,7 +53,7 @@ use yii\helpers\Html;
             'showUpload' => false,
         ]
     ])->label(false) ?>
-    
+
 <?php endif ?>
 
 <?php if(Yii::$app->getModule('userextended')->firstname && Yii::$app->getModule('userextended')->lastname): ?>

@@ -202,6 +202,7 @@ $this->registerJs('$(document).ready(function()
                 'visible' => \Yii::$app->getModule('user')->enableConfirmation,
                 'width' => '5%',
                 'value' => function ($model) {
+	                /** @var \cinghie\userextended\models\User $model */
                     if ($model->isConfirmed) {
                         return '<span class="glyphicon glyphicon-ok text-success"></span>';
                     } else {
