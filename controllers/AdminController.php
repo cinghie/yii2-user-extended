@@ -159,6 +159,7 @@ class AdminController extends BaseController
 	 *
 	 * @return mixed
 	 * @throws \Exception
+	 * @throws \yii\db\Exception
 	 * @throws \yii\base\InvalidConfigException
 	 * @throws \yii\base\InvalidParamException
 	 * @throws \yii\db\StaleObjectException
@@ -173,6 +174,7 @@ class AdminController extends BaseController
         }
 
         foreach ($ids as $id) {
+	        \Yii::$app->db->createCommand()->delete('{{%auth_assignment}}', ['user_id' => $id])->execute();
             $this->findModel($id)->delete();
         }
 
