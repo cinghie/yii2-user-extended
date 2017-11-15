@@ -58,7 +58,7 @@ class Profile extends BaseProfile
     public function rules()
     {
         $rules = parent::rules();
-
+        
 	    if(\Yii::$app->getModule('userextended')->birthday) {
 		    $rules['birthdayLength'] = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
 		    $rules['birthdayRequired'] = ['birthday', 'required'];
@@ -66,14 +66,14 @@ class Profile extends BaseProfile
 	    }
 
 	    if(\Yii::$app->getModule('userextended')->firstname) {
-		    $rules['firstnameLength']   = ['firstname', 'string', 'max' => 255];
+		    $rules['firstnameLength'] = ['firstname', 'string', 'max' => 255];
 		    $rules['firstnameRequired'] = ['firstname', 'required'];
 		    $rules['firstnameTrim'] = ['firstname', 'trim'];
 	    }
 
 	    if(\Yii::$app->getModule('userextended')->lastname) {
-		    $rules['lastnameRequired'] = ['lastname', 'required'];
 		    $rules['lastnameLength'] = ['lastname', 'string', 'max' => 255];
+		    $rules['lastnameRequired'] = ['lastname', 'required'];
 		    $rules['lastnameTrim'] = ['lastname', 'trim'];
 	    }
 

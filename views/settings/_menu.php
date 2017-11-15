@@ -29,7 +29,7 @@ $networksVisible = count(\Yii::$app->authClientCollection->clients) > 0;
 
     <div class="user-image">
         <a href="#" style="display: block; max-width: 100%; padding: 15px 15px 0;">
-            <img src="<?php echo $avatar ?>" alt="<?php echo $user->username ?>" title="<?php echo $user->username ?>" style="border: 1px solid #ddd; margin-left: auto; margin-right: auto; max-width: 100%; padding: 15px;">
+            <img class="img-responsive" src="<?php echo $avatar ?>" alt="<?php echo $user->username ?>" title="<?php echo $user->username ?>" style="border: 1px solid #ddd; margin-left: auto; margin-right: auto; max-width: 100%; padding: 15px;">
         </a>
     </div>
 

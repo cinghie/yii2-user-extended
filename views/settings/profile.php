@@ -10,9 +10,9 @@
  * @version 0.6.1
  */
 
-use kartik\widgets\ActiveForm;
 use kartik\widgets\DatePicker;
 use kartik\widgets\FileInput;
+use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
 $this->title = \Yii::t('user', 'Profile settings');
@@ -46,88 +46,98 @@ $this->params['breadcrumbs'][] = $this->title;
                         'template' => "{label}\n<div class=\"col-lg-9\">{input}</div>\n<div class=\"col-sm-offset-3 col-lg-9\">{error}\n{hint}</div>",
                         'labelOptions' => ['class' => 'col-lg-3 control-label'],
                     ],
-                    'enableAjaxValidation'   => true,
+                    'enableAjaxValidation' => true,
                     'enableClientValidation' => false,
-                    'validateOnBlur'         => false,
+                    'validateOnBlur' => false,
                 ]); ?>
 
-	            <?php if( \Yii::$app->getModule('userextended')->firstname && \Yii::$app->getModule('userextended')->avatar) {
-	                echo $form->field( $model, 'avatar' )->widget( FileInput::className(), [
-		                'options'       => [ 'accept' => 'image/*' ],
-		                'pluginOptions' => [
-			                'allowedFileExtensions' => [ 'jpg', 'gif', 'png' ],
-			                'browseClass'           => 'btn btn-primary btn-block',
-			                'browseIcon'            => '<i class="glyphicon glyphicon-camera"></i> ',
-			                'browseLabel'           => \Yii::t( 'userextended', 'Change Avatar' ),
-			                'previewFileType'       => 'image',
-			                'showCaption'           => false,
-			                'showRemove'            => false,
-			                'showUpload'            => false,
-		                ]
-	                ]);
-                } ?>
+                    <?php if(Yii::$app->getModule('userextended')->avatar): ?>
 
-                <?php if(\Yii::$app->getModule('userextended')->firstname && \Yii::$app->getModule('userextended')->lastname) {
-                    echo $form->field($model, 'name')->textInput([
-		                'placeholder' => \Yii::t('userextended', 'Name'),
-		                'readonly' => true
-	                ]);
-                }  ?>
+                        <div class="form-group field-profile-avatar-view">
+                            <label class="control-label col-sm-3" for="profile-avatar-view">Avatar</label>
+                            <div class="col-sm-9">
+                                <input id="profile-avatar-view" class="form-control" name="Profile[avatar-view]" value="<?= $model->avatar ?>" disabled="" type="text">
+                                <div class="help-block help-block-error "></div>
+                            </div>
+                        </div>
 
-	            <?php if(\Yii::$app->getModule('userextended')->firstname) {
-		            echo $form->field($model, 'firstname')->textInput([
-		                'placeholder' => \Yii::t('userextended', 'Firstname')
-                    ]);
-	            } ?>
+                        <?= $form->field($model, 'avatar')->widget(FileInput::classname(), [
+                            'options' => ['accept'=>'image/*'],
+                            'pluginOptions' => [
+                                'allowedFileExtensions'=> ['jpg','gif','png'],
+                                'browseClass' => 'btn btn-primary btn-block',
+                                'browseIcon' => '<i class="glyphicon glyphicon-camera"></i> ',
+                                'browseLabel' =>  \Yii::t('userextended', 'Change Avatar'),
+                                'previewFileType' => 'image',
+                                'showCaption' => false,
+                                'showRemove' => false,
+                                'showUpload' => false,
+                            ]
+                        ])->label(false) ?>
 
-	            <?php if(\Yii::$app->getModule('userextended')->lastname) {
-		            echo $form->field($model, 'lastname')->textInput([
-                        'placeholder' => \Yii::t('userextended', 'Lastname')
-                    ]);
-	            } ?>
+                    <?php endif ?>
 
-                <?php if(\Yii::$app->getModule('userextended')->birthday) {
-	                echo $form->field($model, 'birthday')->widget(DatePicker::className(), [
-                        'pluginOptions' => [
-                            'autoclose' => true,
-                            'format' => 'yyyy-mm-dd',
-                        ]
-                    ]);
-                } ?>
+                    <?php if(\Yii::$app->getModule('userextended')->firstname && \Yii::$app->getModule('userextended')->lastname) {
+                        echo $form->field($model, 'name')->textInput([
+                            'placeholder' => \Yii::t('userextended', 'Name'),
+                            'readonly' => true
+                        ]);
+                    }  ?>
 
-	            <?php if(\Yii::$app->getModule('userextended')->publicEmail) {
-		            echo $form->field($model, 'public_email')->textInput([
-                        'placeholder' => \Yii::t('userextended', 'Public Email')
-                    ]);
-	            } ?>
+                    <?php if(\Yii::$app->getModule('userextended')->firstname) {
+                        echo $form->field($model, 'firstname')->textInput([
+                            'placeholder' => \Yii::t('userextended', 'Firstname')
+                        ]);
+                    } ?>
 
-                <?php if(\Yii::$app->getModule('userextended')->gravatarEmail) {
-                    echo $form->field($model, 'gravatar_email')->textInput([
-	                    'placeholder' => \Yii::t('user', 'Gravatar email')
-                    ])->hint(Html::a(\Yii::t('user', 'Change your avatar at Gravatar.com'), 'http://gravatar.com'));
-                } ?>
+                    <?php if(\Yii::$app->getModule('userextended')->lastname) {
+                        echo $form->field($model, 'lastname')->textInput([
+                            'placeholder' => \Yii::t('userextended', 'Lastname')
+                        ]);
+                    } ?>
 
-	            <?php if(\Yii::$app->getModule('userextended')->website) {
-	                echo $form->field($model, 'website')->textInput([
-		                'placeholder' => \Yii::t('user', 'Website')
-	                ]);
-                } ?>
+                    <?php if(\Yii::$app->getModule('userextended')->birthday) {
+                        echo $form->field($model, 'birthday')->widget(DatePicker::className(), [
+                            'pluginOptions' => [
+                                'autoclose' => true,
+                                'format' => 'yyyy-mm-dd',
+                            ]
+                        ]);
+                    } ?>
 
-	            <?php if(\Yii::$app->getModule('userextended')->location) {
-                    echo $form->field($model, 'location')->textInput([
-	                    'placeholder' => \Yii::t('user', 'Location')
-                    ]);
-                } ?>
+                    <?php if(\Yii::$app->getModule('userextended')->publicEmail) {
+                        echo $form->field($model, 'public_email')->textInput([
+                            'placeholder' => \Yii::t('userextended', 'Public Email')
+                        ]);
+                    } ?>
 
-	            <?php if(\Yii::$app->getModule('userextended')->bio) {
-	                echo $form->field($model, 'bio')->textarea() ;
-                } ?>
+                    <?php if(\Yii::$app->getModule('userextended')->gravatarEmail) {
+                        echo $form->field($model, 'gravatar_email')->textInput([
+                            'placeholder' => \Yii::t('user', 'Gravatar email')
+                        ])->hint(Html::a(\Yii::t('user', 'Change your avatar at Gravatar.com'), 'http://gravatar.com'));
+                    } ?>
 
-                <div class="form-group">
-                    <div class="col-lg-offset-3 col-lg-9">
-                        <?= Html::submitButton(\Yii::t('user', 'Save'), ['class' => 'btn btn-block btn-success']) ?><br>
+                    <?php if(\Yii::$app->getModule('userextended')->website) {
+                        echo $form->field($model, 'website')->textInput([
+                            'placeholder' => \Yii::t('user', 'Website')
+                        ]);
+                    } ?>
+
+                    <?php if(\Yii::$app->getModule('userextended')->location) {
+                        echo $form->field($model, 'location')->textInput([
+                            'placeholder' => \Yii::t('user', 'Location')
+                        ]);
+                    } ?>
+
+                    <?php if(\Yii::$app->getModule('userextended')->bio) {
+                        echo $form->field($model, 'bio')->textarea() ;
+                    } ?>
+
+                    <div class="form-group">
+                        <div class="col-lg-offset-3 col-lg-9">
+                            <?= Html::submitButton(\Yii::t('user', 'Save'), ['class' => 'btn btn-block btn-success']) ?><br>
+                        </div>
                     </div>
-                </div>
 
                 <?php ActiveForm::end(); ?>
 
