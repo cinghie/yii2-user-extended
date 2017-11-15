@@ -91,6 +91,7 @@ Set on your configuration file, in modules section
         'publicEmail' => false,
         'website' => false,
         'templateRegister' => '_two_column',
+        'signature' => true,
         'terms' => true,
         'showTitles' => true, // Set false in adminLTE
     ],
@@ -146,19 +147,20 @@ Features
 <ol>
     <li>Add new fields to user profile (optional params)
         <ul>
-            <li>firstname</li>
-            <li>lastname</li>
-            <li>name (firstname + lastname)</li>  
-            <li>birthday</li>
-            <li>terms</li>
-            <li>captcha</li>
-            <li>avatar:
-                <ol>
-                    <li>The avatar can be uploaded</li>
+        	<li>avatar:
+            	<ol>
+                	<li>The avatar can be uploaded</li>
                     <li>The avatar can be updated</li>
                     <li>On update avatar old image was deleted</li>
                 </ol>
             </li>
+            <li>birthday</li>
+            <li>captcha</li>
+            <li>firstname</li>
+            <li>lastname</li>
+            <li>name (firstname + lastname)</li>
+            <li>signature</li>
+            <li>terms</li>
         </ul>
     </li>
     <li>Add yii2-user fields to user profile like optional params
