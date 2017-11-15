@@ -58,7 +58,7 @@ class Profile extends BaseProfile
     public function rules()
     {
         $rules = parent::rules();
-        
+
 	    if(\Yii::$app->getModule('userextended')->birthday) {
 		    $rules['birthdayLength'] = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
 		    $rules['birthdayRequired'] = ['birthday', 'required'];
