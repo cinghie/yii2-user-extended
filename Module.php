@@ -88,6 +88,11 @@ class Module extends BaseUser
 	public $publicEmail = false;
 
 	/**
+	 * @var boolean signature
+	 */
+	public $signature = true;
+
+	/**
 	 * @var boolean terms
 	 */
 	public $terms = true;

@@ -49,6 +49,12 @@ class Profile extends BaseProfile
 		    $scenarios['register'][] = 'lastname';
 	    }
 
+	    if(\Yii::$app->getModule('userextended')->signature) {
+		    $scenarios['create'][]   = 'signature';
+		    $scenarios['update'][]   = 'signature';
+		    $scenarios['register'][] = 'signature';
+	    }
+
         return $scenarios;
     }
 
@@ -77,6 +83,12 @@ class Profile extends BaseProfile
 		    $rules['lastnameTrim'] = ['lastname', 'trim'];
 	    }
 
+	    if(\Yii::$app->getModule('userextended')->signature) {
+		    $rules['signatureLength'] = ['signature', 'string'];
+		    $rules['signatureRequired'] = ['signature', 'required'];
+		    $rules['signatureTrim'] = ['signature', 'trim'];
+	    }
+
         return $rules;
     }
 
@@ -87,10 +99,11 @@ class Profile extends BaseProfile
     {
         return [
             'avatar' => \Yii::t('userextended', 'Avatar'),
-            'name' => \Yii::t('userextended', 'Name'),
+            'birthday' => \Yii::t('userextended', 'Birthday'),
             'firstname' => \Yii::t('userextended', 'Firstname'),
             'lastname' => \Yii::t('userextended', 'Lastname'),
-            'birthday' => \Yii::t('userextended', 'Birthday'),
+            'name' => \Yii::t('userextended', 'Name'),
+            'signature' => \Yii::t('userextended', 'Signature'),
         ];
     }
 

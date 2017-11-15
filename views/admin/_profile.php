@@ -98,6 +98,9 @@ use yii\helpers\Html;
             <?= $form->field($profile, 'bio')->textarea() ?>
         <?php endif ?>
 
+        <?php if(Yii::$app->getModule('userextended')->signature): ?>
+            <?= $form->field($profile, 'signature')->textarea() ?>
+        <?php endif ?>
 
         <div class="form-group">
             <div class="col-lg-offset-3 col-lg-9">
