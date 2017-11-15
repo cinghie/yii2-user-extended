@@ -10,9 +10,10 @@
  * @version 0.6.1
  */
 
-use yii\helpers\Html;
 use kartik\widgets\ActiveForm;
+use kartik\widgets\DatePicker;
 use kartik\widgets\FileInput;
+use yii\helpers\Html;
 
 $this->title = \Yii::t('user', 'Profile settings');
 $this->params['breadcrumbs'][] = $this->title;
@@ -86,7 +87,12 @@ $this->params['breadcrumbs'][] = $this->title;
 	            } ?>
 
                 <?php if(\Yii::$app->getModule('userextended')->birthday) {
-	                echo $form->field($model, 'birthday');
+	                echo $form->field($model, 'birthday')->widget(DatePicker::className(), [
+                        'pluginOptions' => [
+                            'autoclose' => true,
+                            'format' => 'yyyy-mm-dd',
+                        ]
+                    ]);
                 } ?>
 
 	            <?php if(\Yii::$app->getModule('userextended')->publicEmail) {

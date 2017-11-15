@@ -11,6 +11,7 @@
  */
 
 use kartik\widgets\FileInput;
+use kartik\widgets\DatePicker;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
@@ -69,7 +70,12 @@ use yii\helpers\Html;
 <?php endif ?>
 
 <?php if(Yii::$app->getModule('userextended')->birthday): ?>
-    <?= $form->field($profile, 'birthday') ?>
+	<?= $form->field($profile, 'birthday')->widget(DatePicker::className(), [
+		'pluginOptions' => [
+			'autoclose' => true,
+			'format' => 'yyyy-mm-dd',
+		]
+	]); ?>
 <?php endif ?>
 
 <?php if(Yii::$app->getModule('userextended')->publicEmail): ?>
