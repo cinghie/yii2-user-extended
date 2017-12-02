@@ -10,9 +10,11 @@
  * @version 0.6.1
  */
 
+use dektrium\user\helpers\Timezone;
 use kartik\widgets\DatePicker;
 use kartik\widgets\FileInput;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 $this->title = \Yii::t('user', 'Profile settings');
@@ -54,26 +56,38 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?php if(Yii::$app->getModule('userextended')->avatar): ?>
 
                         <div class="form-group field-profile-avatar-view">
-                            <label class="control-label col-sm-3" for="profile-avatar-view">Avatar</label>
-                            <div class="col-sm-9">
+
+                            <label class="control-label col-md-3 col-sm-12" for="profile-avatar-view">Avatar</label>
+
+                            <div class="col-md-9 col-sm-12">
                                 <input id="profile-avatar-view" class="form-control" name="Profile[avatar-view]" value="<?= $model->avatar ?>" disabled="" type="text">
                                 <div class="help-block help-block-error "></div>
                             </div>
+
                         </div>
 
-                        <?= $form->field($model, 'avatar')->widget(FileInput::classname(), [
-                            'options' => ['accept'=>'image/*'],
-                            'pluginOptions' => [
-                                'allowedFileExtensions'=> ['jpg','gif','png'],
-                                'browseClass' => 'btn btn-primary btn-block',
-                                'browseIcon' => '<i class="glyphicon glyphicon-camera"></i> ',
-                                'browseLabel' =>  \Yii::t('userextended', 'Change Avatar'),
-                                'previewFileType' => 'image',
-                                'showCaption' => false,
-                                'showRemove' => false,
-                                'showUpload' => false,
-                            ]
-                        ])->label(false) ?>
+                        <div class="form-group field-profile-avatar-change">
+
+                            <div class="col-md-12 col-md-offset-3">
+
+			                    <?= $form->field($model, 'avatar')->widget(FileInput::classname(), [
+			                        'class' => 'col-md-12',
+				                    'options' => ['accept'=>'image/*'],
+				                    'pluginOptions' => [
+					                    'allowedFileExtensions'=> ['jpg','gif','png'],
+					                    'browseClass' => 'btn btn-primary btn-block',
+					                    'browseIcon' => '<i class="glyphicon glyphicon-camera"></i> ',
+					                    'browseLabel' =>  \Yii::t('userextended', 'Change Avatar'),
+					                    'previewFileType' => 'image',
+					                    'showCaption' => false,
+					                    'showRemove' => false,
+					                    'showUpload' => false,
+				                    ]
+			                    ])->label(false) ?>
+
+                            </div>
+
+                        </div>
 
                     <?php endif ?>
 
@@ -82,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'placeholder' => \Yii::t('userextended', 'Name'),
                             'readonly' => true
                         ]);
-                    }  ?>
+                    } ?>
 
                     <?php if(\Yii::$app->getModule('userextended')->firstname) {
                         echo $form->field($model, 'firstname')->textInput([
@@ -104,6 +118,14 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]
                         ]);
                     } ?>
+
+                    <?= $form->field($model, 'timezone')->dropDownList(
+                            ArrayHelper::map(
+                                Timezone::getAll(),
+                                'timezone',
+                                'name'
+                            )
+		            ) ?>
 
                     <?php if(\Yii::$app->getModule('userextended')->publicEmail) {
                         echo $form->field($model, 'public_email')->textInput([
@@ -139,7 +161,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <div class="form-group">
                         <div class="col-lg-offset-3 col-lg-9">
-                            <?= Html::submitButton(\Yii::t('user', 'Save'), ['class' => 'btn btn-block btn-success']) ?><br>
+                            <?= Html::submitButton(\Yii::t('userextended', 'Save'), ['class' => 'btn btn-block btn-success']) ?><br>
                         </div>
                     </div>
 
