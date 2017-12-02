@@ -129,6 +129,22 @@ If you have a Yii2 App Advanced add in Yii2 User Module config
 ],		
 ```
 
+Or use userextended filter that active profile and settings on backend (dektrium filter disable it)
+
+```
+'modules' =>  [
+
+    'user' => [
+        'class' => 'dektrium\user\Module',
+        // restrict access to recovery and registration controllers from backend
+        'as backend' => 'cinghie\userextended\filters\BackendFilter',
+        // Settings
+        'enableRegistration' => false,
+    ],
+
+],
+```
+
 ### 6. Set captcha in Controller
 
 in your SiteController set in actions() function
