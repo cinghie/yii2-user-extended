@@ -20,6 +20,7 @@
 
 return [
     'Actived' => 'Attivato',
+    'All Users' => 'Tutti gli Utenti',
     'Avatar' => 'Avatar',
     'Birthday' => 'Data di Nascita',
     'By clicking I Agree, you agree to the Terms and Conditions set out by this site, including our Cookie Use.' => 'Mettando la spunta ad ACCONSENTO, accetti tutti e Termini e le Condizioni del sito, incluso l\'uso dei Cookie',
@@ -36,12 +37,14 @@ return [
 	'ID' => 'ID',
     'Lastname' => 'Cognome',
     'Last Login' => 'Ultimo Login',
+    'Last Users' => 'Ultimi Utenti',
     'Manage permissions' => 'Gestione Permessi',
     'Manage roles' => 'Gestione Ruoli',
     'Manage users' => 'Gestione Utenti',
     'Name' => 'Nome Utente',
     'Never' => 'Mai',
     'New' => 'Nuovo',
+    'New User' => 'Nuovo Utente',
 	'Public Email' => 'Email Pubblica',
 	'Register' => 'Registrati',
 	'Registration' => 'Registrazione',
