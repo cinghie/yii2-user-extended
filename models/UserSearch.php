@@ -14,6 +14,7 @@ namespace cinghie\userextended\models;
 
 use cinghie\traits\ViewsHelpersTrait;
 use dektrium\user\models\UserSearch as BaseUserSearch;
+use yii\base\InvalidParamException;
 use yii\data\ActiveDataProvider;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
@@ -136,6 +137,42 @@ class UserSearch extends BaseUserSearch
 
         return $dataProvider;
     }
+
+	/**
+	 * Creates data provider instance with last categories
+	 *
+	 * @param int $limit
+	 * @param string $orderby
+	 * @param int $order
+	 *
+	 * @return ActiveDataProvider
+	 * @throws InvalidParamException
+	 */
+	public function last($limit, $orderby = 'id', $order = SORT_DESC)
+	{
+		$query = User::find()->limit($limit);
+
+		$dataProvider = new ActiveDataProvider([
+			'query' => $query,
+			'pagination' => [
+				'pageSize' => $limit,
+			],
+			'sort' => [
+				'defaultOrder' => [
+					$orderby => $order
+				],
+			],
+			'totalCount' => $limit
+		]);
+
+		if (!$this->validate()) {
+			// uncomment the following line if you do not want to return any records when validation fails
+			// $query->where('0=1');
+			return $dataProvider;
+		}
+
+		return $dataProvider;
+	}
 
     /**
      * Returns list of item names.
