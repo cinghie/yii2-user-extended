@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             <div class="col-md-12 col-md-offset-3">
 
-			                    <?= $form->field($model, 'avatar')->widget(FileInput::classname(), [
+			                    <?= $form->field($model, 'avatar')->widget(FileInput::className(), [
 			                        'class' => 'col-md-12',
 				                    'options' => ['accept'=>'image/*'],
 				                    'pluginOptions' => [

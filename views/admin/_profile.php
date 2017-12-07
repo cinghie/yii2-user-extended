@@ -41,7 +41,7 @@ use yii\helpers\Html;
                 </div>
             </div>
 
-            <?= $form->field($profile, 'avatar')->widget(FileInput::classname(), [
+            <?= $form->field($profile, 'avatar')->widget(FileInput::className(), [
                 'options' => ['accept'=>'image/*'],
                 'pluginOptions' => [
                     'allowedFileExtensions'=> ['jpg','gif','png'],
