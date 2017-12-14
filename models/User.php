@@ -93,7 +93,7 @@ class User extends BaseUser
     public function setRole($role)
     {
 	    $auth = Yii::$app->authManager;
-	    $roleObject = $auth->getRole('registered');
+	    $roleObject = $auth->getRole($role);
 
 	    if (!$roleObject) {
 		    throw new yii\base\InvalidParamException ("There is no role \"$role\".");
