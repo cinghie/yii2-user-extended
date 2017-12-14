@@ -12,6 +12,7 @@
 
 namespace cinghie\userextended\controllers;
 
+use Yii;
 use cinghie\userextended\models\Profile;
 use dektrium\user\controllers\SettingsController as BaseController;
 
@@ -22,6 +23,7 @@ class SettingsController extends BaseController
 	 * Shows profile settings form.
 	 *
 	 * @return string|\yii\web\Response
+	 * @throws \yii\base\Exception
 	 * @throws \yii\base\ExitException
 	 * @throws \yii\base\InvalidCallException
 	 * @throws \yii\base\InvalidConfigException
@@ -30,19 +32,19 @@ class SettingsController extends BaseController
     public function actionProfile()
     {
         // Load Model
-        $model = $this->finder->findProfileById(\Yii::$app->user->identity->getId());
+        $model = $this->finder->findProfileById( Yii::$app->user->identity->getId());
 
         // If Profile not exist create it
         if ($model === null) {
-            $model = \Yii::createObject(Profile::className());
-            $model->link('user', \Yii::$app->user->identity);
+            $model = Yii::createObject(Profile::className());
+            $model->link('user', Yii::$app->user->identity);
         }
 
         // Load Old Image
         $oldImage = $model->avatar;
 
         // Load avatarPath from Module Params
-        $avatarPath = \Yii::getAlias(\Yii::$app->getModule('userextended')->avatarPath);
+        $avatarPath = Yii::getAlias( Yii::$app->getModule('userextended')->avatarPath);
 
         // Create uploadAvatar Instance
         $image = $model->uploadAvatar($avatarPath);
@@ -55,7 +57,7 @@ class SettingsController extends BaseController
 
         $this->trigger(self::EVENT_BEFORE_PROFILE_UPDATE, $event);
 
-        if ($model->load(\Yii::$app->request->post()) && $model->save()) {
+        if ( $model->load( Yii::$app->request->post()) && $model->save()) {
 
             // revert back if no valid file instance uploaded
             if ($image === false) {
@@ -73,7 +75,7 @@ class SettingsController extends BaseController
                 $model->avatar = $image->name;
             }
 
-            \Yii::$app->getSession()->setFlash('success', \Yii::t('user', 'Your profile has been updated'));
+            Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Your profile has been updated'));
 
             $this->trigger(self::EVENT_AFTER_PROFILE_UPDATE, $event);
 

@@ -16,6 +16,12 @@ use Yii;
 use dektrium\user\models\User as BaseUser;
 use yii\db\Query;
 
+/**
+ *
+ * @property mixed $role
+ * @property array[] $rolesHTML
+ * @property \yii\db\ActiveQuery $roles
+ */
 class User extends BaseUser
 {
 

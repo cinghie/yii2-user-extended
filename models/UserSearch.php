@@ -63,7 +63,7 @@ class UserSearch extends BaseUserSearch
             'rule'            => \Yii::t('rbac', 'Rule'),
             'created_at'      => \Yii::t('user', 'Registration time'),
             'registration_ip' => \Yii::t('user', 'Registration ip'),
-            'last_login_at'   => \Yii::t('userextended', 'Last Login')
+            'last_login_at'   => \Yii::t('userextended', 'Last login')
         ];
     }
 

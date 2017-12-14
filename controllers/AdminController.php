@@ -87,6 +87,7 @@ class AdminController extends BaseController
 	 * @param int $id
 	 *
 	 * @return mixed
+	 * @throws \yii\base\Exception
 	 * @throws \yii\base\ExitException
 	 * @throws \yii\base\InvalidCallException
 	 * @throws \yii\base\InvalidConfigException
@@ -154,43 +155,6 @@ class AdminController extends BaseController
     }
 
 	/**
-	 * Deletes selected User models.
-	 * If deletion is successful, the browser will be redirected to the 'index' page.
-	 *
-	 * @return mixed
-	 * @throws \Exception
-	 * @throws \yii\db\Exception
-	 * @throws \yii\base\InvalidConfigException
-	 * @throws \yii\base\InvalidParamException
-	 * @throws \yii\db\StaleObjectException
-	 * @throws \yii\web\NotFoundHttpException
-	 */
-    public function actionDeletemultiple()
-    {
-        $ids = \Yii::$app->request->post('ids');
-
-        if (!$ids) {
-            return;
-        }
-
-        foreach ($ids as $id) {
-	        \Yii::$app->db->createCommand()->delete('{{%auth_assignment}}', ['user_id' => $id])->execute();
-            $this->findModel($id)->delete();
-        }
-
-        // Set Success Message
-        \Yii::$app->session->setFlash('success', \Yii::t('userextended', 'Delete Success!'));
-
-        $searchModel  = \Yii::createObject(UserSearch::className());
-        $dataProvider = $searchModel->search(\Yii::$app->request->get());
-
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-            'searchModel'  => $searchModel,
-        ]);
-    }
-
-	/**
 	 * Blocks the user.
 	 *
 	 * @param int $id
@@ -226,7 +190,6 @@ class AdminController extends BaseController
 	 * Active selected User models.
 	 * If deletion is successful, the browser will be redirected to the 'index' page.
 	 *
-	 * @return mixed
 	 * @throws \yii\web\NotFoundHttpException
 	 */
     public function actionActivemultiple()
@@ -251,7 +214,6 @@ class AdminController extends BaseController
 	 * Deactive selected User models.
 	 * If deletion is successful, the browser will be redirected to the 'index' page.
 	 *
-	 * @return mixed
 	 * @throws \yii\web\NotFoundHttpException
 	 */
     public function actionDeactivemultiple()
@@ -272,5 +234,42 @@ class AdminController extends BaseController
             }
         }
     }
+
+	/**
+	 * Deletes selected User models.
+	 * If deletion is successful, the browser will be redirected to the 'index' page.
+	 *
+	 * @throws \Exception
+	 * @throws \yii\base\InvalidConfigException
+	 * @throws \yii\base\InvalidParamException
+	 * @throws \yii\db\Exception
+	 * @throws \yii\db\StaleObjectException
+	 * @throws \yii\web\NotFoundHttpException
+	 * @throws \Throwable
+	 */
+	public function actionDeletemultiple()
+	{
+		$ids = \Yii::$app->request->post('ids');
+
+		if (!$ids) {
+			return;
+		}
+
+		foreach ($ids as $id) {
+			\Yii::$app->db->createCommand()->delete('{{%auth_assignment}}', ['user_id' => $id])->execute();
+			$this->findModel($id)->delete();
+		}
+
+		// Set Success Message
+		\Yii::$app->session->setFlash('success', \Yii::t('userextended', 'Delete Success!'));
+
+		$searchModel  = \Yii::createObject(UserSearch::className());
+		$dataProvider = $searchModel->search(\Yii::$app->request->get());
+
+		return $this->render('index', [
+			'dataProvider' => $dataProvider,
+			'searchModel'  => $searchModel,
+		]);
+	}
 
 }
