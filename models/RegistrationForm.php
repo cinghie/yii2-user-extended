@@ -91,6 +91,7 @@ class RegistrationForm extends BaseRegistrationForm
 	 * Registers a new user account. If registration was successful it will set flash message.
 	 *
 	 * @return bool
+	 * @throws \Exception
 	 * @throws \yii\base\InvalidConfigException
 	 * @throws \yii\base\InvalidParamException
 	 */

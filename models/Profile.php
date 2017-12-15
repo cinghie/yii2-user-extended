@@ -111,7 +111,8 @@ class Profile extends BaseProfile
 	 * Upload file
 	 *
 	 * @param $filePath
-	 * @return mixed the uploaded image instance
+	 *
+	 * @return mixed
 	 * @throws \yii\base\Exception
 	 */
     public function uploadAvatar($filePath)
@@ -175,7 +176,7 @@ class Profile extends BaseProfile
 	 * Process deletion of image
 	 *
 	 * @param $avatarOld
-	 * @return bool the status of deletion
+	 * @return bool
 	 * @throws \yii\base\InvalidParamException
 	 */
     public function deleteImage($avatarOld)

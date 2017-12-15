@@ -11,16 +11,21 @@
  */
 
 use cinghie\traits\migrations\Migration;
-use yii\db\Schema;
 
 class m151020_213110_update_profile_table extends Migration
 {
-    
+
+	/**
+	 * @inheritdoc
+	 */
     public function up()
     {
 	    $this->addColumn('{{%profile}}', 'signature', $this->text()->after('bio'));
     }
 
+	/**
+	 * @inheritdoc
+	 */
     public function down()
     {
         $this->dropColumn('{{%profile}}', 'signature');

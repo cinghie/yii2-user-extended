@@ -252,7 +252,7 @@ class AdminController extends BaseController
 		$ids = \Yii::$app->request->post('ids');
 
 		if (!$ids) {
-			return;
+			return false;
 		}
 
 		foreach ($ids as $id) {

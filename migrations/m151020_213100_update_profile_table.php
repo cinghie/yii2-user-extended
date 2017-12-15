@@ -15,7 +15,10 @@ use yii\db\Schema;
 
 class m151020_213100_update_profile_table extends Migration
 {
-    
+
+	/**
+	 * @inheritdoc
+	 */
     public function up()
     {
         $this->addColumn('{{%profile}}', 'firstname', Schema::TYPE_STRING. ' DEFAULT NULL');
@@ -25,6 +28,9 @@ class m151020_213100_update_profile_table extends Migration
         $this->addColumn('{{%profile}}', 'terms', 'tinyint(1) NOT NULL DEFAULT 0');
     }
 
+	/**
+	 * @inheritdoc
+	 */
     public function down()
     {
         $this->dropColumn('{{%profile}}', 'firstname');

@@ -21,6 +21,7 @@ use yii\web\NotFoundHttpException;
  */
 class BackendFilter extends ActionFilter
 {
+
     /**
      * @var array
      */
