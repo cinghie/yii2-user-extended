@@ -20,6 +20,7 @@
     "require": {
         "yiisoft/yii2": "*",
         "yiisoft/yii2-jui": "*",
+        "cinghie/yii2-traits": "*",
         "dektrium/yii2-user": "*",
         "dektrium/yii2-rbac": "*",
         "kartik-v/yii2-widgets": "*"
