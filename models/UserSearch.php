@@ -114,16 +114,14 @@ class UserSearch extends BaseUserSearch
             $query->andFilterWhere(['between', $table_name . '.created_at', $date, $date + 3600 * 24]);
         }
 
-        $query->andFilterWhere([
-            'id' => $this->id
-        ]);
-
         $query->andFilterWhere(['like', 'username', $this->username])
               ->andFilterWhere(['like', 'profile.firstname', $this->firstname])
               ->andFilterWhere(['like', 'profile.lastname', $this->lastname])
               ->andFilterWhere(['like', 'profile.birthday', $this->birthday])
               ->andFilterWhere(['like', 'email', $this->email])
-              ->andFilterWhere(['registration_ip' => $this->registration_ip]);
+              ->andFilterWhere([$table_name . '.id' => $this->id])
+              ->andFilterWhere([$table_name . 'registration_ip' => $this->registration_ip])
+              ->andFilterWhere([$table_name . '.registration_ip' => $this->registration_ip]);
 
         if ($this->rule !== '') {
             $query->andWhere('`id` IN (
