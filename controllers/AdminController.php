@@ -16,10 +16,19 @@ use cinghie\userextended\models\Profile;
 use cinghie\userextended\models\User;
 use cinghie\userextended\models\UserSearch;
 use dektrium\user\controllers\AdminController as BaseController;
+use Throwable;
+use yii\base\Exception;
+use yii\base\ExitException;
+use yii\base\InvalidCallException;
+use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
+use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\filters\AccessRule;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
+use yii\web\NotFoundHttpException;
+use yii\Web\Response;
 
 class AdminController extends BaseController
 {
@@ -66,8 +75,8 @@ class AdminController extends BaseController
 	 * Lists all User models.
 	 *
 	 * @return mixed
-	 * @throws \yii\base\InvalidConfigException
-	 * @throws \yii\base\InvalidParamException
+	 * @throws InvalidConfigException
+	 * @throws InvalidParamException
 	 */
     public function actionIndex()
     {
@@ -87,12 +96,12 @@ class AdminController extends BaseController
 	 * @param int $id
 	 *
 	 * @return mixed
-	 * @throws \yii\base\Exception
-	 * @throws \yii\base\ExitException
-	 * @throws \yii\base\InvalidCallException
-	 * @throws \yii\base\InvalidConfigException
-	 * @throws \yii\base\InvalidParamException
-	 * @throws \yii\web\NotFoundHttpException
+	 * @throws Exception
+	 * @throws ExitException
+	 * @throws InvalidCallException
+	 * @throws InvalidConfigException
+	 * @throws InvalidParamException
+	 * @throws NotFoundHttpException
 	 */
     public function actionUpdateProfile($id)
     {
@@ -159,9 +168,9 @@ class AdminController extends BaseController
 	 *
 	 * @param int $id
 	 *
-	 * @return \yii\Web\Response
-	 * @throws \yii\base\InvalidConfigException
-	 * @throws \yii\web\NotFoundHttpException
+	 * @return Response
+	 * @throws InvalidConfigException
+	 * @throws NotFoundHttpException
 	 */
     public function actionBlock($id)
     {
@@ -190,7 +199,7 @@ class AdminController extends BaseController
 	 * Active selected User models.
 	 * If deletion is successful, the browser will be redirected to the 'index' page.
 	 *
-	 * @throws \yii\web\NotFoundHttpException
+	 * @throws NotFoundHttpException
 	 */
     public function actionActivemultiple()
     {
@@ -214,7 +223,7 @@ class AdminController extends BaseController
 	 * Deactive selected User models.
 	 * If deletion is successful, the browser will be redirected to the 'index' page.
 	 *
-	 * @throws \yii\web\NotFoundHttpException
+	 * @throws NotFoundHttpException
 	 */
     public function actionDeactivemultiple()
     {
@@ -240,12 +249,12 @@ class AdminController extends BaseController
 	 * If deletion is successful, the browser will be redirected to the 'index' page.
 	 *
 	 * @throws \Exception
-	 * @throws \yii\base\InvalidConfigException
-	 * @throws \yii\base\InvalidParamException
 	 * @throws \yii\db\Exception
-	 * @throws \yii\db\StaleObjectException
-	 * @throws \yii\web\NotFoundHttpException
-	 * @throws \Throwable
+	 * @throws InvalidConfigException
+	 * @throws InvalidParamException
+	 * @throws NotFoundHttpException
+	 * @throws StaleObjectException
+	 * @throws Throwable
 	 */
 	public function actionDeletemultiple()
 	{

@@ -36,7 +36,7 @@ class BackendFilter extends ActionFilter
      */
     public function beforeAction($action)
     {
-        if (in_array($action->controller->id, $this->controllers)) {
+        if ( in_array( $action->controller->id, $this->controllers, true ) ) {
             throw new NotFoundHttpException(Yii::t('traits','Page not found'));
         }
 
