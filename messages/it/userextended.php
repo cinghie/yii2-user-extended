@@ -23,7 +23,7 @@ return [
     'All Users' => 'Tutti gli Utenti',
     'Avatar' => 'Avatar',
     'Birthday' => 'Data di Nascita',
-    'By clicking I Agree, you agree to the Terms and Conditions set out by this site, including our Cookie Use.' => 'Mettando la spunta ad ACCONSENTO, accetti tutti e Termini e le Condizioni del sito, incluso l\'uso dei Cookie',
+    'By clicking I Agree, you agree to the Terms and Conditions set out by this site, including our Cookie Use.' => 'Mettando la spunta, accetti tutti e Termini e le Condizioni del sito, incluso l\'uso dei Cookie',
     'Captcha' => 'Codice di Sicurezza',
 	'Change Avatar' => 'Cambia Avatar',
 	'Delete Success!' => 'Cancellazione eseguita con successo!',
