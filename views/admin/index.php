@@ -108,6 +108,7 @@ $this->registerJs('$(document).ready(function()
                 'attribute' => 'birthday',
                 'hAlign' => 'center',
                 'value' => 'profile.birthday',
+                'visible' => \Yii::$app->getModule('userextended')->birthday ? true : false,
                 'width' => '9%',
             ],
             [
