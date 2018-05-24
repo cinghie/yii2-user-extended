@@ -41,7 +41,7 @@ use yii\helpers\Html;
                 </div>
             </div>
 
-            <?= $form->field($profile, 'avatar')->widget(FileInput::className(), [
+            <?= $form->field($profile, 'avatar')->widget(FileInput::class, [
                 'options' => ['accept'=>'image/*'],
                 'pluginOptions' => [
                     'allowedFileExtensions'=> ['jpg','gif','png'],
@@ -70,7 +70,7 @@ use yii\helpers\Html;
         <?php endif ?>
 
         <?php if(Yii::$app->getModule('userextended')->birthday): ?>
-            <?= $form->field($profile, 'birthday')->widget(DatePicker::className(), [
+            <?= $form->field($profile, 'birthday')->widget(DatePicker::class, [
                 'pluginOptions' => [
                     'autoclose' => true,
                     'format' => 'yyyy-mm-dd',

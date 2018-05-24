@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             <div class="col-md-12 col-md-offset-3">
 
-			                    <?= $form->field($model, 'avatar')->widget(FileInput::className(), [
+			                    <?= $form->field($model, 'avatar')->widget(FileInput::class, [
 			                        'class' => 'col-md-12',
 				                    'options' => ['accept'=>'image/*'],
 				                    'pluginOptions' => [
@@ -111,7 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     } ?>
 
                     <?php if(\Yii::$app->getModule('userextended')->birthday) {
-                        echo $form->field($model, 'birthday')->widget(DatePicker::className(), [
+                        echo $form->field($model, 'birthday')->widget(DatePicker::class, [
                             'pluginOptions' => [
                                 'autoclose' => true,
                                 'format' => 'yyyy-mm-dd',

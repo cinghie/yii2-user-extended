@@ -74,7 +74,7 @@ class User extends BaseUser
      */
     public function getRoles()
     {
-        return $this->hasMany(Assignment::className(), ['user_id' => 'id'])->from(Assignment::tableName() . ' AS role');
+        return $this->hasMany(Assignment::class, ['user_id' => 'id'])->from(Assignment::tableName() . ' AS role');
     }
 
 	/**

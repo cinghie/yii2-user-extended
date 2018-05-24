@@ -62,7 +62,7 @@ use yii\helpers\Html;
 
 				            <?php if(Yii::$app->getModule('userextended')->birthday): ?>
 
-					            <?= $form->field($model, 'birthday')->widget(DatePicker::className(), [
+					            <?= $form->field($model, 'birthday')->widget(DatePicker::class, [
 						            'pluginOptions' => [
 							            'autoclose' => true,
 							            'format' => 'yyyy-mm-dd',
@@ -85,7 +85,7 @@ use yii\helpers\Html;
 
                             <div class="col-md-12">
 
-					            <?= $form->field($model, 'captcha')->widget(Captcha::className(), [
+					            <?= $form->field($model, 'captcha')->widget(Captcha::class, [
 						            'captchaAction' => ['/site/captcha'],
 						            'options' => ['class' => 'form-control'],
 						            'template' => '<div class="row"><div class="col-md-6">{input}</div><div class="col-md-6">{image}</div></div>'

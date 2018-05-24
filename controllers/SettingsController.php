@@ -36,7 +36,7 @@ class SettingsController extends BaseController
 
         // If Profile not exist create it
         if ($model === null) {
-            $model = Yii::createObject(Profile::className());
+            $model = Yii::createObject(Profile::class);
             $model->link('user', Yii::$app->user->identity);
         }
 

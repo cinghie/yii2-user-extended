@@ -53,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'header'    => \Yii::t('rbac', 'Rule name'),
         ],
         [
-            'class' => ActionColumn::className(),
+            'class' => ActionColumn::class,
             'template' => '{delete}',
             'urlCreator' => function ($action, $model) {
                 return Url::to(['/rbac/permission/' . $action, 'name' => $model['name']]);

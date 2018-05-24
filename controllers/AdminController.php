@@ -30,9 +30,9 @@ class AdminController extends BaseController
     {
         return [
 	        'access' => [
-		        'class' => AccessControl::className(),
+		        'class' => AccessControl::class,
 		        'ruleConfig' => [
-			        'class' => AccessRule::className(),
+			        'class' => AccessRule::class,
 		        ],
 		        'rules' => [
 			        [
@@ -47,7 +47,7 @@ class AdminController extends BaseController
 		        ],
 	        ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'activemultiple'   => ['post'],
                     'deactivemultiple' => ['post'],
@@ -72,7 +72,7 @@ class AdminController extends BaseController
     public function actionIndex()
     {
         Url::remember('', 'actions-redirect');
-        $searchModel  = \Yii::createObject(UserSearch::className());
+        $searchModel  = \Yii::createObject(UserSearch::class);
         $dataProvider = $searchModel->search(\Yii::$app->request->get());
 
         return $this->render('index', [
@@ -102,7 +102,7 @@ class AdminController extends BaseController
         $profile = $user->profile;
 
         if ($profile === null) {
-            $profile = \Yii::createObject(Profile::className());
+            $profile = \Yii::createObject(Profile::class);
             $profile->link('user', $user);
         }
 
@@ -263,7 +263,7 @@ class AdminController extends BaseController
 		// Set Success Message
 		\Yii::$app->session->setFlash('success', \Yii::t('userextended', 'Delete Success!'));
 
-		$searchModel  = \Yii::createObject(UserSearch::className());
+		$searchModel  = \Yii::createObject(UserSearch::class);
 		$dataProvider = $searchModel->search(\Yii::$app->request->get());
 
 		return $this->render('index', [

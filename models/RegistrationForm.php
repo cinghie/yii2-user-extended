@@ -102,7 +102,7 @@ class RegistrationForm extends BaseRegistrationForm
 		}
 
 		/** @var User $user */
-		$user = Yii::createObject(User::className());
+		$user = Yii::createObject(User::class);
 		$user->setScenario('register');
 		$this->loadAttributes($user);
 
@@ -138,7 +138,7 @@ class RegistrationForm extends BaseRegistrationForm
             'password' => $this->password,
         ]);
 
-	    $profile = \Yii::createObject(Profile::className());
+	    $profile = \Yii::createObject(Profile::class);
 
 	    if(\Yii::$app->getModule('userextended')->birthday) {
 		    $profile->setAttributes([
