@@ -98,11 +98,13 @@ $this->registerJs('$(document).ready(function()
                 'attribute' => 'firstname',
                 'hAlign' => 'center',
                 'value' => 'profile.firstname',
+                'visible' => \Yii::$app->getModule('userextended')->firstname ? true : false,
             ],
             [
                 'attribute' => 'lastname',
                 'hAlign' => 'center',
                 'value' => 'profile.lastname',
+                'visible' => \Yii::$app->getModule('userextended')->lastname ? true : false,
             ],
             [
                 'attribute' => 'birthday',
