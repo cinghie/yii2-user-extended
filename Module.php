@@ -12,15 +12,15 @@
 
 namespace cinghie\userextended;
 
-use Yii;
 use dektrium\user\Module as BaseUser;
+use yii\i18n\PhpMessageSource;
 
 class Module extends BaseUser
 {
     /**
      * @var string Module version
      */
-    protected $_version = "0.6.2";
+    private $version = '0.6.2';
 
     /**
      * @var string Path to avatar file
@@ -140,7 +140,7 @@ class Module extends BaseUser
      */
     public function getVersion()
     {
-        return $this->_version;
+        return $this->version;
     }
 
     /**
@@ -151,7 +151,7 @@ class Module extends BaseUser
         if (empty(\Yii::$app->i18n->translations['userextended']))
         {
             \Yii::$app->i18n->translations['userextended'] = [
-                'class' => 'yii\i18n\PhpMessageSource',
+                'class' => PhpMessageSource::class,
                 'basePath' => __DIR__ . '/messages',
                 //'forceTranslation' => true,
             ];

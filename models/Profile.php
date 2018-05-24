@@ -85,7 +85,6 @@ class Profile extends BaseProfile
 
 	    if(\Yii::$app->getModule('userextended')->signature) {
 		    $rules['signatureLength'] = ['signature', 'string'];
-		    $rules['signatureRequired'] = ['signature', 'required'];
 		    $rules['signatureTrim'] = ['signature', 'trim'];
 	    }
 

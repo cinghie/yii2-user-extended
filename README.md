@@ -89,10 +89,10 @@ Set on your configuration file, in modules section
         'location' => false,
         'onlyEmail' => false,
         'publicEmail' => false,
-        'website' => false,
-        'templateRegister' => '_two_column',
         'signature' => true,
+        'templateRegister' => '_two_column',
         'terms' => true,
+        'website' => false,
         'showTitles' => true, // Set false in adminLTE
     ],
 ]
