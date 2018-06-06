@@ -36,7 +36,7 @@ $fieldOptions2 = [
         <a href="#"><b><?= \Yii::$app->name ?></b></a>
     </div>
     <div class="login-box-body">
-        <p class="login-box-msg"><?= Html::encode($this->title) ?></p>
+        <p class="login-box-msg"><?= \Yii::t('userextended','Type your credentials') ?></p>
         <?php $form = ActiveForm::begin([
             'id'                     => 'login-form',
             'enableAjaxValidation'   => true,

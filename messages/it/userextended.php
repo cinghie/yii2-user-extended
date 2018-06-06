@@ -51,6 +51,7 @@ return [
     'Select only 1 item' => 'Seleziona solo 1 elemento!',
 	'Select role' => 'Ruolo ...',
 	'Signature' => 'Firma',
+	'Type your credentials' => 'Inserisci le tue credenziali',
     'Update' => 'Modifica',
 	'You must agree to the terms and conditions' => 'Devi accettare Termini&Condizioni',
 ];
