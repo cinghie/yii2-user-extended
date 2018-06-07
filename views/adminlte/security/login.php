@@ -36,8 +36,8 @@ $fieldOptions2 = [
         <a href="#"><b><?= \Yii::$app->name ?></b></a>
     </div>
     <div class="login-box-body">
-        <div class="bg-aqua">
-            <p class="login-box-msg"><?= \Yii::t('userextended','Type your credentials') ?></p>
+        <div class="bg-aqua" style="padding: 10px 0; margin-bottom: 15px;">
+            <p class="login-box-msg" style="padding: 0;"><?= \Yii::t('userextended','Type your credentials') ?></p>
         </div>     
         <?php $form = ActiveForm::begin([
             'id'                     => 'login-form',
