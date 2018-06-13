@@ -99,7 +99,7 @@ use yii\helpers\Html;
         <?php endif ?>
 
         <?php if(Yii::$app->getModule('userextended')->signature): ?>
-            <?= $form->field($profile, 'signature')->textarea() ?>
+            <?= $profile->getEditorWidget($form, 'signature', $requestEditor = 'imperavi') ?>
         <?php endif ?>
 
         <div class="form-group">

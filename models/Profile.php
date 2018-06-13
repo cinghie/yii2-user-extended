@@ -12,11 +12,13 @@
 
 namespace cinghie\userextended\models;
 
+use cinghie\traits\EditorTrait;
 use dektrium\user\models\Profile as BaseProfile;
 use yii\web\UploadedFile;
 
 class Profile extends BaseProfile
 {
+	use EditorTrait;
 
 	/**
 	 * @inheritdoc
