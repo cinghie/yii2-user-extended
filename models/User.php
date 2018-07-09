@@ -12,15 +12,22 @@
 
 namespace cinghie\userextended\models;
 
+use Exception;
 use Yii;
 use dektrium\user\models\User as BaseUser;
+use yii\base\InvalidParamException;
+use yii\db\ActiveQuery;
 use yii\db\Query;
+use yii\helpers\Html;
+use yii\rbac\Role;
 
 /**
+ * User ActiveRecord extends \dektrium\user\models\User
  *
+ * @property ActiveQuery $roles
  * @property mixed $role
  * @property array[] $rolesHTML
- * @property \yii\db\ActiveQuery $roles
+ * @property string $fullName
  */
 class User extends BaseUser
 {
@@ -50,7 +57,7 @@ class User extends BaseUser
 	 * If onlyEmail is true, username is email
 	 *
 	 * @return bool
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function beforeValidate()
 	{
@@ -62,7 +69,7 @@ class User extends BaseUser
 	}
 
 	/**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getProfile()
     {
@@ -70,7 +77,7 @@ class User extends BaseUser
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getRoles()
     {
@@ -78,10 +85,20 @@ class User extends BaseUser
     }
 
 	/**
+	 * Get Fullname
+	 *
+	 * @return string
+	 */
+	public function getFullName()
+    {
+    	return Html::encode($this->profile->firstname).' '.Html::encode($this->profile->lastname);
+    }
+
+	/**
 	 * Get Rules by UserID
 	 *
-	 * @param $userid
-	 * @return \yii\rbac\Role[]
+	 * @param User $userid
+	 * @return Role[]
 	 */
     public function getRulesByUserID($userid)
     {
@@ -93,8 +110,8 @@ class User extends BaseUser
 	 *
 	 * @param $role
 	 *
-	 * @throws \Exception
-	 * @throws \yii\base\InvalidParamException
+	 * @throws Exception
+	 * @throws InvalidParamException
 	 */
     public function setRole($role)
     {
@@ -102,7 +119,7 @@ class User extends BaseUser
 	    $roleObject = $auth->getRole($role);
 
 	    if (!$roleObject) {
-		    throw new yii\base\InvalidParamException ("There is no role \"$role\".");
+		    throw new InvalidParamException ("There is no role \"$role\".");
 	    }
 
 	    $auth->assign($roleObject, $this->id);
