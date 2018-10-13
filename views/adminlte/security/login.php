@@ -31,12 +31,16 @@ $fieldOptions2 = [
 
     <div class="login-box-body">
 
-        <div class="bg-aqua" style="padding: 10px 0; margin-bottom: 15px;">
-            <p class="login-box-msg" style="padding: 0;"><?= \Yii::t('userextended','Type your credentials') ?></p>
-        </div>
+	    <?php if (Yii::$app->session->hasFlash('login')): ?>
+            <div class="bg-aqua" style="padding: 10px 0; margin-bottom: 15px;">
+                <p class="login-box-msg" style="padding: 0;">
+                    <?= Yii::$app->session->getFlash('login') ?>
+                </p>
+            </div>
+	    <?php endif ?>
 
         <?php $form = ActiveForm::begin([
-            'id'                     => 'login-form',
+            'id' => 'login-form',
             'enableAjaxValidation'   => true,
             'enableClientValidation' => false,
             'validateOnBlur'         => false,
