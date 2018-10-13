@@ -1,13 +1,9 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Gogodigital Srls
- * @company Gogodigital Srls - Wide ICT Solutions
- * @website http://www.gogodigital.it
- * @github https://github.com/cinghie/yii2-user-extended
- * @license GNU GENERAL PUBLIC LICENSE VERSION 3
- * @package yii2-user-extended
- * @version 0.5.2
+ * @var yii\web\View $this
+ * @var dektrium\user\models\User $model
+ * @var dektrium\user\Module $module
  */
 
 use dektrium\user\widgets\Connect;
@@ -44,7 +40,7 @@ use yii\helpers\Html;
 
 				            <?= $form->field($model, 'email') ?>
 
-				            <?php if ($module->enableGeneratingPassword == false): ?>
+				            <?php if ($module->enableGeneratingPassword === false): ?>
 					            <?= $form->field($model, 'password')->passwordInput() ?>
 				            <?php endif ?>
 

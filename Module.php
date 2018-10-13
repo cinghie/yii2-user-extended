@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.1
+ * @version 0.7.0
  */
 
 namespace cinghie\userextended;
@@ -20,7 +20,7 @@ class Module extends BaseUser
     /**
      * @var string Module version
      */
-    private $version = '0.6.2';
+    private $version = '0.7.0';
 
     /**
      * @var string Path to avatar file
@@ -103,11 +103,16 @@ class Module extends BaseUser
 	public $website = false;
 
 	/**
+	 * @var string login template
+	 */
+	public $templateLogin = 'login';
+
+	/**
 	 * @var string register template
 	 */
 	public $templateRegister = '_two_column';
 
-    /**
+	/**
      * @var boolean showAlert in views
      */
     public $showAlert = true;

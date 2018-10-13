@@ -6,8 +6,8 @@
  * @var $this yii\web\View
  */
 
-use kartik\grid\CheckboxColumn;
 use kartik\grid\GridView;
+use kartik\grid\ActionColumn;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -28,9 +28,6 @@ $this->params['breadcrumbs'][] = $this->title;
     'filterModel'  => $filterModel,
     'layout'       => "{items}\n{pager}",
     'columns'      => [
-	    [
-		    'class' => CheckboxColumn::class
-	    ],
         [
             'attribute' => 'name',
             'format' => 'html',
@@ -49,16 +46,23 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'rule_name',
             'hAlign' => 'center',
-            'header' => \Yii::t('rbac', 'Rule name'),
+            'header'    => \Yii::t('rbac', 'Rule name'),
+        ],
+        [
+            'class' => ActionColumn::class,
+            'template' => '{delete}',
+            'urlCreator' => function ($action, $model) {
+                return Url::to(['/rbac/permission/' . $action, 'name' => $model['name']]);
+            },
         ]
     ],
     'responsive' => true,
     'hover' => true,
     'panel' => [
-        'heading' => '<h3 class="panel-title"><i class="fa fa-user-secret"></i></h3>',
-        'type' => 'success',
+        'heading'    => '<h3 class="panel-title"><i class="fa fa-user-secret"></i></h3>',
+        'type'       => 'success',
         'showFooter' => false
-    ]
+    ],
 ]) ?>
 
 <?php $this->endContent() ?>

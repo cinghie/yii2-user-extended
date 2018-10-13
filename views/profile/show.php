@@ -1,20 +1,17 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Gogodigital Srls
- * @company Gogodigital Srls - Wide ICT Solutions
- * @website http://www.gogodigital.it
- * @github https://github.com/cinghie/yii2-user-extended
- * @license GNU GENERAL PUBLIC LICENSE VERSION 3
- * @package yii2-user-extended
- * @version 0.6.1
+ * @var \yii\web\View $this
+ * @var \cinghie\user\models\Profile $profile
  */
 
 use yii\helpers\Html;
 
 $this->title = empty($profile->name) ? Html::encode($profile->user->username) : Html::encode($profile->name);
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
+
 <div class="row">
     <div class="col-md-12 user-image">
         <div class="row">

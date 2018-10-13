@@ -7,11 +7,12 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.1
+ * @version 0.7.0
  */
 
 namespace cinghie\userextended\controllers;
 
+use Yii;
 use dektrium\user\controllers\SecurityController as BaseController;
 use dektrium\user\models\LoginForm;
 use yii\base\ExitException;
@@ -28,32 +29,33 @@ class SecurityController extends BaseController
 	 */
 	public function actionLogin()
 	{
-		if (!\Yii::$app->user->isGuest) {
+		if (!Yii::$app->user->isGuest) {
 			$this->goHome();
 		}
 
 		/** @var LoginForm $model */
-		$model = \Yii::createObject(LoginForm::className());
+		$model = Yii::createObject(LoginForm::className());
 		$event = $this->getFormEvent($model);
 
 		$this->performAjaxValidation($model);
-
 		$this->trigger(self::EVENT_BEFORE_LOGIN, $event);
 
-		\Yii::$app->session->setFlash('login', \Yii::t('userextended','Type your credentials'));
+		Yii::$app->session->setFlash('login', Yii::t('userextended','Type your credentials'));
 
-		if($model->load(\Yii::$app->getRequest()->post()))
+		if($model->load(Yii::$app->getRequest()->post()))
 		{
 			if ($model->login()) {
-				\Yii::$app->getSession()->setFlash('login', \Yii::t('userextended', 'Login successful'));
+				Yii::$app->session->setFlash('login', Yii::t('userextended', 'Login successful'));
 				$this->trigger(self::EVENT_AFTER_LOGIN, $event);
 				return $this->goBack();
 			}
 
-			\Yii::$app->session->setFlash('login', \Yii::t('userextended', 'Incorrect Username or Password'));
+			Yii::$app->session->setFlash('login', Yii::t('userextended', 'Incorrect Username or Password'));
 		}
 
-		return $this->render('login', [
+		$view = Yii::$app->getModule('userextended')->templateLogin;
+
+		return $this->render($view, [
 			'model'  => $model,
 			'module' => $this->module,
 		]);

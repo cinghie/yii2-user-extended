@@ -7,16 +7,16 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.1
+ * @version 0.7.0
  */
 
 namespace cinghie\userextended\controllers;
 
+use Throwable;
 use cinghie\userextended\models\Profile;
 use cinghie\userextended\models\User;
 use cinghie\userextended\models\UserSearch;
 use dektrium\user\controllers\AdminController as BaseController;
-use Throwable;
 use yii\base\Exception;
 use yii\base\ExitException;
 use yii\base\InvalidCallException;
@@ -136,16 +136,12 @@ class AdminController extends BaseController
         {
             // revert back if no valid file instance uploaded
             if ($image === false) {
-
                 $profile->avatar = $oldImage;
-
             } else {
-
                 // if is there an old image, delete it
                 if($oldImage) {
                     $profile->deleteImage($oldImage);
                 }
-
                 // upload new avatar
                 $profile->avatar = $image->name;
             }
