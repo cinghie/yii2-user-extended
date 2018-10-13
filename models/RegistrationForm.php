@@ -12,20 +12,20 @@
 
 namespace cinghie\userextended\models;
 
+use Exception;
 use Yii;
 use dektrium\user\models\RegistrationForm as BaseRegistrationForm;
+use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 
 class RegistrationForm extends BaseRegistrationForm
 {
-
     /**
-     * Add a new fields
-     *
-     * string $name
-     * string $firstname
-     * string $lastname
-     * integer $terms
-     * string $captcha
+     * @var string $name
+     * @var string $firstname
+     * @var string $lastname
+     * @var integer $terms
+     * @var string $captcha
      */
     public $name;
     public $firstname;
@@ -91,9 +91,9 @@ class RegistrationForm extends BaseRegistrationForm
 	 * Registers a new user account. If registration was successful it will set flash message.
 	 *
 	 * @return bool
-	 * @throws \Exception
-	 * @throws \yii\base\InvalidConfigException
-	 * @throws \yii\base\InvalidParamException
+	 * @throws Exception
+	 * @throws InvalidConfigException
+	 * @throws InvalidParamException
 	 */
 	public function register()
 	{
@@ -128,7 +128,7 @@ class RegistrationForm extends BaseRegistrationForm
 	/**
 	 * @inheritdoc
 	 *
-	 * @throws \yii\base\InvalidConfigException
+	 * @throws InvalidConfigException
 	 */
     protected function loadAttributes(\dektrium\user\models\User $user)
     {

@@ -19,9 +19,11 @@ use yii\data\ActiveDataProvider;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 
+/**
+ * @property array $nameList
+ */
 class UserSearch extends BaseUserSearch
 {
-
 	use ViewsHelpersTrait;
 
     /** @var string */
@@ -71,7 +73,7 @@ class UserSearch extends BaseUserSearch
 	 * @param $params
 	 *
 	 * @return ActiveDataProvider
-	 * @throws \yii\base\InvalidParamException
+	 * @throws InvalidParamException
 	 */
     public function search($params)
     {

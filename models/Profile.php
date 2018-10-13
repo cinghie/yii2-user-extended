@@ -14,8 +14,20 @@ namespace cinghie\userextended\models;
 
 use cinghie\traits\EditorTrait;
 use dektrium\user\models\Profile as BaseProfile;
+use yii\base\Exception;
+use yii\base\InvalidParamException;
+use yii\db\ActiveQueryInterface;
 use yii\web\UploadedFile;
 
+/**
+ * Class Profile
+ *
+ * @property string $imagePath
+ * @property string $imageUrl
+ * @property string $socialImage
+ * @property ActiveQueryInterface $account
+ * @property Profile $accountAttributes
+ */
 class Profile extends BaseProfile
 {
 	use EditorTrait;
@@ -111,10 +123,10 @@ class Profile extends BaseProfile
 	/**
 	 * Upload file
 	 *
-	 * @param $filePath
+	 * @param string $filePath
 	 *
 	 * @return mixed
-	 * @throws \yii\base\Exception
+	 * @throws Exception
 	 */
     public function uploadAvatar($filePath)
     {
@@ -123,29 +135,27 @@ class Profile extends BaseProfile
         // if no file was uploaded abort the upload
         if ( null === $file ) {
             return false;
-        } else {
-
-            // file extension
-            $fileExt = $file->extension;
-            // purge filename
-            $fileName = \Yii::$app->security->generateRandomString();
-            // update file->name
-            $file->name = $fileName.".{$fileExt}";
-            // update avatar field
-            $this->avatar = $fileName.".{$fileExt}";
-            // save images to imagePath
-            $file->saveAs($filePath.$fileName.".{$fileExt}");
-
-            // the uploaded file instance
-            return $file;
         }
+
+		// file extension
+	    $fileExt = $file->extension;
+	    // purge filename
+	    $fileName = \Yii::$app->security->generateRandomString();
+	    // update file->name
+	    $file->name = $fileName.".{$fileExt}";
+	    // update avatar field
+	    $this->avatar = $fileName.".{$fileExt}";
+	    // save images to imagePath
+	    $file->saveAs($filePath.$fileName.".{$fileExt}");
+
+	    return $file;
     }
 
 	/**
 	 * fetch stored image file name with complete path
 	 *
 	 * @return string
-	 * @throws \yii\base\InvalidParamException
+	 * @throws InvalidParamException
 	 */
     public function getImagePath()
     {
@@ -156,7 +166,7 @@ class Profile extends BaseProfile
 	 * fetch stored image url
 	 *
 	 * @return string
-	 * @throws \yii\base\InvalidParamException
+	 * @throws InvalidParamException
 	 */
     public function getImageUrl()
     {
@@ -166,7 +176,7 @@ class Profile extends BaseProfile
 
         } else {
 
-            $avatar   = $this->avatar ? $this->avatar : 'default.png';
+            $avatar   = $this->avatar ?: 'default.png';
             $imageURL = \Yii::getAlias(\Yii::$app->getModule('userextended')->avatarURL).$avatar;
         }
 
@@ -176,9 +186,10 @@ class Profile extends BaseProfile
 	/**
 	 * Process deletion of image
 	 *
-	 * @param $avatarOld
+	 * @param string $avatarOld
+	 *
 	 * @return bool
-	 * @throws \yii\base\InvalidParamException
+	 * @throws InvalidParamException
 	 */
     public function deleteImage($avatarOld)
     {
@@ -209,11 +220,16 @@ class Profile extends BaseProfile
     {
         $account  = $this->getAccountAttributes();
 
-        switch($account['provider']) {
+        switch($account['provider'])
+        {
 	        case 'facebook':
-	            /** @var Account $account */
-	            $imageURL = 'https://graph.facebook.com/' . $account['client_id'] . '/picture?type=large';
-                break;
+		        /** @var Account $account */
+		        $imageURL = 'https://graph.facebook.com/' . $account['client_id'] . '/picture?type=large';
+		        break;
+	        case 'twitter':
+		        /** @var Account $account */
+		        $imageURL = '';
+		        break;
 	        default:
 		        $imageURL = null;
         }
@@ -222,7 +238,7 @@ class Profile extends BaseProfile
     }
 
     /**
-     * @return \yii\db\ActiveQueryInterface
+     * @return ActiveQueryInterface
      */
     public function getAccount()
     {
@@ -230,7 +246,7 @@ class Profile extends BaseProfile
     }
 
 	/**
-	 * @return array|Profile|null|\yii\db\ActiveRecord []
+	 * @return Profile []
 	 */
     public function getAccountAttributes()
     {

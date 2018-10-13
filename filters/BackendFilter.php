@@ -13,6 +13,7 @@
 namespace cinghie\userextended\filters;
 
 use Yii;
+use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\web\NotFoundHttpException;
 
@@ -29,10 +30,10 @@ class BackendFilter extends ActionFilter
     public $controllers = ['recovery', 'registration'];
 
     /**
-     * @param \yii\base\Action $action
+     * @param Action $action
      *
      * @return bool
-     * @throws \yii\web\NotFoundHttpException
+     * @throws NotFoundHttpException
      */
     public function beforeAction($action)
     {
