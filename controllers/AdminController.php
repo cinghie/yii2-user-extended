@@ -132,8 +132,8 @@ class AdminController extends BaseController
 
         $this->trigger(self::EVENT_BEFORE_PROFILE_UPDATE, $event);
 
-        if ($profile->load(\Yii::$app->request->post()) && $profile->save()) {
-
+        if ($profile->load(\Yii::$app->request->post()) && $profile->save())
+        {
             // revert back if no valid file instance uploaded
             if ($image === false) {
 

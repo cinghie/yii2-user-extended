@@ -1,13 +1,9 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Gogodigital Srls
- * @company Gogodigital Srls - Wide ICT Solutions
- * @website http://www.gogodigital.it
- * @github https://github.com/cinghie/yii2-user-extended
- * @license GNU GENERAL PUBLIC LICENSE VERSION 3
- * @package yii2-user-extended
- * @version 0.6.1
+ * @var yii\web\View $this
+ * @var cinghie\userextended\models\Profile $profile
+ * @var cinghie\userextended\models\User $user
  */
 
 use kartik\widgets\FileInput;

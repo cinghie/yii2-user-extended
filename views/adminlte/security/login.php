@@ -1,14 +1,6 @@
 <?php
 
-/**
- * @copyright Copyright &copy; Gogodigital Srls
- * @company Gogodigital Srls - Wide ICT Solutions
- * @website http://www.gogodigital.it
- * @github https://github.com/cinghie/yii2-user-extended
- * @license GNU GENERAL PUBLIC LICENSE VERSION 3
- * @package yii2-user-extended
- * @version 0.6.1
- */
+/** @var $module **/
 
 use dektrium\user\widgets\Connect;
 use yii\helpers\Html;
@@ -32,13 +24,17 @@ $fieldOptions2 = [
 <?= $this->render('/_alert', ['module' => \Yii::$app->getModule('user')]) ?>
 
 <div class="login-box">
+
     <div class="login-logo">
         <a href="#"><b><?= \Yii::$app->name ?></b></a>
     </div>
+
     <div class="login-box-body">
+
         <div class="bg-aqua" style="padding: 10px 0; margin-bottom: 15px;">
             <p class="login-box-msg" style="padding: 0;"><?= \Yii::t('userextended','Type your credentials') ?></p>
-        </div>     
+        </div>
+
         <?php $form = ActiveForm::begin([
             'id'                     => 'login-form',
             'enableAjaxValidation'   => true,
@@ -99,4 +95,5 @@ $fieldOptions2 = [
         ]) ?>
         
     </div>
+
 </div>

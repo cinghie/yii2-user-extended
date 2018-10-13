@@ -1,13 +1,8 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Gogodigital Srls
- * @company Gogodigital Srls - Wide ICT Solutions
- * @website http://www.gogodigital.it
- * @github https://github.com/cinghie/yii2-user-extended
- * @license GNU GENERAL PUBLIC LICENSE VERSION 3
- * @package yii2-user-extended
- * @version 0.6.1
+ * @var yii\web\View $this
+ * @var cinghie\userextended\models\UserSearch $searchModel
  */
 
 use kartik\grid\CheckboxColumn;
@@ -147,11 +142,13 @@ $this->registerJs('$(document).ready(function()
                 'value' => function ($model) {
                     if (!$model->last_login_at || $model->last_login_at === 0) {
                         return \Yii::t('userextended', 'Never');
-                    } else if (extension_loaded('intl')) {
-                        return \Yii::t('userextended', '{0, date, YYYY-MM-dd HH:mm}', [$model->last_login_at]);
-                    } else {
-                        return date('Y-m-d G:i:s', $model->last_login_at);
                     }
+
+	                if (extension_loaded('intl')) {
+                        return \Yii::t('userextended', '{0, date, YYYY-MM-dd HH:mm}', [$model->last_login_at]);
+                    }
+
+	                return date('Y-m-d G:i:s', $model->last_login_at);
                 },
             ],
             [
@@ -190,12 +187,12 @@ $this->registerJs('$(document).ready(function()
                             'data-method' => 'post',
                             'data-confirm' => \Yii::t('user', 'Are you sure you want to unblock this user?'),
                         ]);
-                    } else {
-                        return Html::a('<span class="glyphicon glyphicon-ok text-success">', ['block', 'id' => $model->id], [
-                            'data-method' => 'post',
-                            'data-confirm' => \Yii::t('user', 'Are you sure you want to block this user?'),
-                        ]);
                     }
+
+	                return Html::a('<span class="glyphicon glyphicon-ok text-success">', ['block', 'id' => $model->id], [
+                        'data-method' => 'post',
+                        'data-confirm' => \Yii::t('user', 'Are you sure you want to block this user?'),
+                    ]);
                 },
             ],
             [
@@ -208,12 +205,12 @@ $this->registerJs('$(document).ready(function()
 	                /** @var \cinghie\userextended\models\User $model */
                     if ($model->isConfirmed) {
                         return '<span class="glyphicon glyphicon-ok text-success"></span>';
-                    } else {
-                        return Html::a('<span class="glyphicon glyphicon-remove text-danger"></span>', ['confirm', 'id' => $model->id], [
-                            'data-method' => 'post',
-                            'data-confirm' => \Yii::t('user', 'Are you sure you want to confirm this user?'),
-                        ]);
                     }
+
+	                return Html::a('<span class="glyphicon glyphicon-remove text-danger"></span>', ['confirm', 'id' => $model->id], [
+                        'data-method' => 'post',
+                        'data-confirm' => \Yii::t('user', 'Are you sure you want to confirm this user?'),
+                    ]);
                 },
             ],
             [

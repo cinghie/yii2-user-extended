@@ -20,6 +20,7 @@ use yii\base\ExitException;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\web\Response;
 
 class SettingsController extends BaseController
 {
@@ -27,7 +28,7 @@ class SettingsController extends BaseController
 	/**
 	 * Shows profile settings form.
 	 *
-	 * @return string|\yii\web\Response
+	 * @return string|Response
 	 * @throws Exception
 	 * @throws ExitException
 	 * @throws InvalidCallException
@@ -62,8 +63,8 @@ class SettingsController extends BaseController
 
         $this->trigger(self::EVENT_BEFORE_PROFILE_UPDATE, $event);
 
-        if ( $model->load( Yii::$app->request->post()) && $model->save()) {
-
+        if ( $model->load( Yii::$app->request->post()) && $model->save())
+        {
             // revert back if no valid file instance uploaded
             if ($image === false) {
 
