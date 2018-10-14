@@ -137,7 +137,7 @@ $this->registerCss('
 			],
 			'options' => ['class' => 'form-group has-feedback']
             ])->label(\Yii::t('user', 'Password'))
-            ->textInput(['placeholder' => \Yii::t('user', 'Password')]) ?>
+			->passwordInput(['placeholder' => $model->getAttributeLabel('password')]) ?>
 
         <div class="row form-group row-padding-top">
             <div class="col-xs-12">
