@@ -21,6 +21,14 @@ use yii\base\InvalidConfigException;
 class SecurityController extends BaseController
 {
 	/**
+	 * @return bool|string
+	 */
+	public function getViewPath()
+	{
+		return Yii::getAlias('@vendor/cinghie/yii2-user-extended/views/adminlte/security');
+	}
+
+	/**
 	 * Displays the login page.
 	 *
 	 * @return string|Response
