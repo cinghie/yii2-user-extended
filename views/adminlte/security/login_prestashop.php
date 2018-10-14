@@ -58,12 +58,14 @@ $this->registerCss('
     #login-form {
         padding-top: 15px;
     }
+    .login-box {
+        max-width: 100%;
+    }
     .login-box, .register-box {
         margin: 3% auto;    
-        width: 500px;
     }
     .login-box-body {
-        margin-top: 115px;
+        margin-top: 105px;
     }
     .login-box-body, .register-box-body {
         box-shadow: 0 1px 3px rgba(0,0,0,.3);
@@ -71,13 +73,13 @@ $this->registerCss('
     }
     .login-header {
         color: #6d6d6d;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
     }
     .login-logo {
         z-index: 1;
         position: absolute;
         margin: 0 auto;
-        width: 125px;
+        width: 130px;
         left: 0;
         right: 0;
     }
@@ -88,6 +90,11 @@ $this->registerCss('
     .row-padding-top {
         margin-bottom: 3px;
         padding-top: 2px;
+    }
+    @media (min-width: 768px) {
+        .login-box, .register-box {
+            width: 500px;
+        }
     }
 ');
 
