@@ -51,7 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'enableAjaxValidation' => true,
                     'enableClientValidation' => false,
                     'validateOnBlur' => false,
-                ]); ?>
+                ]) ?>
 
                     <?php if(Yii::$app->getModule('userextended')->avatar): ?>
 
@@ -165,7 +165,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
 
-                <?php ActiveForm::end(); ?>
+                <?php ActiveForm::end() ?>
 
             </div>
 

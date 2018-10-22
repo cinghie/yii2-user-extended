@@ -165,7 +165,7 @@ $this->registerCss('
 			</div>
 		</div>
 
-		<?php ActiveForm::end(); ?>
+		<?php ActiveForm::end() ?>
 
 		<?php if (\Yii::$app->getModule('userextended')->socialLogin): ?>
 			<div class="social-auth-links text-center">

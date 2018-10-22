@@ -28,7 +28,7 @@ use yii\helpers\Html;
 		            'id' => 'registration-form',
 		            'enableAjaxValidation' => false,
 		            'enableClientValidation' => true,
-	            ]); ?>
+	            ]) ?>
 
                 <div class="col-md-12 form-register">
 
@@ -63,7 +63,7 @@ use yii\helpers\Html;
 							            'autoclose' => true,
 							            'format' => 'yyyy-mm-dd',
 						            ]
-					            ]); ?>
+					            ]) ?>
 
 				            <?php endif ?>
 
@@ -132,7 +132,7 @@ use yii\helpers\Html;
 
                 </div>
 
-	            <?php ActiveForm::end(); ?>
+	            <?php ActiveForm::end() ?>
 
             </div>
 

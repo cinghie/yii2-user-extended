@@ -1,13 +1,9 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Gogodigital Srls
- * @company Gogodigital Srls - Wide ICT Solutions
- * @website http://www.gogodigital.it
- * @github https://github.com/cinghie/yii2-user-extended
- * @license GNU GENERAL PUBLIC LICENSE VERSION 3
- * @package yii2-user-extended
- * @version 0.7.0
+ * @var $dataProvider array
+ * @var $filterModel dektrium\rbac\models\Search
+ * @var $this yii\web\View
  */
 
 use kartik\grid\GridView;
@@ -28,9 +24,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
-    'filterModel'  => $filterModel,
-    'layout'       => "{items}\n{pager}",
-    'columns'      => [
+    'filterModel' => $filterModel,
+    'layout' => "{items}\n{pager}",
+    'pjax' => true,
+    'pjaxSettings' => [
+	    'neverTimeout' => true,
+    ],
+    'columns' => [
         [
             'attribute' => 'name',
             'format' => 'html',
@@ -70,6 +70,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'type'       => 'success',
         'showFooter' => false
     ],
-]); ?>
+]) ?>
 
 <?php $this->endContent() ?>

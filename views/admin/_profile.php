@@ -25,7 +25,7 @@ use yii\helpers\Html;
                 'wrapper' => 'col-sm-9',
             ],
         ],
-    ]); ?>
+    ]) ?>
 
         <?php if(Yii::$app->getModule('userextended')->avatar): ?>
 
@@ -71,7 +71,7 @@ use yii\helpers\Html;
                     'autoclose' => true,
                     'format' => 'yyyy-mm-dd',
                 ]
-            ]); ?>
+            ]) ?>
         <?php endif ?>
 
         <?php if(Yii::$app->getModule('userextended')->publicEmail): ?>
@@ -104,6 +104,6 @@ use yii\helpers\Html;
             </div>
         </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end() ?>
 
 <?php $this->endContent() ?>

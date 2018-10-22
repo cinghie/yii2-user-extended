@@ -25,9 +25,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
-    'filterModel'  => $filterModel,
-    'layout'       => "{items}\n{pager}",
-    'columns'      => [
+    'filterModel' => $filterModel,
+    'layout' => "{items}\n{pager}",
+    'pjax' => true,
+    'pjaxSettings' => [
+	    'neverTimeout' => true,
+    ],
+    'columns' => [
         [
             'attribute' => 'name',
             'format' => 'html',
@@ -57,6 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ]
     ],
     'responsive' => true,
+    'responsiveWrap' => true,
     'hover' => true,
     'panel' => [
         'heading'    => '<h3 class="panel-title"><i class="fa fa-user-secret"></i></h3>',
