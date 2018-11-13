@@ -108,6 +108,11 @@ class Module extends BaseUser
 	public $templateLogin = 'login';
 
 	/**
+	 * @var string logo url
+	 */
+	public $templateLogoURL = '@web/logo.png';
+
+	/**
 	 * @var string register template
 	 */
 	public $templateRegister = '_two_column';

@@ -110,7 +110,7 @@ $this->registerCss('
 	</div>
 
     <div class="login-logo">
-	    <?= Html::img('@web/logo.png', ['alt'=>'some', 'class'=>'thing']);?>
+	    <?= Html::img(Yii::$app->getModule('userextended')->templateLogoURL, ['alt'=>'some', 'class'=>'thing']);?>
     </div>
 
 	<div class="login-box-body">

@@ -78,7 +78,7 @@ Set on your configuration file, in modules section
         'class' => 'cinghie\userextended\Module',
         'avatarPath' => '@webroot/img/users/', // Path to your avatar files
         'avatarURL' => '@web/img/users/', // Url to your avatar files
-        'defaultRole' => '',
+        'defaultRole' => '', // example 'registered'
         'avatar' => true,
         'bio' => false,
         'captcha' => true,
@@ -90,7 +90,9 @@ Set on your configuration file, in modules section
         'onlyEmail' => false,
         'publicEmail' => false,
         'signature' => true,
-        'templateRegister' => '_two_column',
+        'templateLogin' => 'login_prestashop', // login or login_prestashop
+        'templateLogoURL' => '@web/logo.png', // Url to logo
+        'templateRegister' => '_two_column', // _one_column or _two_column
         'terms' => true,
         'website' => false,
         'showTitles' => true, // Set false in adminLTE
