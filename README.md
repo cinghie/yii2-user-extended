@@ -63,6 +63,7 @@ Set on your configuration file, in modules section
         // Yii2 User Controllers Overrides
         'controllerMap' => [
             'admin' => 'cinghie\userextended\controllers\AdminController',
+            'security' => 'cinghie\userextended\controllers\SecurityController',
             'settings' => 'cinghie\userextended\controllers\SettingsController'
         ],
         // Yii2 User Models Overrides
@@ -107,8 +108,14 @@ and in components section
     'view' => [
         'theme' => [
             'pathMap' => [
-                '@dektrium/rbac/views' => '@vendor/cinghie/yii2-user-extended/views',
-                '@dektrium/user/views' => '@vendor/cinghie/yii2-user-extended/views',
+                '@dektrium/rbac/views/permission' => '@vendor/cinghie/yii2-user-extended/views/permission',  
+                '@dektrium/rbac/views/role' => '@vendor/cinghie/yii2-user-extended/views/role',  
+                '@dektrium/rbac/views/rule' => '@vendor/cinghie/yii2-user-extended/views/rule',  
+                '@dektrium/user/views/admin' => '@vendor/cinghie/yii2-user-extended/views/admin',  
+                '@dektrium/user/views/profile' => '@vendor/cinghie/yii2-user-extended/views/profile',  
+                '@dektrium/user/views/role' => '@vendor/cinghie/yii2-user-extended/views/role',  
+                '@dektrium/user/views/security' => '@vendor/cinghie/yii2-user-extended/views/adminlte/security',  
+                '@dektrium/user/views/settings' => '@vendor/cinghie/yii2-user-extended/views/settings',  
             ],
         ],
     ],
