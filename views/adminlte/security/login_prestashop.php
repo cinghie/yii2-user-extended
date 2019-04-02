@@ -106,7 +106,7 @@ $this->registerCss('
 
 	<div class="login-header text-center">
 		<h1 style="color: #929292; font-size: 24px;"><b><?= \Yii::$app->name ?></b></h1>
-        <div><?= \Yii::$app->params['version'] ?></div>
+        <div><?= isset(\Yii::$app->params['version']) ? \Yii::$app->params['version'] : 'Set Params version' ?></div>
 	</div>
 
     <div class="login-logo">
@@ -115,7 +115,7 @@ $this->registerCss('
 
 	<div class="login-box-body">
 
-        <h4 class="text-center"><?= \Yii::$app->params['copyright_text'] ?></h4>
+        <h4 class="text-center"><?= isset(\Yii::$app->params['copyright_text']) ? \Yii::$app->params['copyright_text'] : 'Set Params copyright_text' ?></h4>
 
 		<?php $form = ActiveForm::begin([
 			'id' => 'login-form',
