@@ -44,6 +44,24 @@ $ php yii migrate/up --migrationPath=@vendor/dektrium/yii2-user/migrations
 
 ### 3. Add Yii2 RBAC migrations 
 
+Add to common config file
+
+```
+'components' => [
+
+    'authManager' => [
+        'class' => 'yii\rbac\DbManager',
+    ]
+
+]
+
+'modules' => [
+
+    'rbac' => 'dektrium\rbac\RbacWebModule',
+
+],
+```
+and run migration
 ```
 $ php yii migrate/up --migrationPath=@yii/rbac/migrations
 ```
