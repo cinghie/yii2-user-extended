@@ -1,4 +1,11 @@
 # Yii2 User Extended
+
+![Latest Stable Version](https://img.shields.io/packagist/v/cinghie/yii2-user-extended.svg)
+![License](https://img.shields.io/packagist/l/cinghie/yii2-user-extended.svg)
+![Latest Release Date](https://img.shields.io/github/release-date/cinghie/yii2-user-extended.svg)
+![Latest Commit](https://img.shields.io/github/last-commit/cinghie/yii2-user-extended.svg)
+[![Total Downloads](https://img.shields.io/packagist/dt/cinghie/yii2-user-extended.svg)](https://packagist.org/packages/cinghie/yii2-user-extended)
+
 Yii2 User Extended to extend Yii2 User by Dektrium: https://github.com/dektrium/yii2-user
 
 This is not an standalone module to manage users but a module to extend Yii2 User extension.
