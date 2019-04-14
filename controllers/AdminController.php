@@ -17,6 +17,7 @@ use cinghie\userextended\models\Profile;
 use cinghie\userextended\models\User;
 use cinghie\userextended\models\UserSearch;
 use dektrium\user\controllers\AdminController as BaseController;
+use Yii;
 use yii\base\Exception;
 use yii\base\ExitException;
 use yii\base\InvalidCallException;
@@ -81,8 +82,8 @@ class AdminController extends BaseController
     public function actionIndex()
     {
         Url::remember('', 'actions-redirect');
-        $searchModel  = \Yii::createObject(UserSearch::class);
-        $dataProvider = $searchModel->search(\Yii::$app->request->get());
+        $searchModel  = Yii::createObject(UserSearch::class);
+        $dataProvider = $searchModel->search(Yii::$app->request->get());
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -111,7 +112,7 @@ class AdminController extends BaseController
         $profile = $user->profile;
 
         if ($profile === null) {
-            $profile = \Yii::createObject(Profile::class);
+            $profile = Yii::createObject(Profile::class);
             $profile->link('user', $user);
         }
 
@@ -119,7 +120,7 @@ class AdminController extends BaseController
         $oldImage = $profile->avatar;
 
         // Load avatarPath from Module Params
-        $avatarPath = \Yii::getAlias(\Yii::$app->getModule('userextended')->avatarPath);
+        $avatarPath = Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath);
 
         // Create uploadAvatar Instance
         $image = $profile->uploadAvatar($avatarPath);
@@ -132,7 +133,7 @@ class AdminController extends BaseController
 
         $this->trigger(self::EVENT_BEFORE_PROFILE_UPDATE, $event);
 
-        if ($profile->load(\Yii::$app->request->post()) && $profile->save())
+        if ($profile->load(Yii::$app->request->post()) && $profile->save())
         {
             // revert back if no valid file instance uploaded
             if ($image === false) {
@@ -146,7 +147,7 @@ class AdminController extends BaseController
                 $profile->avatar = $image->name;
             }
 
-            \Yii::$app->getSession()->setFlash('success', \Yii::t('user', 'Profile details have been updated'));
+            Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Profile details have been updated'));
 
             $this->trigger(self::EVENT_AFTER_PROFILE_UPDATE, $event);
 
@@ -170,8 +171,8 @@ class AdminController extends BaseController
 	 */
     public function actionBlock($id)
     {
-        if ( \Yii::$app->user->getId() === $id ) {
-            \Yii::$app->getSession()->setFlash('danger', \Yii::t('user', 'You can not block your own account'));
+        if ( Yii::$app->user->getId() === $id ) {
+            Yii::$app->getSession()->setFlash('danger', Yii::t('user', 'You can not block your own account'));
         } else {
 	        $user  = $this->findModel($id);
             $event = $this->getUserEvent($user);
@@ -179,16 +180,16 @@ class AdminController extends BaseController
                 $this->trigger(self::EVENT_BEFORE_UNBLOCK, $event);
                 $user->unblock();
                 $this->trigger(self::EVENT_AFTER_UNBLOCK, $event);
-                \Yii::$app->getSession()->setFlash('success', \Yii::t('user', 'User has been unblocked'));
+                Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been unblocked'));
             } else {
                 $this->trigger(self::EVENT_BEFORE_BLOCK, $event);
                 $user->block();
                 $this->trigger(self::EVENT_AFTER_BLOCK, $event);
-                \Yii::$app->getSession()->setFlash('warning', \Yii::t('user', 'User has been blocked'));
+                Yii::$app->getSession()->setFlash('warning', Yii::t('user', 'User has been blocked'));
             }
         }
 
-        return $this->redirect(Url::previous('actions-redirect'));
+	    return $this->redirect(Yii::$app->request->referrer);
     }
 
 	/**
@@ -199,7 +200,7 @@ class AdminController extends BaseController
 	 */
     public function actionActivemultiple()
     {
-        $ids = \Yii::$app->request->post('ids');
+        $ids = Yii::$app->request->post('ids');
 
         if (!$ids) {
             return;
@@ -210,7 +211,7 @@ class AdminController extends BaseController
 
             if($model->getIsBlocked()) {
                 $model->unblock();
-                \Yii::$app->getSession()->setFlash('success', \Yii::t('user', 'User has been unblocked'));
+                Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been unblocked'));
             }
         }
     }
@@ -223,7 +224,7 @@ class AdminController extends BaseController
 	 */
     public function actionDeactivemultiple()
     {
-        $ids = \Yii::$app->request->post('ids');
+        $ids = Yii::$app->request->post('ids');
 
         if (!$ids) {
             return;
@@ -235,7 +236,7 @@ class AdminController extends BaseController
 
             if(!$model->getIsBlocked()) {
                 $model->block();
-                \Yii::$app->getSession()->setFlash('warning', \Yii::t('user', 'User has been blocked'));
+                Yii::$app->getSession()->setFlash('warning', Yii::t('user', 'User has been blocked'));
             }
         }
     }
@@ -254,27 +255,26 @@ class AdminController extends BaseController
 	 */
 	public function actionDeletemultiple()
 	{
-		$ids = \Yii::$app->request->post('ids');
+		$ids = Yii::$app->request->post('ids');
 
 		if (!$ids) {
 			return false;
 		}
 
 		foreach ($ids as $id) {
-			\Yii::$app->db->createCommand()->delete('{{%auth_assignment}}', ['user_id' => $id])->execute();
+			Yii::$app->db->createCommand()->delete('{{%auth_assignment}}', ['user_id' => $id])->execute();
 			$this->findModel($id)->delete();
 		}
 
 		// Set Success Message
-		\Yii::$app->session->setFlash('success', \Yii::t('userextended', 'Delete Success!'));
+		Yii::$app->session->setFlash('success', Yii::t('userextended', 'Delete Success!'));
 
-		$searchModel  = \Yii::createObject(UserSearch::class);
-		$dataProvider = $searchModel->search(\Yii::$app->request->get());
+		$searchModel  = Yii::createObject(UserSearch::class);
+		$dataProvider = $searchModel->search(Yii::$app->request->get());
 
 		return $this->render('index', [
 			'dataProvider' => $dataProvider,
 			'searchModel'  => $searchModel,
 		]);
 	}
-
 }
