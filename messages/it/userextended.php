@@ -31,6 +31,7 @@ return [
     'Firstname' => 'Nome',
     'I Agree' => 'ACCONSENTO',
 	'ID' => 'ID',
+	'In order to finish your registration, we need you to enter following fields' => 'Per completare la registrazione, inserisci i campi seguenti',
 	'Incorrect Username or Password' => 'Username o Password non validi',
     'Lastname' => 'Cognome',
     'Last login' => 'Ultimo Login',
