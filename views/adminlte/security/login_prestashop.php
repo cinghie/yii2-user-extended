@@ -187,11 +187,10 @@ $this->registerCss('
 			<p class="text-center">
 				<?= Html::a(\Yii::t('user', 'Don\'t have an account? Sign up!'), ['/user/registration/register']) ?>
 			</p>
+			<?= Connect::widget([
+				'baseAuthUrl' => ['/user/security/auth'],
+			]) ?>
 		<?php endif ?>
-
-		<?= Connect::widget([
-			'baseAuthUrl' => ['/user/security/auth'],
-		]) ?>
 
 	</div>
 
