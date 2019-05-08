@@ -213,7 +213,7 @@ Override models example, on modules config
 'modules' => [ 
 	
 	'userextended' => [ 
-		'class' => 'cinghie\userextended\userextended',
+		'class' => 'cinghie\userextended\Module',
 		'modelMap' => [
 			'Account' => 'app\models\Account',
 			'Assignment' => 'app\models\Assignment',
