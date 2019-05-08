@@ -188,6 +188,63 @@ in your SiteController set in actions() function
 ],
 ```
 
+## Overrides
+
+Override controller example, on modules config
+
+```
+'modules' => [ 
+	
+	'userextended' => [ 
+		'class' => 'cinghie\userextended\Module',
+		'controllerMap' => [
+			'items' => 'app\controllers\AdminController',
+			'items' => 'app\controllers\SecurityController',
+			'items' => 'app\controllers\SettingsController',
+		]
+	]
+	
+],
+```
+
+Override models example, on modules config
+
+```
+'modules' => [ 
+	
+	'userextended' => [ 
+		'class' => 'cinghie\userextended\userextended',
+		'modelMap' => [
+			'Account' => 'app\models\Account',
+			'Assignment' => 'app\models\Assignment',
+			'LoginForm' => 'app\models\LoginForm',
+			'Permission' => 'app\models\Permission',
+			'Profile' => 'app\models\Profile',
+			'RegistrationForm' => 'app\models\RegistrationForm',
+			'SettingsForm' => 'app\models\SettingsForm',
+			'User' => 'app\models\User',
+		]
+	]
+	
+],
+```
+
+Override view example, on components config
+
+```
+'components' => [ 
+
+	'view' => [
+		'theme' => [
+			'pathMap' => [
+				'@cinghie/userextended/views/admin' => '@app/views/userextended/admin',
+			],
+		],
+	],
+	
+],
+```
+
 Features
 -----------------
 

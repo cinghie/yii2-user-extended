@@ -26,5 +26,8 @@
         "psr-4": {
             "cinghie\\userextended\\": ""
         }
+    },
+    "extra": {
+        "bootstrap": "cinghie\\userextended\\Bootstrap"
     }
 }
