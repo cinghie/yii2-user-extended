@@ -140,4 +140,12 @@ class User extends BaseUser
 
         return $command->queryAll();
     }
+	
+    public function getAvatar()
+    {
+	    $profile = $this->getProfile()->one();
+            $avatar   = $profile->avatar ? $profile->avatar : 'default.png';
+            $imageURL = \Yii::getAlias(\Yii::$app->getModule('userextended')->avatarURL).'small/'.$avatar;
+	    return $imageURL;
+    }
 }
