@@ -12,6 +12,7 @@
 
 namespace cinghie\userextended\models;
 
+use Yii;
 use cinghie\traits\ViewsHelpersTrait;
 use dektrium\user\models\UserSearch as BaseUserSearch;
 use yii\base\InvalidParamException;
@@ -26,6 +27,9 @@ use yii\helpers\ArrayHelper;
 class UserSearch extends BaseUserSearch
 {
 	use ViewsHelpersTrait;
+
+	/** @var string */
+	public $blocked_at;
 
     /** @var string */
     public $firstname;
@@ -45,7 +49,7 @@ class UserSearch extends BaseUserSearch
     public function rules()
     {
         return [
-            'fieldsSafe' => [['id', 'username', 'firstname', 'lastname', 'birthday','email', 'rule', 'registration_ip', 'created_at', 'last_login_at'], 'safe'],
+            'fieldsSafe' => [['id', 'username', 'firstname', 'lastname', 'birthday','email', 'rule', 'registration_ip', 'created_at', 'blocked_at', 'last_login_at'], 'safe'],
             'createdDefault' => ['created_at', 'default', 'value' => null],
             'lastloginDefault' => ['last_login_at', 'default', 'value' => null],
         ];
@@ -57,16 +61,17 @@ class UserSearch extends BaseUserSearch
     public function attributeLabels()
     {
         return [
-            'id'              => Yii::t('userextended', 'ID'),
-            'username'        => Yii::t('user', 'Username'),
-            'firstname'       => Yii::t('userextended', 'Firstname'),
-            'lastname'        => Yii::t('userextended', 'Lastname'),
-            'birthday'        => Yii::t('userextended', 'Birthday'),
-            'email'           => Yii::t('user', 'Email'),
-            'rule'            => Yii::t('rbac', 'Rule'),
-            'created_at'      => Yii::t('user', 'Registration time'),
+            'id' => Yii::t('userextended', 'ID'),
+            'username' => Yii::t('user', 'Username'),
+            'firstname' => Yii::t('userextended', 'Firstname'),
+            'lastname' => Yii::t('userextended', 'Lastname'),
+            'birthday' => Yii::t('userextended', 'Birthday'),
+            'email' => Yii::t('user', 'Email'),
+            'rule' => Yii::t('traits', 'Rule'),
+            'blocked_at' => Yii::t('userextended', 'Enabled'),
+            'created_at' => Yii::t('user', 'Registration time'),
             'registration_ip' => Yii::t('user', 'Registration ip'),
-            'last_login_at'   => Yii::t('userextended', 'Last login')
+            'last_login_at' => Yii::t('userextended', 'Last login')
         ];
     }
 
@@ -97,6 +102,7 @@ class UserSearch extends BaseUserSearch
                 'birthday',
                 'email',
                 'rule',
+                'blocked_at',
                 'created_at',
                 'last_login_at'
             ],
@@ -113,9 +119,13 @@ class UserSearch extends BaseUserSearch
 	    $modelClass = $query->modelClass;
 	    $table_name = $modelClass::tableName();
 
-        if ($this->created_at !== null) {
+        if ($this->blocked_at !== '' && $this->created_at !== null) {
             $date = strtotime($this->created_at);
             $query->andFilterWhere(['between', $table_name . '.created_at', $date, $date + 3600 * 24]);
+        }
+
+        if($this->blocked_at !== '' && $this->blocked_at !== NULL && (int)$this->blocked_at === 0) {
+	        $query->andWhere('blocked_at > 0');
         }
 
         $query->andFilterWhere(['like', 'username', $this->username])
@@ -124,10 +134,9 @@ class UserSearch extends BaseUserSearch
               ->andFilterWhere(['like', 'profile.birthday', $this->birthday])
               ->andFilterWhere(['like', 'email', $this->email])
               ->andFilterWhere([$table_name . '.id' => $this->id])
-              ->andFilterWhere([$table_name . 'registration_ip' => $this->registration_ip])
               ->andFilterWhere([$table_name . '.registration_ip' => $this->registration_ip]);
 
-        if ($this->rule !== '') {
+        if ($this->rule !== '' && $this->blocked_at !== NULL) {
             $query->andWhere('`id` IN (
                 SELECT {{%auth_assignment}}.user_id FROM {{%auth_assignment}} 
                 WHERE {{%auth_assignment}}.`item_name` = "'.$this->rule.'")'
@@ -135,7 +144,7 @@ class UserSearch extends BaseUserSearch
         }
 
         // Print SQL query
-        //Svar_dump($query->createCommand()->sql); exit();
+	    //var_dump($query->createCommand()->sql); exit();
 
         return $dataProvider;
     }

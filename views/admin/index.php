@@ -5,6 +5,7 @@
  * @var cinghie\userextended\models\UserSearch $searchModel
  */
 
+use cinghie\userextended\models\User;
 use kartik\grid\CheckboxColumn;
 use kartik\grid\GridView;
 use kartik\select2\Select2;
@@ -83,6 +84,7 @@ $this->registerJs('$(document).ready(function()
 			'format' => 'html',
 			'hAlign' => 'center',
 			'value' => function ($model) {
+				/** @var User $model */
 				$url = urldecode(Url::toRoute(['/user/admin/update', 'id' => $model->id]));
 				return Html::a($model->username,$url);
 			}
@@ -123,6 +125,7 @@ $this->registerJs('$(document).ready(function()
 			]),
 			'hAlign' => 'center',
 			'value' => function ($model) {
+				/** @var User $model */
 				return date('Y-m-d H:i:s', $model->created_at);
 			},
 		],
@@ -138,6 +141,7 @@ $this->registerJs('$(document).ready(function()
 				],
 			]),
 			'value' => function ($model) {
+				/** @var User $model */
 				if (!$model->last_login_at || $model->last_login_at === 0) {
 					return Yii::t('userextended', 'Never');
 				}
@@ -150,7 +154,7 @@ $this->registerJs('$(document).ready(function()
 			},
 		],
 		[
-			'attribute' => Yii::t( 'user', 'Roles' ),
+			'attribute' => 'rule',
 			'filter' => Select2::widget([
 				'model'     => $searchModel,
 				'attribute' => 'rule',
@@ -164,10 +168,11 @@ $this->registerJs('$(document).ready(function()
 			]),
 			'format' => 'html',
 			'hAlign' => 'center',
+            'label' => Yii::t( 'userextended', 'Role' ),
 			'width' => '9%',
 			'value' => function ($model) {
 				$html = '';
-				/** @var \cinghie\userextended\models\User $model */
+				/** @var User $model */
 				foreach($model->getRolesHTML() as $role){
 					$html .= $role['item_name'] . '<br>';
 				}
@@ -175,11 +180,22 @@ $this->registerJs('$(document).ready(function()
 			},
 		],
 		[
-			'header' => Yii::t('userextended', 'Enabled'),
-			'format' => 'raw',
+		    'attribute' => 'blocked_at',
+			'label' => Yii::t('userextended', 'Enabled'),
+		    'filterType' => GridView::FILTER_SELECT2,
+		    'filter' => [
+			    1 => Yii::t('traits', 'Actived'),
+			    0 => Yii::t('traits', 'Inactived')
+		    ],
+		    'filterWidgetOptions' => [
+			    'pluginOptions' => ['allowClear' => true],
+		    ],
+		    'filterInputOptions' => ['placeholder' => ''],
+		    'format' => 'raw',
 			'hAlign' => 'center',
-			'width' => '5%',
+			'width' => '7%',
 			'value' => function ($model) {
+				/** @var User $model */
 				if ($model->isBlocked) {
 					return Html::a('<span class="glyphicon glyphicon-remove text-danger"></span>', ['block', 'id' => $model->id], [
 						'data-method' => 'post',
@@ -200,7 +216,7 @@ $this->registerJs('$(document).ready(function()
 			'visible' => Yii::$app->getModule('user')->enableConfirmation,
 			'width' => '5%',
 			'value' => function ($model) {
-				/** @var \cinghie\userextended\models\User $model */
+				/** @var User $model */
 				if ($model->isConfirmed) {
 					return '<span class="glyphicon glyphicon-ok text-success"></span>';
 				}
