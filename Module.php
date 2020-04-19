@@ -12,9 +12,13 @@
 
 namespace cinghie\userextended;
 
+use Yii;
 use dektrium\user\Module as BaseUser;
 use yii\i18n\PhpMessageSource;
 
+/**
+ * Class Module
+ */
 class Module extends BaseUser
 {
     /**
@@ -158,14 +162,13 @@ class Module extends BaseUser
      */
     public function registerTranslations()
     {
-        if (empty(\Yii::$app->i18n->translations['userextended']))
+        if (empty(Yii::$app->i18n->translations['userextended']))
         {
-            \Yii::$app->i18n->translations['userextended'] = [
+            Yii::$app->i18n->translations['userextended'] = [
                 'class' => PhpMessageSource::class,
                 'basePath' => __DIR__ . '/messages',
                 //'forceTranslation' => true,
             ];
         }
     }
-
 }

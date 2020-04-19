@@ -22,6 +22,9 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\web\Response;
 
+/**
+ * Class SettingsController
+ */
 class SettingsController extends BaseController
 {
 
@@ -92,5 +95,4 @@ class SettingsController extends BaseController
             'model' => $model
         ]);
     }
-
 }

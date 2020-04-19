@@ -14,6 +14,9 @@ namespace cinghie\userextended\models;
 
 use dektrium\user\models\SettingsForm as BaseSettingsForm;
 
+/**
+ * Class SettingsForm
+ */
 class SettingsForm extends BaseSettingsForm
 {
 

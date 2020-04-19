@@ -43,7 +43,7 @@ use yii\helpers\Html;
                     'allowedFileExtensions'=> ['jpg','gif','png'],
                     'browseClass' => 'btn btn-primary btn-block',
                     'browseIcon' => '<i class="glyphicon glyphicon-camera"></i> ',
-                    'browseLabel' =>  \Yii::t('userextended', 'Change Avatar'),
+                    'browseLabel' =>  Yii::t('userextended', 'Change Avatar'),
                     'previewFileType' => 'image',
                     'showCaption' => false,
                     'showRemove' => false,
@@ -100,7 +100,7 @@ use yii\helpers\Html;
 
         <div class="form-group">
             <div class="col-lg-offset-3 col-lg-9">
-                <?= Html::submitButton(\Yii::t('user', 'Update'), ['class' => 'btn btn-block btn-success']) ?>
+                <?= Html::submitButton(Yii::t('user', 'Update'), ['class' => 'btn btn-block btn-success']) ?>
             </div>
         </div>
 

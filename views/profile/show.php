@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <ul style="padding: 0; list-style: none outside none;">
                     <li style="text-align: center;">
                         <i class="glyphicon glyphicon-time text-muted"></i>
-                        <?= \Yii::t('user', 'Joined on {0, date}', $profile->user->created_at) ?>
+                        <?= Yii::t('user', 'Joined on {0, date}', $profile->user->created_at) ?>
                     </li>
                 </ul>
             </div>

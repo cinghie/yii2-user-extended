@@ -15,6 +15,9 @@ namespace cinghie\userextended\models;
 use cinghie\traits\ViewsHelpersTrait;
 use dektrium\rbac\models\Permission as BasePermission;
 
+/**
+ * Class Permission
+ */
 class Permission extends BasePermission
 {
 	use ViewsHelpersTrait;

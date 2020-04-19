@@ -12,9 +12,11 @@
 
 use cinghie\traits\migrations\Migration;
 
+/**
+ * Class m151020_213110_update_profile_table
+ */
 class m151020_213110_update_profile_table extends Migration
 {
-
 	/**
 	 * @inheritdoc
 	 */
@@ -30,5 +32,4 @@ class m151020_213110_update_profile_table extends Migration
     {
         $this->dropColumn('{{%profile}}', 'signature');
     }
-
 }

@@ -128,7 +128,7 @@ class User extends BaseUser
 	 * Array roles for roles column in admin index
 	 *
 	 * @return array []
-	 * @throws \yii\db\Exception
+	 * @throws Exception
 	 */
     public function getRolesHTML()
     {
@@ -140,12 +140,18 @@ class User extends BaseUser
 
         return $command->queryAll();
     }
-	
+
+	/**
+	 * Get Avatar Url
+	 *
+	 * @return string
+	 */
     public function getAvatar()
     {
 	    $profile = $this->getProfile()->one();
-            $avatar   = $profile->avatar ? $profile->avatar : 'default.png';
-            $imageURL = \Yii::getAlias(\Yii::$app->getModule('userextended')->avatarURL).'small/'.$avatar;
-	    return $imageURL;
+        $avatar = $profile->avatar ? $profile->avatar : 'default.png';
+        $imageURL = Yii::getAlias(Yii::$app->getModule('userextended')->avatarURL).'small/'.$avatar;
+
+        return $imageURL;
     }
 }

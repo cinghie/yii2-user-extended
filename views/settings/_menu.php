@@ -12,10 +12,10 @@
 
 use yii\widgets\Menu;
 
-$user    = \Yii::$app->user->identity;
+$user    = Yii::$app->user->identity;
 $profile = $user->profile;
 $avatar  = $profile->getImageUrl();
-$networksVisible = count(\Yii::$app->authClientCollection->clients) > 0;
+$networksVisible = count(Yii::$app->authClientCollection->clients) > 0;
 
 ?>
 
@@ -39,9 +39,9 @@ $networksVisible = count(\Yii::$app->authClientCollection->clients) > 0;
                 'class' => 'nav nav-pills nav-stacked',
             ],
             'items' => [
-                ['label' => \Yii::t('user', 'Profile'), 'url' => ['/user/settings/profile']],
-                ['label' => \Yii::t('user', 'Account'), 'url' => ['/user/settings/account']],
-                ['label' => \Yii::t('user', 'Networks'), 'url' => ['/user/settings/networks'], 'visible' => $networksVisible],
+                ['label' => Yii::t('user', 'Profile'), 'url' => ['/user/settings/profile']],
+                ['label' => Yii::t('user', 'Account'), 'url' => ['/user/settings/account']],
+                ['label' => Yii::t('user', 'Networks'), 'url' => ['/user/settings/networks'], 'visible' => $networksVisible],
             ],
         ]) ?>
     </div>

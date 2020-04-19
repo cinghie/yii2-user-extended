@@ -6,7 +6,7 @@
  * @var dektrium\user\Module $module
  */
 
-$this->title = \Yii::t('user', 'Sign up');
+$this->title = Yii::t('user', 'Sign up');
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>

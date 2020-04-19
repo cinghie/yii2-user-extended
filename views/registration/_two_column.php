@@ -105,7 +105,7 @@ use yii\helpers\Html;
 
                             <div class="col-md-8">
 
-		                        <?= \Yii::t('userextended', 'By clicking I Agree, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
+		                        <?= Yii::t('userextended', 'By clicking I Agree, you agree to the Terms and Conditions set out by this site, including our Cookie Use.') ?>
 
                             </div>
 
@@ -117,7 +117,7 @@ use yii\helpers\Html;
 
                         <div class="col-md-12">
 
-				            <?= Html::submitButton(\Yii::t('userextended', 'Register'), ['class' => 'btn btn-success btn-block btn-lg']) ?>
+				            <?= Html::submitButton(Yii::t('userextended', 'Register'), ['class' => 'btn btn-success btn-block btn-lg']) ?>
 
                         </div>
 

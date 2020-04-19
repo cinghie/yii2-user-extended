@@ -13,9 +13,11 @@
 use cinghie\traits\migrations\Migration;
 use yii\db\Schema;
 
+/**
+ * Class m151020_213100_update_profile_table
+ */
 class m151020_213100_update_profile_table extends Migration
 {
-
 	/**
 	 * @inheritdoc
 	 */
@@ -39,5 +41,4 @@ class m151020_213100_update_profile_table extends Migration
         $this->dropColumn('{{%profile}}', 'avatar');
         $this->dropColumn('{{%profile}}', 'terms');
     }
-
 }

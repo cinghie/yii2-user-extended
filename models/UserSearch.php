@@ -15,6 +15,7 @@ namespace cinghie\userextended\models;
 use cinghie\traits\ViewsHelpersTrait;
 use dektrium\user\models\UserSearch as BaseUserSearch;
 use yii\base\InvalidParamException;
+use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
@@ -56,16 +57,16 @@ class UserSearch extends BaseUserSearch
     public function attributeLabels()
     {
         return [
-            'id'              => \Yii::t('userextended', 'ID'),
-            'username'        => \Yii::t('user', 'Username'),
-            'firstname'       => \Yii::t('userextended', 'Firstname'),
-            'lastname'        => \Yii::t('userextended', 'Lastname'),
-            'birthday'        => \Yii::t('userextended', 'Birthday'),
-            'email'           => \Yii::t('user', 'Email'),
-            'rule'            => \Yii::t('rbac', 'Rule'),
-            'created_at'      => \Yii::t('user', 'Registration time'),
-            'registration_ip' => \Yii::t('user', 'Registration ip'),
-            'last_login_at'   => \Yii::t('userextended', 'Last login')
+            'id'              => Yii::t('userextended', 'ID'),
+            'username'        => Yii::t('user', 'Username'),
+            'firstname'       => Yii::t('userextended', 'Firstname'),
+            'lastname'        => Yii::t('userextended', 'Lastname'),
+            'birthday'        => Yii::t('userextended', 'Birthday'),
+            'email'           => Yii::t('user', 'Email'),
+            'rule'            => Yii::t('rbac', 'Rule'),
+            'created_at'      => Yii::t('user', 'Registration time'),
+            'registration_ip' => Yii::t('user', 'Registration ip'),
+            'last_login_at'   => Yii::t('userextended', 'Last login')
         ];
     }
 
@@ -108,6 +109,7 @@ class UserSearch extends BaseUserSearch
             return $dataProvider;
         }
 
+        /** @var Model $modelClass */
 	    $modelClass = $query->modelClass;
 	    $table_name = $modelClass::tableName();
 
@@ -185,10 +187,9 @@ class UserSearch extends BaseUserSearch
             ->select(['name'])
             ->andWhere(['type' => 1])
             ->andWhere('name != "public"')
-            ->from(\Yii::$app->authManager->itemTable)
+            ->from(Yii::$app->authManager->itemTable)
             ->all();
 
         return ArrayHelper::map($rows, 'name', 'name');
     }
-
 }

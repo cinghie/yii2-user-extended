@@ -19,6 +19,9 @@ use yii\authclient\ClientInterface as BaseClientInterface;
 use yii\base\InvalidConfigException;
 use yii\helpers\Json;
 
+/**
+ * Class Account
+ */
 class Account extends BaseAccount
 {
 	/**

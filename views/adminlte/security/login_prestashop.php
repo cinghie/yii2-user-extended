@@ -6,7 +6,7 @@ use dektrium\user\widgets\Connect;
 use kartik\widgets\ActiveForm;
 use yii\helpers\Html;
 
-$this->title = \Yii::t('user', 'Sign in');
+$this->title = Yii::t('user', 'Sign in');
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerCss('
@@ -100,13 +100,13 @@ $this->registerCss('
 
 ?>
 
-<?= $this->render('/_alert', ['module' => \Yii::$app->getModule('user')]) ?>
+<?= $this->render('/_alert', ['module' => Yii::$app->getModule('user')]) ?>
 
 <div class="login-box">
 
 	<div class="login-header text-center">
-		<h1 style="color: #929292; font-size: 24px;"><b><?= \Yii::$app->name ?></b></h1>
-        <div><?= isset(\Yii::$app->params['version']) ? \Yii::$app->params['version'] : 'Set Params version' ?></div>
+		<h1 style="color: #929292; font-size: 24px;"><b><?= Yii::$app->name ?></b></h1>
+        <div><?= isset(Yii::$app->params['version']) ? Yii::$app->params['version'] : 'Set Params version' ?></div>
 	</div>
 
     <div class="login-logo">
@@ -115,7 +115,7 @@ $this->registerCss('
 
 	<div class="login-box-body">
 
-        <h4 class="text-center"><?= isset(\Yii::$app->params['copyright_text']) ? \Yii::$app->params['copyright_text'] : 'Set Params copyright_text' ?></h4>
+        <h4 class="text-center"><?= isset(Yii::$app->params['copyright_text']) ? Yii::$app->params['copyright_text'] : 'Set Params copyright_text' ?></h4>
 
 		<?php $form = ActiveForm::begin([
 			'id' => 'login-form',
@@ -133,7 +133,7 @@ $this->registerCss('
 				]
 			],
 			'options' => ['class' => 'form-group has-feedback']
-            ])->label(\Yii::t('user', 'Email'))
+            ])->label(Yii::t('user', 'Email'))
             ->textInput(['placeholder' => 'test@example.com']) ?>
 
 		<?= $form->field($model, 'password', [
@@ -143,12 +143,12 @@ $this->registerCss('
 				]
 			],
 			'options' => ['class' => 'form-group has-feedback']
-            ])->label(\Yii::t('user', 'Password'))
+            ])->label(Yii::t('user', 'Password'))
 			->passwordInput(['placeholder' => $model->getAttributeLabel('password')]) ?>
 
         <div class="row form-group row-padding-top">
             <div class="col-xs-12">
-	            <?= Html::submitButton(\Yii::t('user', 'Sign in'), ['class' => 'btn bg-aqua btn-block']) ?>
+	            <?= Html::submitButton(Yii::t('user', 'Sign in'), ['class' => 'btn bg-aqua btn-block']) ?>
             </div>
         </div>
 
@@ -167,7 +167,7 @@ $this->registerCss('
 
 		<?php ActiveForm::end() ?>
 
-		<?php if (\Yii::$app->getModule('userextended')->socialLogin): ?>
+		<?php if (Yii::$app->getModule('userextended')->socialLogin): ?>
 			<div class="social-auth-links text-center">
 				<p>- OR -</p>
 				<a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i>
@@ -179,13 +179,13 @@ $this->registerCss('
 
 		<?php if ($module->enableConfirmation): ?>
 			<p class="text-center">
-				<?= Html::a(\Yii::t('user', 'Didn\'t receive confirmation message?'), ['/user/registration/resend']) ?>
+				<?= Html::a(Yii::t('user', 'Didn\'t receive confirmation message?'), ['/user/registration/resend']) ?>
 			</p>
 		<?php endif ?>
 
 		<?php if ($module->enableRegistration): ?>
 			<p class="text-center">
-				<?= Html::a(\Yii::t('user', 'Don\'t have an account? Sign up!'), ['/user/registration/register']) ?>
+				<?= Html::a(Yii::t('user', 'Don\'t have an account? Sign up!'), ['/user/registration/register']) ?>
 			</p>
 			<?= Connect::widget([
 				'baseAuthUrl' => ['/user/security/auth'],

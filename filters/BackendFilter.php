@@ -23,7 +23,6 @@ use yii\web\NotFoundHttpException;
  */
 class BackendFilter extends ActionFilter
 {
-
     /**
      * @var array
      */
@@ -43,5 +42,4 @@ class BackendFilter extends ActionFilter
 
         return true;
     }
-
 }

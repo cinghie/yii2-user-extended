@@ -12,23 +12,27 @@
 
 namespace cinghie\userextended\models;
 
+use Yii;
 use dektrium\rbac\models\Assignment as BaseAssignment;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\Connection;
 
+/**
+ * Class Assignment
+ */
 class Assignment extends BaseAssignment
 {
 
 	/**
 	 * @inheritdoc
 	 *
-	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+	 * @return object
 	 * @throws InvalidConfigException
 	 */
 	public static function find()
 	{
-		return \Yii::createObject(ActiveQuery::class, [static::class]);
+		return Yii::createObject(ActiveQuery::class, [static::class]);
 	}
 
 	/**
@@ -54,7 +58,6 @@ class Assignment extends BaseAssignment
 	 */
 	public static function getDb()
 	{
-		return \Yii::$app->getDb();
+		return Yii::$app->getDb();
 	}
-
 }

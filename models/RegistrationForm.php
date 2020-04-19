@@ -18,6 +18,9 @@ use dektrium\user\models\RegistrationForm as BaseRegistrationForm;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 
+/**
+ * Class RegistrationForm
+ */
 class RegistrationForm extends BaseRegistrationForm
 {
     /**
@@ -41,31 +44,31 @@ class RegistrationForm extends BaseRegistrationForm
     {
         $rules = parent::rules();
 
-	    if(\Yii::$app->getModule('userextended')->birthday) {
+	    if(Yii::$app->getModule('userextended')->birthday) {
 		    $rules[] = ['birthday', 'safe'];
 		    $rules[] = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
 		    $rules[] = ['birthday', 'required'];
 	    }
 
-	    if(\Yii::$app->getModule('userextended')->captcha) {
+	    if(Yii::$app->getModule('userextended')->captcha) {
 		    $rules[] = ['captcha', 'captcha'];
 		    $rules[] = ['captcha', 'required'];
 	    }
 
-	    if(\Yii::$app->getModule('userextended')->firstname) {
+	    if(Yii::$app->getModule('userextended')->firstname) {
 		    $rules[] = ['firstname', 'trim'];
 		    $rules[] = ['firstname', 'string', 'max' => 255];
 		    $rules[] = ['firstname', 'required'];
 	    }
 
-	    if(\Yii::$app->getModule('userextended')->lastname) {
+	    if(Yii::$app->getModule('userextended')->lastname) {
 		    $rules[] = ['lastname', 'trim'];
 		    $rules[] = ['lastname', 'string', 'max' => 255];
 		    $rules[] = ['lastname', 'required'];
 	    }
 
-	    if(\Yii::$app->getModule('userextended')->terms) {
-		    $rules[] = ['terms', 'required', 'requiredValue' => true, 'message' => \Yii::t('userextended','You must agree to the terms and conditions')];
+	    if(Yii::$app->getModule('userextended')->terms) {
+		    $rules[] = ['terms', 'required', 'requiredValue' => true, 'message' => Yii::t('userextended','You must agree to the terms and conditions')];
 	    }
 
         return $rules;
@@ -77,12 +80,12 @@ class RegistrationForm extends BaseRegistrationForm
     public function attributeLabels()
     {
         $labels = parent::attributeLabels();
-        $labels['name']      = \Yii::t('userextended', 'Name');
-        $labels['firstname'] = \Yii::t('userextended', 'Firstname');
-        $labels['lastname']  = \Yii::t('userextended', 'Lastname');
-        $labels['birthday']  = \Yii::t('userextended', 'Birthday');
-        $labels['terms']     = \Yii::t('userextended', 'I Agree');
-        $labels['captcha']   = \Yii::t('userextended', 'Captcha');
+        $labels['name']      = Yii::t('userextended', 'Name');
+        $labels['firstname'] = Yii::t('userextended', 'Firstname');
+        $labels['lastname']  = Yii::t('userextended', 'Lastname');
+        $labels['birthday']  = Yii::t('userextended', 'Birthday');
+        $labels['terms']     = Yii::t('userextended', 'I Agree');
+        $labels['captcha']   = Yii::t('userextended', 'Captcha');
 
         return $labels;
     }
@@ -110,7 +113,7 @@ class RegistrationForm extends BaseRegistrationForm
 			return false;
 		}
 
-		if(\Yii::$app->getModule('userextended')->defaultRole !== '') {
+		if(Yii::$app->getModule('userextended')->defaultRole !== '') {
 			$user->setRole(Yii::$app->getModule('userextended')->defaultRole);
 		}
 
@@ -138,33 +141,33 @@ class RegistrationForm extends BaseRegistrationForm
             'password' => $this->password,
         ]);
 
-	    $profile = \Yii::createObject(Profile::class);
+	    $profile = Yii::createObject(Profile::class);
 
-	    if(\Yii::$app->getModule('userextended')->birthday) {
+	    if(Yii::$app->getModule('userextended')->birthday) {
 		    $profile->setAttributes([
 			    'birthday' => $this->birthday
 		    ]);
 	    }
 
-	    if(\Yii::$app->getModule('userextended')->firstname) {
+	    if(Yii::$app->getModule('userextended')->firstname) {
 		    $profile->setAttributes([
 			    'firstname' => ucwords(strtolower($this->firstname))
 		    ]);
 	    }
 
-	    if(\Yii::$app->getModule('userextended')->lastname) {
+	    if(Yii::$app->getModule('userextended')->lastname) {
 		    $profile->setAttributes([
 			    'lastname' => ucwords(strtolower($this->lastname))
 		    ]);
 	    }
 
-	    if(\Yii::$app->getModule('userextended')->firstname && \Yii::$app->getModule('userextended')->lastname) {
+	    if(Yii::$app->getModule('userextended')->firstname && Yii::$app->getModule('userextended')->lastname) {
 		    $profile->setAttributes([
 			    'name' => ucwords(strtolower($this->firstname)).' '.ucwords(strtolower($this->lastname))
 		    ]);
 	    }
 
-	    if(\Yii::$app->getModule('userextended')->terms) {
+	    if(Yii::$app->getModule('userextended')->terms) {
 		    $profile->setAttributes([
 			    'terms' => $this->terms
 		    ]);
@@ -172,5 +175,4 @@ class RegistrationForm extends BaseRegistrationForm
 
         $user->setProfile($profile);
     }
-
 }

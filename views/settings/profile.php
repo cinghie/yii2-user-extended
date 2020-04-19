@@ -17,12 +17,12 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
-$this->title = \Yii::t('user', 'Profile settings');
+$this->title = Yii::t('user', 'Profile settings');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<?php if(\Yii::$app->getModule('userextended')->showAlert): ?>
-    <?= $this->render('/_alert', [ 'module' => \Yii::$app->getModule('user'), ]) ?>
+<?php if(Yii::$app->getModule('userextended')->showAlert): ?>
+    <?= $this->render('/_alert', [ 'module' => Yii::$app->getModule('user'), ]) ?>
 <?php endif ?>
 
 <div class="row">
@@ -77,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
 					                    'allowedFileExtensions'=> ['jpg','gif','png'],
 					                    'browseClass' => 'btn btn-primary btn-block',
 					                    'browseIcon' => '<i class="glyphicon glyphicon-camera"></i> ',
-					                    'browseLabel' =>  \Yii::t('userextended', 'Change Avatar'),
+					                    'browseLabel' =>  Yii::t('userextended', 'Change Avatar'),
 					                    'previewFileType' => 'image',
 					                    'showCaption' => false,
 					                    'showRemove' => false,
@@ -91,26 +91,26 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <?php endif ?>
 
-                    <?php if(\Yii::$app->getModule('userextended')->firstname && \Yii::$app->getModule('userextended')->lastname) {
+                    <?php if(Yii::$app->getModule('userextended')->firstname && Yii::$app->getModule('userextended')->lastname) {
                         echo $form->field($model, 'name')->textInput([
-                            'placeholder' => \Yii::t('userextended', 'Name'),
+                            'placeholder' => Yii::t('userextended', 'Name'),
                             'readonly' => true
                         ]);
                     } ?>
 
-                    <?php if(\Yii::$app->getModule('userextended')->firstname) {
+                    <?php if(Yii::$app->getModule('userextended')->firstname) {
                         echo $form->field($model, 'firstname')->textInput([
-                            'placeholder' => \Yii::t('userextended', 'Firstname')
+                            'placeholder' => Yii::t('userextended', 'Firstname')
                         ]);
                     } ?>
 
-                    <?php if(\Yii::$app->getModule('userextended')->lastname) {
+                    <?php if(Yii::$app->getModule('userextended')->lastname) {
                         echo $form->field($model, 'lastname')->textInput([
-                            'placeholder' => \Yii::t('userextended', 'Lastname')
+                            'placeholder' => Yii::t('userextended', 'Lastname')
                         ]);
                     } ?>
 
-                    <?php if(\Yii::$app->getModule('userextended')->birthday) {
+                    <?php if(Yii::$app->getModule('userextended')->birthday) {
                         echo $form->field($model, 'birthday')->widget(DatePicker::class, [
                             'pluginOptions' => [
                                 'autoclose' => true,
@@ -127,31 +127,31 @@ $this->params['breadcrumbs'][] = $this->title;
                             )
 		            ) ?>
 
-                    <?php if(\Yii::$app->getModule('userextended')->publicEmail) {
+                    <?php if(Yii::$app->getModule('userextended')->publicEmail) {
                         echo $form->field($model, 'public_email')->textInput([
-                            'placeholder' => \Yii::t('userextended', 'Public Email')
+                            'placeholder' => Yii::t('userextended', 'Public Email')
                         ]);
                     } ?>
 
-                    <?php if(\Yii::$app->getModule('userextended')->gravatarEmail) {
+                    <?php if(Yii::$app->getModule('userextended')->gravatarEmail) {
                         echo $form->field($model, 'gravatar_email')->textInput([
-                            'placeholder' => \Yii::t('user', 'Gravatar email')
-                        ])->hint(Html::a(\Yii::t('user', 'Change your avatar at Gravatar.com'), 'http://gravatar.com'));
+                            'placeholder' => Yii::t('user', 'Gravatar email')
+                        ])->hint(Html::a(Yii::t('user', 'Change your avatar at Gravatar.com'), 'http://gravatar.com'));
                     } ?>
 
-                    <?php if(\Yii::$app->getModule('userextended')->website) {
+                    <?php if(Yii::$app->getModule('userextended')->website) {
                         echo $form->field($model, 'website')->textInput([
-                            'placeholder' => \Yii::t('user', 'Website')
+                            'placeholder' => Yii::t('user', 'Website')
                         ]);
                     } ?>
 
-                    <?php if(\Yii::$app->getModule('userextended')->location) {
+                    <?php if(Yii::$app->getModule('userextended')->location) {
                         echo $form->field($model, 'location')->textInput([
-                            'placeholder' => \Yii::t('user', 'Location')
+                            'placeholder' => Yii::t('user', 'Location')
                         ]);
                     } ?>
 
-                    <?php if(\Yii::$app->getModule('userextended')->bio) {
+                    <?php if(Yii::$app->getModule('userextended')->bio) {
                         echo $form->field($model, 'bio')->textarea() ;
                     } ?>
 
@@ -161,7 +161,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <div class="form-group">
                         <div class="col-lg-offset-3 col-lg-9">
-                            <?= Html::submitButton(\Yii::t('userextended', 'Save'), ['class' => 'btn btn-block btn-success']) ?><br>
+                            <?= Html::submitButton(Yii::t('userextended', 'Save'), ['class' => 'btn btn-block btn-success']) ?><br>
                         </div>
                     </div>
 

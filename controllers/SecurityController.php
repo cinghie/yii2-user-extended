@@ -18,6 +18,9 @@ use dektrium\user\models\LoginForm;
 use yii\base\ExitException;
 use yii\base\InvalidConfigException;
 
+/**
+ * Class SecurityController
+ */
 class SecurityController extends BaseController
 {
 	/**

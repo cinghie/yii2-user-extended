@@ -13,11 +13,11 @@
 namespace cinghie\userextended\controllers;
 
 use Throwable;
+use Yii;
 use cinghie\userextended\models\Profile;
 use cinghie\userextended\models\User;
 use cinghie\userextended\models\UserSearch;
 use dektrium\user\controllers\AdminController as BaseController;
-use Yii;
 use yii\base\Exception;
 use yii\base\ExitException;
 use yii\base\InvalidCallException;
@@ -31,6 +31,9 @@ use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\Web\Response;
 
+/**
+ * Class AdminController
+ */
 class AdminController extends BaseController
 {
 	/**

@@ -11,14 +11,14 @@ use kartik\grid\ActionColumn;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$this->title = \Yii::t('userextended', 'Manage permissions');
+$this->title = Yii::t('userextended', 'Manage permissions');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('userextended', 'Manage users'), 'url' => ['/user/admin/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<?php if(\Yii::$app->getModule('userextended')->showTitles): ?>
-    <h1><?= \Yii::t('userextended', 'Manage permissions') ?></h1>
+<?php if(Yii::$app->getModule('userextended')->showTitles): ?>
+    <h1><?= Yii::t('userextended', 'Manage permissions') ?></h1>
 <?php endif ?>
 
 <div class="row">
@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute' => 'name',
                     'format' => 'html',
                     'hAlign' => 'center',
-                    'header' => \Yii::t('rbac', 'Name'),
+                    'header' => Yii::t('rbac', 'Name'),
                     'value' => function ($model) {
                         $url = Url::to(['/rbac/permission/update', 'name' => $model['name']]);
                         return Html::a($model['name'],$url);
@@ -67,12 +67,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'attribute' => 'description',
                     'hAlign' => 'center',
-                    'header' => \Yii::t('rbac', 'Description'),
+                    'header' => Yii::t('rbac', 'Description'),
                 ],
                 [
                     'attribute' => 'rule_name',
                     'hAlign' => 'center',
-                    'header'    => \Yii::t('rbac', 'Rule name'),
+                    'header'    => Yii::t('rbac', 'Rule name'),
                 ],
                 [
                     'class' => ActionColumn::class,
