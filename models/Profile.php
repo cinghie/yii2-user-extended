@@ -41,6 +41,12 @@ class Profile extends BaseProfile
         $scenarios = parent::scenarios();
 
 	    if(Yii::$app->getModule('userextended')->avatar) {
+		    $scenarios['create'][]   = 'account';
+		    $scenarios['update'][]   = 'account';
+		    $scenarios['register'][] = 'account';
+	    }
+
+	    if(Yii::$app->getModule('userextended')->avatar) {
 		    $scenarios['create'][]   = 'avatar';
 		    $scenarios['update'][]   = 'avatar';
 		    $scenarios['register'][] = 'avatar';
@@ -50,6 +56,12 @@ class Profile extends BaseProfile
 		    $scenarios['create'][]   = 'birthday';
 		    $scenarios['update'][]   = 'birthday';
 		    $scenarios['register'][] = 'birthday';
+	    }
+
+	    if(Yii::$app->getModule('userextended')->avatar) {
+		    $scenarios['create'][]   = 'contact';
+		    $scenarios['update'][]   = 'contact';
+		    $scenarios['register'][] = 'contact';
 	    }
 
 	    if(Yii::$app->getModule('userextended')->firstname) {
@@ -80,10 +92,20 @@ class Profile extends BaseProfile
     {
         $rules = parent::rules();
 
+	    if(Yii::$app->getModule('userextended')->account) {
+		    $rules['accountLength'] = ['account', 'integer'];
+		    $rules['accountTrim'] = ['account', 'trim'];
+	    }
+
 	    if(Yii::$app->getModule('userextended')->birthday) {
 		    $rules['birthdayLength'] = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
 		    $rules['birthdayRequired'] = ['birthday', 'required'];
 		    $rules['birthdayTrim'] = ['birthday', 'trim'];
+	    }
+
+	    if(Yii::$app->getModule('userextended')->contact) {
+		    $rules['contactLength'] = ['contact', 'integer'];
+		    $rules['contactTrim'] = ['contact', 'trim'];
 	    }
 
 	    if(Yii::$app->getModule('userextended')->firstname) {
@@ -112,8 +134,10 @@ class Profile extends BaseProfile
     public function attributeLabels()
     {
         return [
+            'account' => Yii::t('traits', 'Account'),
             'avatar' => Yii::t('userextended', 'Avatar'),
             'birthday' => Yii::t('userextended', 'Birthday'),
+            'contact' => Yii::t('traits', 'Contact'),
             'firstname' => Yii::t('userextended', 'Firstname'),
             'lastname' => Yii::t('userextended', 'Lastname'),
             'name' => Yii::t('userextended', 'Name'),

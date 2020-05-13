@@ -13,6 +13,7 @@
 use dektrium\user\helpers\Timezone;
 use kartik\widgets\DatePicker;
 use kartik\widgets\FileInput;
+use kartik\widgets\Select2;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -116,6 +117,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'autoclose' => true,
                                 'format' => 'yyyy-mm-dd',
                             ]
+                        ]);
+                    } ?>
+
+                    <?php if(Yii::$app->getModule('userextended')->account) {
+                        echo $form->field($model, 'birthday')->widget(Select2::class, [
+
                         ]);
                     } ?>
 

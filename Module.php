@@ -24,7 +24,7 @@ class Module extends BaseUser
     /**
      * @var string Module version
      */
-    private $version = '0.6.2';
+    private $version = '0.6.3';
 
     /**
      * @var string Path to avatar file
@@ -44,6 +44,11 @@ class Module extends BaseUser
 	/**
 	 * @var boolean avatar
 	 */
+	public $account = false;
+
+	/**
+	 * @var boolean avatar
+	 */
 	public $avatar = true;
 
 	/**
@@ -55,6 +60,11 @@ class Module extends BaseUser
 	 * @var boolean birthday
 	 */
 	public $birthday = true;
+
+	/**
+	 * @var boolean bio
+	 */
+	public $contact = false;
 
 	/**
 	 * @var boolean firstname
@@ -166,8 +176,7 @@ class Module extends BaseUser
         {
             Yii::$app->i18n->translations['userextended'] = [
                 'class' => PhpMessageSource::class,
-                'basePath' => __DIR__ . '/messages',
-                //'forceTranslation' => true,
+                'basePath' => __DIR__ . '/messages'
             ];
         }
     }

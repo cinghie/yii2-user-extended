@@ -74,6 +74,10 @@ use yii\helpers\Html;
             ]) ?>
         <?php endif ?>
 
+        <?php if(Yii::$app->getModule('userextended')->account): ?>
+            <?= $form->field($profile, 'account') ?>
+        <?php endif ?>
+
         <?php if(Yii::$app->getModule('userextended')->publicEmail): ?>
             <?= $form->field($profile, 'public_email') ?>
         <?php endif ?>

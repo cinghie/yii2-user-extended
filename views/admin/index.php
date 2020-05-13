@@ -169,7 +169,7 @@ $this->registerJs('$(document).ready(function()
 			'format' => 'html',
 			'hAlign' => 'center',
             'label' => Yii::t( 'userextended', 'Role' ),
-			'width' => '9%',
+			'width' => '8%',
 			'value' => function ($model) {
 				$html = '';
 				/** @var User $model */
@@ -193,7 +193,7 @@ $this->registerJs('$(document).ready(function()
 		    'filterInputOptions' => ['placeholder' => ''],
 		    'format' => 'raw',
 			'hAlign' => 'center',
-			'width' => '7%',
+			'width' => '6%',
 			'value' => function ($model) {
 				/** @var User $model */
 				if ($model->isBlocked) {
