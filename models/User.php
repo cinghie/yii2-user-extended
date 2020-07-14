@@ -19,6 +19,7 @@ use yii\base\InvalidParamException;
 use yii\db\ActiveQuery;
 use yii\db\Query;
 use yii\helpers\Html;
+use yii\rbac\Assignment;
 use yii\rbac\Role;
 
 /**
@@ -81,6 +82,22 @@ class User extends BaseUser
     public function getRoles()
     {
         return $this->hasMany(Assignment::class, ['user_id' => 'id'])->from(Assignment::tableName() . ' AS role');
+    }
+
+    /**
+     * @return Assignment[]
+     */
+    public function getCurrentUserRolesAssigned()
+    {
+        return Yii::$app->authManager->getAssignments(Yii::$app->user->id);
+    }
+
+    /**
+     * @return Role[]
+     */
+    public function getCurrentUserRoles()
+    {
+        return Yii::$app->authManager->getRolesByUser(Yii::$app->user->id);
     }
 
 	/**
