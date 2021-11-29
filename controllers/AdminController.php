@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.2
+ * @version 0.6.3
  */
 
 namespace cinghie\userextended\controllers;
@@ -20,9 +20,9 @@ use cinghie\userextended\models\UserSearch;
 use dektrium\user\controllers\AdminController as BaseController;
 use yii\base\Exception;
 use yii\base\ExitException;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\filters\AccessRule;
@@ -78,9 +78,9 @@ class AdminController extends BaseController
 	/**
 	 * Lists all User models.
 	 *
-	 * @return mixed
-	 * @throws InvalidConfigException
-	 * @throws InvalidParamException
+	 * @return string
+     * @throws InvalidConfigException
+	 * @throws InvalidArgumentException
 	 */
     public function actionIndex()
     {
@@ -99,12 +99,12 @@ class AdminController extends BaseController
 	 *
 	 * @param int $id
 	 *
-	 * @return mixed
-	 * @throws Exception
+	 * @return Response|string
+     * @throws Exception
 	 * @throws ExitException
 	 * @throws InvalidCallException
 	 * @throws InvalidConfigException
-	 * @throws InvalidParamException
+	 * @throws InvalidArgumentException
 	 * @throws NotFoundHttpException
 	 */
     public function actionUpdateProfile($id)
@@ -251,7 +251,7 @@ class AdminController extends BaseController
 	 * @throws \Exception
 	 * @throws \yii\db\Exception
 	 * @throws InvalidConfigException
-	 * @throws InvalidParamException
+	 * @throws InvalidArgumentException
 	 * @throws NotFoundHttpException
 	 * @throws StaleObjectException
 	 * @throws Throwable

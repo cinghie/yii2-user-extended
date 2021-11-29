@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.2
+ * @version 0.6.3
  */
 
 namespace cinghie\userextended\models;
@@ -23,9 +23,8 @@ use yii\db\Connection;
  */
 class Assignment extends BaseAssignment
 {
-
 	/**
-	 * @inheritdoc
+	 * Find Assignment
 	 *
 	 * @return object
 	 * @throws InvalidConfigException

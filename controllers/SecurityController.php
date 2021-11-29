@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.2
+ * @version 0.6.3
  */
 
 namespace cinghie\userextended\controllers;
@@ -17,6 +17,7 @@ use dektrium\user\controllers\SecurityController as BaseController;
 use dektrium\user\models\LoginForm;
 use yii\base\ExitException;
 use yii\base\InvalidConfigException;
+use yii\Web\Response;
 
 /**
  * Class SecurityController
@@ -45,7 +46,7 @@ class SecurityController extends BaseController
 		}
 
 		/** @var LoginForm $model */
-		$model = Yii::createObject(LoginForm::className());
+		$model = Yii::createObject(LoginForm::class);
 		$event = $this->getFormEvent($model);
 
 		$this->performAjaxValidation($model);

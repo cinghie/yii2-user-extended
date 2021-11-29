@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.2
+ * @version 0.6.3
  */
 
 namespace cinghie\userextended\models;
@@ -16,7 +16,7 @@ use Yii;
 use cinghie\traits\EditorTrait;
 use dektrium\user\models\Profile as BaseProfile;
 use yii\base\Exception;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\db\ActiveQueryInterface;
 use yii\web\UploadedFile;
 
@@ -150,8 +150,8 @@ class Profile extends BaseProfile
 	 *
 	 * @param string $filePath
 	 *
-	 * @return mixed
-	 * @throws Exception
+	 * @return false|UploadedFile
+     * @throws Exception
 	 */
     public function uploadAvatar($filePath)
     {
@@ -180,7 +180,7 @@ class Profile extends BaseProfile
 	 * fetch stored image file name with complete path
 	 *
 	 * @return string
-	 * @throws InvalidParamException
+	 * @throws InvalidArgumentException
 	 */
     public function getImagePath()
     {
@@ -191,7 +191,7 @@ class Profile extends BaseProfile
 	 * fetch stored image url
 	 *
 	 * @return string
-	 * @throws InvalidParamException
+	 * @throws InvalidArgumentException
 	 */
     public function getImageUrl()
     {
@@ -214,7 +214,7 @@ class Profile extends BaseProfile
 	 * @param string $avatarOld
 	 *
 	 * @return bool
-	 * @throws InvalidParamException
+	 * @throws InvalidArgumentException
 	 */
     public function deleteImage($avatarOld)
     {

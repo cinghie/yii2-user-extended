@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.2
+ * @version 0.6.3
  */
 
 namespace cinghie\userextended\models;
@@ -34,13 +34,14 @@ class Account extends BaseAccount
 	{
 		/** @var Account $account */
 		$account = Yii::createObject([
-			'class'      => static::className(),
-			'provider'   => $client->getId(),
-			'client_id'  => $client->getUserAttributes()['id'],
-			'data'       => Json::encode($client->getUserAttributes()),
+			'class' => static::class,
+			'provider' => $client->getId(),
+			'client_id' => $client->getUserAttributes()['id'],
+			'data' => Json::encode($client->getUserAttributes()),
 		]);
 
-		if ($client instanceof ClientInterface) {
+		if ($client instanceof ClientInterface)
+        {
 			$account->setAttributes([
 				'username' => $client->getUsername(),
 				'email' => $client->getEmail(),

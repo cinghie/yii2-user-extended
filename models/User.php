@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.2
+ * @version 0.6.3
  */
 
 namespace cinghie\userextended\models;
@@ -15,11 +15,10 @@ namespace cinghie\userextended\models;
 use Exception;
 use Yii;
 use dektrium\user\models\User as BaseUser;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\db\ActiveQuery;
 use yii\db\Query;
 use yii\helpers\Html;
-use yii\rbac\Assignment;
 use yii\rbac\Role;
 
 /**
@@ -29,6 +28,9 @@ use yii\rbac\Role;
  * @property mixed $role
  * @property array[] $rolesHTML
  * @property string $fullName
+ * @property string $avatar
+ * @property Role[] $currentUserRoles
+ * @property Assignment[] $currentUserRolesAssigned
  */
 class User extends BaseUser
 {
@@ -85,7 +87,7 @@ class User extends BaseUser
     }
 
     /**
-     * @return Assignment[]
+     * @return yii\rbac\Assignment[]
      */
     public function getCurrentUserRolesAssigned()
     {
@@ -113,7 +115,8 @@ class User extends BaseUser
 	/**
 	 * Get Rules by UserID
 	 *
-	 * @param User $userid
+	 * @param string|int $userid
+     *
 	 * @return Role[]
 	 */
     public function getRulesByUserID($userid)
@@ -127,7 +130,7 @@ class User extends BaseUser
 	 * @param $role
 	 *
 	 * @throws Exception
-	 * @throws InvalidParamException
+	 * @throws InvalidArgumentException
 	 */
     public function setRole($role)
     {
@@ -135,7 +138,7 @@ class User extends BaseUser
 	    $roleObject = $auth->getRole($role);
 
 	    if (!$roleObject) {
-		    throw new InvalidParamException ("There is no role \"$role\".");
+		    throw new InvalidArgumentException ("There is no role \"$role\".");
 	    }
 
 	    $auth->assign($roleObject, $this->id);
@@ -166,9 +169,8 @@ class User extends BaseUser
     public function getAvatar()
     {
 	    $profile = $this->getProfile()->one();
-        $avatar = $profile->avatar ? $profile->avatar : 'default.png';
-        $imageURL = Yii::getAlias(Yii::$app->getModule('userextended')->avatarURL).'small/'.$avatar;
+        $avatar = $profile->avatar ?: 'default.png';
 
-        return $imageURL;
+        return Yii::getAlias(Yii::$app->getModule('userextended')->avatarURL).'small/'.$avatar;
     }
 }

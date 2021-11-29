@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.2
+ * @version 0.6.3
  */
 
 namespace cinghie\userextended\models;
@@ -16,7 +16,7 @@ use Exception;
 use Yii;
 use dektrium\user\models\RegistrationForm as BaseRegistrationForm;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * Class RegistrationForm
@@ -96,7 +96,7 @@ class RegistrationForm extends BaseRegistrationForm
 	 * @return bool
 	 * @throws Exception
 	 * @throws InvalidConfigException
-	 * @throws InvalidParamException
+	 * @throws InvalidArgumentException
 	 */
 	public function register()
 	{

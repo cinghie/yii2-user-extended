@@ -7,12 +7,13 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.2
+ * @version 0.6.3
  */
 
 namespace cinghie\userextended\models;
 
 use Yii;
+use dektrium\user\helpers\Password;
 use dektrium\user\models\LoginForm as BaseLoginForm;
 
 /**
@@ -20,7 +21,9 @@ use dektrium\user\models\LoginForm as BaseLoginForm;
  */
 class LoginForm extends BaseLoginForm
 {
-	/** @inheritdoc */
+	/**
+     * @inheritdoc
+     */
 	public function rules()
 	{
 		$rules = [

@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.2
+ * @version 0.6.3
  */
 
 namespace cinghie\userextended\models;
@@ -15,7 +15,7 @@ namespace cinghie\userextended\models;
 use Yii;
 use cinghie\traits\ViewsHelpersTrait;
 use dektrium\user\models\UserSearch as BaseUserSearch;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\db\Query;
@@ -28,19 +28,29 @@ class UserSearch extends BaseUserSearch
 {
 	use ViewsHelpersTrait;
 
-	/** @var string */
+	/**
+     * @var string
+     */
 	public $blocked_at;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $firstname;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $lastname;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $birthday;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $rule;
 
 	/**
@@ -79,7 +89,7 @@ class UserSearch extends BaseUserSearch
 	 * @param $params
 	 *
 	 * @return ActiveDataProvider
-	 * @throws InvalidParamException
+	 * @throws InvalidArgumentException
 	 */
     public function search($params)
     {
@@ -157,7 +167,7 @@ class UserSearch extends BaseUserSearch
 	 * @param int $order
 	 *
 	 * @return ActiveDataProvider
-	 * @throws InvalidParamException
+	 * @throws InvalidArgumentException
 	 */
 	public function last($limit, $orderby = 'id', $order = SORT_DESC)
 	{

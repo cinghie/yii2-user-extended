@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.2
+ * @version 0.6.3
  */
 
 namespace cinghie\userextended\controllers;
@@ -17,9 +17,9 @@ use cinghie\userextended\models\Profile;
 use dektrium\user\controllers\SettingsController as BaseController;
 use yii\base\Exception;
 use yii\base\ExitException;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\web\Response;
 
 /**
@@ -36,7 +36,7 @@ class SettingsController extends BaseController
 	 * @throws ExitException
 	 * @throws InvalidCallException
 	 * @throws InvalidConfigException
-	 * @throws InvalidParamException
+	 * @throws InvalidArgumentException
 	 */
     public function actionProfile()
     {
