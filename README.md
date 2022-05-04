@@ -77,7 +77,8 @@ Set on your configuration file, in modules section
 'modules' =>  [
     // Yii2 RBAC
     'rbac' => [
-        'class' => 'dektrium\rbac\Module'
+        // 'class' => 'dektrium\rbac\Module'
+        'class' => 'dektrium\rbac\RbacWebModule'
     ],
     // Yii2 User
     'user' => [
