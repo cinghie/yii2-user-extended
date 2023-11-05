@@ -146,7 +146,8 @@ class UserSearch extends BaseUserSearch
               ->andFilterWhere([$table_name . '.id' => $this->id])
               ->andFilterWhere([$table_name . '.registration_ip' => $this->registration_ip]);
 
-        if ($this->rule !== '' && $this->blocked_at !== NULL) {
+        if ($this->rule !== '' && $this->blocked_at !== NULL)
+		{
             $query->andWhere('`id` IN (
                 SELECT {{%auth_assignment}}.user_id FROM {{%auth_assignment}} 
                 WHERE {{%auth_assignment}}.`item_name` = "'.$this->rule.'")'

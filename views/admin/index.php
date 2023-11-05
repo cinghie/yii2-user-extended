@@ -1,8 +1,9 @@
 <?php
 
 /**
- * @var yii\web\View $this
+ * @var yii\data\ActiveDataProvider $dataProvider
  * @var cinghie\userextended\models\UserSearch $searchModel
+ * @var yii\web\View $this
  */
 
 use cinghie\userextended\models\User;
@@ -116,8 +117,8 @@ $this->registerJs('$(document).ready(function()
 		[
 			'attribute' => 'created_at',
 			'filter' => DatePicker::widget([
-				'model'      => $searchModel,
-				'attribute'  => 'created_at',
+				'model' => $searchModel,
+				'attribute' => 'created_at',
 				'dateFormat' => 'php:Y-m-d',
 				'options' => [
 					'class' => 'form-control',
@@ -133,14 +134,15 @@ $this->registerJs('$(document).ready(function()
 			'attribute' => 'last_login_at',
 			'hAlign' => 'center',
 			'filter' => DatePicker::widget([
-				'model'      => $searchModel,
+				'model' => $searchModel,
 				'attribute'  => 'last_login_at',
 				'dateFormat' => 'php:Y-m-d',
 				'options' => [
 					'class' => 'form-control',
 				],
 			]),
-			'value' => function ($model) {
+			'value' => function ($model)
+            {
 				/** @var User $model */
 				if (!$model->last_login_at || $model->last_login_at === 0) {
 					return Yii::t('userextended', 'Never');
@@ -156,10 +158,10 @@ $this->registerJs('$(document).ready(function()
 		[
 			'attribute' => 'rule',
 			'filter' => Select2::widget([
-				'model'     => $searchModel,
+				'model' => $searchModel,
 				'attribute' => 'rule',
-				'data'      => $searchModel->getNameList(),
-				'options'   => [
+				'data' => $searchModel->getNameList(),
+				'options' => [
 					'placeholder' => Yii::t('userextended', 'Select role'),
 				],
 				'pluginOptions' => [
@@ -194,7 +196,8 @@ $this->registerJs('$(document).ready(function()
 		    'format' => 'raw',
 			'hAlign' => 'center',
 			'width' => '6%',
-			'value' => function ($model) {
+			'value' => function ($model)
+            {
 				/** @var User $model */
 				if ($model->isBlocked) {
 					return Html::a('<span class="glyphicon glyphicon-remove text-danger"></span>', ['block', 'id' => $model->id], [
