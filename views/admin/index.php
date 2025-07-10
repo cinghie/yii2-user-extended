@@ -157,17 +157,12 @@ $this->registerJs('$(document).ready(function()
 		],
 		[
 			'attribute' => 'rule',
-			'filter' => Select2::widget([
-				'model' => $searchModel,
-				'attribute' => 'rule',
-				'data' => $searchModel->getNameList(),
-				'options' => [
-					'placeholder' => Yii::t('userextended', 'Select role'),
-				],
-				'pluginOptions' => [
-					'allowClear' => true,
-				],
-			]),
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => $searchModel->getNameList(),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+            ],
+            'filterInputOptions' => ['placeholder' => ''],
 			'format' => 'html',
 			'hAlign' => 'center',
             'label' => Yii::t( 'userextended', 'Role' ),
