@@ -79,7 +79,7 @@ $this->registerCss('
         z-index: 1;
         position: absolute;
         margin: 0 auto;
-        width: 130px;
+        width: auto;
         left: 0;
         right: 0;
     }
