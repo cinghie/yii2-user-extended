@@ -14,12 +14,11 @@ namespace cinghie\userextended\models;
 
 use Yii;
 use cinghie\traits\ViewsHelpersTrait;
+use cinghie\userextended\helpers\RbacRoleCache;
 use dektrium\user\models\UserSearch as BaseUserSearch;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use yii\db\Query;
-use yii\helpers\ArrayHelper;
 
 /**
  * @property array $nameList
@@ -201,13 +200,6 @@ class UserSearch extends BaseUserSearch
      */
     public function getNameList()
     {
-        $rows = (new Query)
-            ->select(['name'])
-            ->andWhere(['type' => 1])
-            ->andWhere('name != "public"')
-            ->from(Yii::$app->authManager->itemTable)
-            ->all();
-
-        return ArrayHelper::map($rows, 'name', 'name');
+        return RbacRoleCache::getRoleNames();
     }
 }

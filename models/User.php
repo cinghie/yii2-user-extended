@@ -14,6 +14,7 @@ namespace cinghie\userextended\models;
 
 use Exception;
 use Yii;
+use cinghie\userextended\helpers\ModuleConfig;
 use dektrium\user\models\User as BaseUser;
 use yii\base\InvalidArgumentException;
 use yii\db\ActiveQuery;
@@ -167,6 +168,6 @@ class User extends BaseUser
 	    $profile = $this->profile;
 	    $avatar = ($profile && $profile->avatar) ? $profile->avatar : 'default.png';
 
-        return Yii::getAlias(Yii::$app->getModule('userextended')->avatarURL).'small/'.$avatar;
+        return Yii::getAlias(ModuleConfig::get('avatarURL')).'small/'.$avatar;
     }
 }

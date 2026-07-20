@@ -14,6 +14,7 @@ namespace cinghie\userextended\helpers;
 
 use Yii;
 use cinghie\userextended\Module;
+use cinghie\userextended\helpers\ModuleConfig;
 use yii\base\InvalidConfigException;
 
 /**
@@ -33,7 +34,7 @@ class LoginRateLimiter
 	 */
 	public function __construct($module = null)
 	{
-		$this->module = $module ?: Yii::$app->getModule('userextended');
+		$this->module = $module ?: ModuleConfig::module();
 	}
 
 	/**

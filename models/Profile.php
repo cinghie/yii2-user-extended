@@ -14,6 +14,7 @@ namespace cinghie\userextended\models;
 
 use Yii;
 use cinghie\traits\EditorTrait;
+use cinghie\userextended\helpers\ModuleConfig;
 use dektrium\user\models\Profile as BaseProfile;
 use yii\base\Exception;
 use yii\base\InvalidArgumentException;
@@ -69,44 +70,45 @@ class Profile extends BaseProfile
     public function scenarios()
     {
         $scenarios = parent::scenarios();
+	    $cfg = ModuleConfig::snapshot();
 
-	    if(Yii::$app->getModule('userextended')->avatar) {
+	    if (ModuleConfig::get('account')) {
 		    $scenarios['create'][]   = 'account';
 		    $scenarios['update'][]   = 'account';
 		    $scenarios['register'][] = 'account';
 	    }
 
-	    if(Yii::$app->getModule('userextended')->avatar) {
+	    if (!empty($cfg['avatar'])) {
 		    $scenarios['create'][]   = 'avatar';
 		    $scenarios['update'][]   = 'avatar';
 		    $scenarios['register'][] = 'avatar';
 	    }
 
-	    if(Yii::$app->getModule('userextended')->birthday) {
+	    if (!empty($cfg['birthday'])) {
 		    $scenarios['create'][]   = 'birthday';
 		    $scenarios['update'][]   = 'birthday';
 		    $scenarios['register'][] = 'birthday';
 	    }
 
-	    if(Yii::$app->getModule('userextended')->avatar) {
+	    if (ModuleConfig::get('contact')) {
 		    $scenarios['create'][]   = 'contact';
 		    $scenarios['update'][]   = 'contact';
 		    $scenarios['register'][] = 'contact';
 	    }
 
-	    if(Yii::$app->getModule('userextended')->firstname) {
+	    if (!empty($cfg['firstname'])) {
 		    $scenarios['create'][]   = 'firstname';
 		    $scenarios['update'][]   = 'firstname';
 		    $scenarios['register'][] = 'firstname';
 	    }
 
-	    if(Yii::$app->getModule('userextended')->lastname) {
+	    if (!empty($cfg['lastname'])) {
 		    $scenarios['create'][]   = 'lastname';
 		    $scenarios['update'][]   = 'lastname';
 		    $scenarios['register'][] = 'lastname';
 	    }
 
-	    if(Yii::$app->getModule('userextended')->signature) {
+	    if (!empty($cfg['signature'])) {
 		    $scenarios['create'][]   = 'signature';
 		    $scenarios['update'][]   = 'signature';
 		    $scenarios['register'][] = 'signature';
@@ -121,36 +123,37 @@ class Profile extends BaseProfile
     public function rules()
     {
         $rules = parent::rules();
+	    $cfg = ModuleConfig::snapshot();
 
-	    if(Yii::$app->getModule('userextended')->account) {
+	    if (ModuleConfig::get('account')) {
 		    $rules['accountLength'] = ['account', 'integer'];
 		    $rules['accountTrim'] = ['account', 'trim'];
 	    }
 
-	    if(Yii::$app->getModule('userextended')->birthday) {
+	    if (!empty($cfg['birthday'])) {
 		    $rules['birthdayLength'] = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
 		    $rules['birthdayRequired'] = ['birthday', 'required'];
 		    $rules['birthdayTrim'] = ['birthday', 'trim'];
 	    }
 
-	    if(Yii::$app->getModule('userextended')->contact) {
+	    if (ModuleConfig::get('contact')) {
 		    $rules['contactLength'] = ['contact', 'integer'];
 		    $rules['contactTrim'] = ['contact', 'trim'];
 	    }
 
-	    if(Yii::$app->getModule('userextended')->firstname) {
+	    if (!empty($cfg['firstname'])) {
 		    $rules['firstnameLength'] = ['firstname', 'string', 'max' => 255];
 		    $rules['firstnameRequired'] = ['firstname', 'required'];
 		    $rules['firstnameTrim'] = ['firstname', 'trim'];
 	    }
 
-	    if(Yii::$app->getModule('userextended')->lastname) {
+	    if (!empty($cfg['lastname'])) {
 		    $rules['lastnameLength'] = ['lastname', 'string', 'max' => 255];
 		    $rules['lastnameRequired'] = ['lastname', 'required'];
 		    $rules['lastnameTrim'] = ['lastname', 'trim'];
 	    }
 
-	    if(Yii::$app->getModule('userextended')->signature) {
+	    if (!empty($cfg['signature'])) {
 		    $rules['signatureLength'] = ['signature', 'string'];
 		    $rules['signatureTrim'] = ['signature', 'trim'];
 	    }
@@ -246,9 +249,9 @@ class Profile extends BaseProfile
 	 */
 	protected function validateAvatarUpload(UploadedFile $file)
 	{
-		$module = Yii::$app->getModule('userextended');
-		$allowedExtensions = array_map('strtolower', (array) $module->avatarAllowedExtensions);
-		$maxSize = (int) $module->avatarMaxSize;
+		$cfg = ModuleConfig::snapshot();
+		$allowedExtensions = array_map('strtolower', (array) $cfg['avatarAllowedExtensions']);
+		$maxSize = (int) $cfg['avatarMaxSize'];
 
 		if ((int) $file->error !== UPLOAD_ERR_OK) {
 			$this->avatarUploadError = Yii::t('userextended', 'Avatar upload failed.');
@@ -352,7 +355,7 @@ class Profile extends BaseProfile
 	{
 		$path = $filePath !== '' && $filePath !== null
 			? $filePath
-			: Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath);
+			: Yii::getAlias(ModuleConfig::get('avatarPath'));
 
 		$path = Yii::getAlias($path);
 		$path = rtrim(str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path), DIRECTORY_SEPARATOR);
@@ -402,7 +405,7 @@ class Profile extends BaseProfile
 		    return null;
 	    }
 
-	    $basePath = $this->resolveAvatarDirectory(Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath));
+	    $basePath = $this->resolveAvatarDirectory(Yii::getAlias(ModuleConfig::get('avatarPath')));
 	    if ($basePath === false) {
 		    return null;
 	    }
@@ -428,7 +431,7 @@ class Profile extends BaseProfile
             $avatar = ($this->avatar && $this->isSafeAvatarBasename($this->avatar))
 	            ? basename($this->avatar)
 	            : 'default.png';
-            $imageURL = Yii::getAlias(Yii::$app->getModule('userextended')->avatarURL).$avatar;
+            $imageURL = Yii::getAlias(ModuleConfig::get('avatarURL')).$avatar;
         }
 
         return $imageURL;
@@ -453,7 +456,7 @@ class Profile extends BaseProfile
 		    return false;
 	    }
 
-	    $basePath = $this->resolveAvatarDirectory(Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath));
+	    $basePath = $this->resolveAvatarDirectory(Yii::getAlias(ModuleConfig::get('avatarPath')));
 	    if ($basePath === false) {
 		    return false;
 	    }

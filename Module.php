@@ -88,6 +88,20 @@ class Module extends BaseUser
     public $avatarMaxSize = 2097152;
 
     /**
+     * Cache RBAC role name list used by admin filters.
+     *
+     * @var bool
+     */
+    public $enableRbacRoleCache = true;
+
+    /**
+     * TTL (seconds) for RBAC role name cache.
+     *
+     * @var int
+     */
+    public $rbacRoleCacheDuration = 3600;
+
+    /**
      * Enable login brute-force protection (IP + username/email).
      *
      * @var bool
