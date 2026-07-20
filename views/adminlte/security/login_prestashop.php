@@ -107,7 +107,7 @@ $this->registerCss('
 
 	<div class="login-header text-center">
 		<h1 style="color: #929292; font-size: 24px;"><b><?= Html::encode(Yii::$app->name) ?></b></h1>
-        <div><?= Html::encode(isset(Yii::$app->params['version']) ? (string) Yii::$app->params['version'] : 'Set Params version') ?></div>
+        <div><?= Html::encode(isset(Yii::$app->params['version']) ? (string) Yii::$app->params['version'] : Yii::t('userextended', 'Set params version')) ?></div>
 	</div>
 
     <div class="login-logo">
@@ -116,7 +116,7 @@ $this->registerCss('
 
 	<div class="login-box-body">
 
-        <h4 class="text-center"><?= Html::encode(isset(Yii::$app->params['copyright_text']) ? (string) Yii::$app->params['copyright_text'] : 'Set Params copyright_text') ?></h4>
+        <h4 class="text-center"><?= Html::encode(isset(Yii::$app->params['copyright_text']) ? (string) Yii::$app->params['copyright_text'] : Yii::t('userextended', 'Set params copyright_text')) ?></h4>
 
 		<?php if (Yii::$app->session->hasFlash('login')): ?>
             <div class="bg-aqua" style="padding: 10px 0; margin-bottom: 15px;">
@@ -144,7 +144,7 @@ $this->registerCss('
 			],
 			'options' => ['class' => 'form-group has-feedback']
             ])->label(Yii::t('user', 'Email'))
-            ->textInput(['placeholder' => 'test@example.com']) ?>
+            ->textInput(['placeholder' => Yii::t('user', 'Email')]) ?>
 
 		<?= $form->field($model, 'password', [
 			'addon' => [

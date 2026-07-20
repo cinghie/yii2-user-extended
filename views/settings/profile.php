@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <div class="form-group field-profile-avatar-view">
 
-                            <label class="control-label col-md-3 col-sm-12" for="profile-avatar-view">Avatar</label>
+                            <label class="control-label col-md-3 col-sm-12" for="profile-avatar-view"><?= Yii::t('userextended', 'Avatar') ?></label>
 
                             <div class="col-md-9 col-sm-12">
                                 <input id="profile-avatar-view" class="form-control" name="Profile[avatar-view]" value="<?= Html::encode($model->avatar) ?>" disabled="" type="text">

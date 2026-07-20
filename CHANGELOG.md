@@ -86,6 +86,8 @@ Internal technical notes.
 - Shared `ProfileAvatarService` for Admin/Settings profile avatar update flow (upload after AJAX validation; rollback orphan file on failed save).
 - `SessionHelper::regenerateIdIfEnabled()`; `RateLimitStore` for login/registration limiters (session fallback guarded).
 - File headers aligned to `0.6.4`; scaffold comment removed from `UserSearch`.
+- i18n: complete `messages/en` + `messages/it` catalogs (session/security/password/avatar); `sourceLanguage=en`; toast Close label translated.
+- Fix: login lock detection independent of translated messages; ICU date pattern uses `yyyy`; Avatar labels / Prestashop email placeholder via `Yii::t`.
 - `SecurityController` uses the package `LoginForm`; `LoginForm` in the user `modelMap`.
 
 ### Admin user performance

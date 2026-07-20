@@ -308,13 +308,16 @@ Module parameters (0.6.4)
 | `clientWarningOnce` | `true` | Show toast at most once per idle cycle. |
 | `clientSessionHeartbeatInterval` | `0` | Optional heartbeat seconds (`0` = off). While it succeeds, client + server idle timers renew. |
 | `clientSessionHeartbeatUrl` | `null` | Heartbeat URL; when null and interval > 0, uses `/user/security/session-ping` (204). |
-| `clientSessionHeartbeatUrl` | `null` | Heartbeat URL (`null` = current page); sent as AJAX. |
 | `disableAutoLogin` | `true` | Disable remember-me so idle `authTimeout` works (CRM recommended). |
 | `hardenSessionCookies` | `true` | Apply HttpOnly / Secure / SameSite on session (and identity) cookies when missing. |
 | `sessionCookieSecure` | `null` | `null` = auto (HTTPS or prod); `true`/`false` force Secure. |
 | `sessionSameSite` | `null` | SameSite when unset (`null` → `Lax`). |
 | `regenerateSessionId` | `true` | Extra session ID regenerate after login (logout uses Yii `logout(true)`). |
 | `invalidateRememberMeOnAuthTimeout` | `true` | Use `WebUser` so timeout clears remember-me without cookie re-login. |
+
+### i18n
+
+Category `userextended` (`messages/en`, `messages/it`, `sourceLanguage=en`). Covers session expire, login/registration security, password policy, avatar errors, and admin UI labels.
 
 ### CSRF / HTTP verbs
 

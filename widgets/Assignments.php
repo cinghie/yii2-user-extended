@@ -51,7 +51,9 @@ class Assignments extends Widget
 		parent::init();
 		$this->manager = Yii::$app->authManager;
 		if ($this->model === null && $this->userId === null) {
-			throw new InvalidConfigException('You should set ' . __CLASS__ . '::$userId or $model');
+            throw new InvalidConfigException(
+                Yii::t('userextended', 'Assignments widget requires userId or model.')
+            );
 		}
 	}
 

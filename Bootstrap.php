@@ -391,6 +391,7 @@ class Bootstrap implements BootstrapInterface
                     'warningBefore' => $warningBefore,
                     'warnOnce' => (bool) $module->clientWarningOnce,
                     'warningMessage' => Yii::t('userextended', 'Your session is about to expire. Please save your work.'),
+                    'closeLabel' => Yii::t('userextended', 'Close'),
                     'loginUrl' => $loginUrl,
                     'loginPath' => '/user/security/login',
                     'heartbeatInterval' => $heartbeatInterval,

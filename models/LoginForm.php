@@ -209,10 +209,11 @@ class LoginForm extends BaseLoginForm
 			return true;
 		}
 
-		foreach ($this->getErrors('login') as $message) {
-			if (strpos($message, 'Too many failed') !== false) {
-				return false;
-			}
+		// Do not bump the counter when the account/IP is already locked.
+		// Compare via limiter state — never match translated error text.
+		$limiter = LoginRateLimiter::create();
+		if ($limiter->isEnabled() && $limiter->isLocked($this->login)) {
+			return false;
 		}
 
 		return $this->hasErrors('login');

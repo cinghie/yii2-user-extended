@@ -32,7 +32,7 @@ use yii\helpers\Html;
         <?php if(Yii::$app->getModule('userextended')->avatar): ?>
 
             <div class="form-group field-profile-avatar-view">
-                <label class="control-label col-sm-3" for="profile-avatar-view">Avatar</label>
+                <label class="control-label col-sm-3" for="profile-avatar-view"><?= Yii::t('userextended', 'Avatar') ?></label>
                 <div class="col-sm-9">
                     <input id="profile-avatar-view" class="form-control" name="Profile[avatar-view]" value="<?= Html::encode($profile->avatar) ?>" disabled="" type="text">
                     <div class="help-block help-block-error "></div>

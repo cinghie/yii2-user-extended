@@ -121,9 +121,11 @@ Items marked ✅ have already been applied in the package.
    - ~~Extract common upload/session helpers into dedicated services.~~
    - Fix: headers → `0.6.4`; removed scaffold comment in `UserSearch`; typed rate-limiter APIs; `ProfileAvatarService` (upload after AJAX validate + rollback on failed save), `SessionHelper`, `RateLimitStore` (session guard).
 
-5. **i18n**
-   - Complete catalogs (`en` as well as `it`) for all new session/security messages.
-   - Consistent keys and no hardcoded strings in views.
+5. **i18n** ✅
+   - ~~Complete catalogs (`en` as well as `it`) for all new session/security messages.~~
+   - ~~Consistent keys and no hardcoded strings in views.~~
+   - Fix: `messages/en/userextended.php` + completed `messages/it`; `sourceLanguage=en`; session toast `Close` via i18n; Prestashop login placeholders translated; Assignments config error translated.
+   - Review: `LoginForm::shouldCountAsLoginFailure` no longer matches English lock text (broke under `it`); `isset` for i18n registration; ICU `yyyy` (not week-year `YYYY`); hardcoded Avatar labels / email placeholder.
 
 6. **Assets**
    - Publish assets with hash/versioning.
@@ -151,7 +153,7 @@ Items marked ✅ have already been applied in the package.
 | ~~Medium~~ | ~~Cloudflare Turnstile widget on login~~ ✅ |
 | Medium | Stricter session defaults + parameter docs |
 | ~~Medium~~ | ~~Session expire UX (no blocking alert)~~ ✅ |
-| Low | ~~Version cleanup~~ ✅, en i18n, minify assets |
+| Low | ~~Version cleanup~~ ✅, ~~en i18n~~ ✅, minify assets |
 
 ## Notes
 

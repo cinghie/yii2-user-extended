@@ -149,7 +149,7 @@ $this->registerJs('$(document).ready(function()
 				}
 
 				if (extension_loaded('intl')) {
-					return Yii::t('userextended', '{0, date, YYYY-MM-dd HH:mm}', [$model->last_login_at]);
+					return Yii::t('userextended', '{0, date, yyyy-MM-dd HH:mm}', [$model->last_login_at]);
 				}
 
 				return date('Y-m-d G:i:s', $model->last_login_at);

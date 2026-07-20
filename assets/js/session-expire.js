@@ -63,7 +63,7 @@
             var dismiss = document.createElement('button');
             dismiss.type = 'button';
             dismiss.className = 'userextended-session-toast__close';
-            dismiss.setAttribute('aria-label', 'Close');
+            dismiss.setAttribute('aria-label', config.closeLabel || 'Close');
             dismiss.innerHTML = '&times;';
             dismiss.addEventListener('click', function () {
                 hideToast();

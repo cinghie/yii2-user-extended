@@ -547,11 +547,11 @@ class Module extends BaseUser
      */
     public function registerTranslations()
     {
-        if (empty(Yii::$app->i18n->translations['userextended']))
-        {
+        if (!isset(Yii::$app->i18n->translations['userextended'])) {
             Yii::$app->i18n->translations['userextended'] = [
                 'class' => PhpMessageSource::class,
-                'basePath' => __DIR__ . '/messages'
+                'basePath' => __DIR__ . '/messages',
+                'sourceLanguage' => 'en',
             ];
         }
     }
