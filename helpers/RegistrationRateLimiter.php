@@ -17,7 +17,7 @@ use cinghie\userextended\Module;
 use yii\base\InvalidConfigException;
 
 /**
- * Cache/session based registration throttle (IP + email).
+ * Registration throttle (IP + email) via RateLimitStore (default DB-backed).
  *
  * Counts every POST attempt (success or failure) to limit mass signup and spam.
  */

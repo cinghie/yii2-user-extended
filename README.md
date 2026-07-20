@@ -71,7 +71,14 @@ $ php yii migrate/up --migrationPath=@yii/rbac/migrations
 $ php yii migrate/up --migrationPath=@vendor/cinghie/yii2-user-extended/migrations
 ```
 
-This also applies admin performance indexes (e.g. `user.last_login_at`).
+If the app already lists that path in `console` `controllerMap.migrate.migrationPath` (as CorimaCRM does), plain `php yii migrate` is enough.
+
+This applies (among others):
+
+- profile / user extended schema updates
+- admin grid indexes (e.g. `user.last_login_at`)
+- `user.password_changed_at` (password rotation / `passwordMaxAgeDays`)
+- **`userextended_rate_limit`** — DB-backed login/registration lockout (default `rateLimitStorage=db`). **Required on every environment** after upgrading; without it the module falls back to cache and logs a warning.
 
 ### 5. Set configuration file
 
@@ -181,6 +188,7 @@ Set on your configuration file, in modules section
 
         // Login rate limit / brute-force
         'enableLoginRateLimit' => true,
+        'rateLimitStorage' => 'db', // db | cache | auto — db survives cache flush
         'loginMaxAttempts' => 5,
         'loginAttemptWindow' => 900,
         'loginLockoutDuration' => 900,
@@ -375,7 +383,7 @@ From the package directory (with the host app’s Composer autoload):
 vendor/bin/phpunit -c tests/phpunit.xml
 ```
 
-Covers login rate limit lock/clear, UserSearch role SQL-injection rejection, avatar upload validation rejects, admin `switch` forbidden, session `?expired=1` smoke (via `SecurityController::actionLogin`), Turnstile missing/invalid/valid (mock `siteVerifyHandler`), password policy, `ModuleSettings` validation/presets, i18n-safe login lock counting, and **Yii2 best-practice checks** (`Yii2BestPracticesTest`: AccessControl/VerbFilter/CSRF, AssetBundle `sourcePath` + `appendTimestamp`, Assignment `safeAttributes`, BootstrapInterface, parameterized UserSearch SQL, SafeHtml encoding).
+Covers login rate limit lock/clear, **DB-backed lockout survives cache flush** (`DbRateLimitStoreTest`), UserSearch role SQL-injection rejection, avatar upload validation rejects, admin `switch` forbidden, session `?expired=1` smoke (via `SecurityController::actionLogin`), Turnstile missing/invalid/valid (mock `siteVerifyHandler`), password policy, `ModuleSettings` validation/presets, i18n-safe login lock counting, and **Yii2 best-practice checks** (`Yii2BestPracticesTest`: AccessControl/VerbFilter/CSRF, AssetBundle `sourcePath` + `appendTimestamp`, Assignment `safeAttributes`, BootstrapInterface, parameterized UserSearch SQL, SafeHtml encoding).
 
 ### CSRF / HTTP verbs
 
@@ -420,7 +428,8 @@ Uploads are renamed randomly, MIME/`getimagesize` checked, double extensions blo
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `enableLoginRateLimit` | `true` | Enable IP + username/email counters (uses `cache`, falls back to session). |
+| `enableLoginRateLimit` | `true` | Enable IP + username/email counters. |
+| `rateLimitStorage` | `db` | Where counters live: `db` (`{{%userextended_rate_limit}}`, survives cache flush), `cache` (Yii cache/session), `auto` (DB if table exists else cache). **Run userextended migrations** so the table exists when using `db` (default). |
 | `loginMaxAttempts` | `5` | Failures before lock. |
 | `loginAttemptWindow` | `900` | Counter TTL / window (seconds). |
 | `loginLockoutDuration` | `900` | Lock duration (seconds). |
@@ -450,7 +459,7 @@ Map `registration` → `cinghie\userextended\controllers\RegistrationController`
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `blockRegistrationAndRecovery` | `false` | Bootstrap attaches `BackendFilter` on `user` if no `as backend` yet. |
-| `enableRegistrationRateLimit` | `true` | Enable IP + email counters. |
+| `enableRegistrationRateLimit` | `true` | Enable IP + email counters (same `rateLimitStorage` as login). |
 | `registrationMaxAttempts` | `5` | Attempts before lock. |
 | `registrationAttemptWindow` | `900` | Counter TTL (seconds). |
 | `registrationLockoutDuration` | `900` | Lock duration (seconds). |

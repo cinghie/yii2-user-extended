@@ -5,6 +5,7 @@ namespace cinghie\userextended\tests;
 use Yii;
 use cinghie\userextended\Module;
 use cinghie\userextended\helpers\ModuleConfig;
+use cinghie\userextended\helpers\RateLimitStore;
 use cinghie\userextended\helpers\TurnstileVerifier;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use yii\caching\ArrayCache;
@@ -25,6 +26,7 @@ abstract class TestCase extends BaseTestCase
 	{
 		$this->destroyApplication();
 		ModuleConfig::flush();
+		RateLimitStore::flushRuntime();
 		TurnstileVerifier::$siteVerifyHandler = null;
 
 		$config = ArrayHelper::merge([
@@ -79,6 +81,7 @@ abstract class TestCase extends BaseTestCase
 					'class' => Module::class,
 					'enableCloudflareTurnstile' => false,
 					'enableLoginRateLimit' => true,
+					'rateLimitStorage' => 'cache',
 					'loginMaxAttempts' => 3,
 					'loginLockoutDuration' => 60,
 					'loginAttemptWindow' => 300,
@@ -99,6 +102,7 @@ abstract class TestCase extends BaseTestCase
 	{
 		TurnstileVerifier::$siteVerifyHandler = null;
 		ModuleConfig::flush();
+		RateLimitStore::flushRuntime();
 		if (Yii::$app ?? null) {
 			if (Yii::$app->has('session', true) && Yii::$app->session->getIsActive()) {
 				Yii::$app->session->close();

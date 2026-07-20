@@ -213,6 +213,15 @@ class Module extends BaseUser
     public $enableLoginRateLimit = true;
 
     /**
+     * Where to store login/registration rate-limit counters.
+     * `db` (default) uses {{%userextended_rate_limit}} so lockouts survive cache flush;
+     * `cache` uses Yii cache (session fallback); `auto` prefers DB when the table exists.
+     *
+     * @var string
+     */
+    public $rateLimitStorage = 'db';
+
+    /**
      * Failed attempts before temporary lock.
      *
      * @var int

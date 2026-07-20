@@ -52,4 +52,12 @@ class ModuleSettingsTest extends TestCase
 		$module = \Yii::$app->getModule('userextended');
 		$this->assertSame(9999, $module->sessionTimeout);
 	}
+
+	public function testInvalidRateLimitStorageThrows(): void
+	{
+		$this->expectException(InvalidConfigException::class);
+		$module = \Yii::$app->getModule('userextended');
+		$module->rateLimitStorage = 'redis';
+		ModuleSettings::validate($module);
+	}
 }

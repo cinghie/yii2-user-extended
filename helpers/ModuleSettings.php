@@ -111,6 +111,7 @@ final class ModuleSettings
 			'regenerateSessionId' => true,
 			'invalidateRememberMeOnAuthTimeout' => true,
 			'enableLoginRateLimit' => true,
+			'rateLimitStorage' => 'db',
 			'loginMaxAttempts' => 5,
 			'loginAttemptWindow' => 900,
 			'loginLockoutDuration' => 900,
@@ -262,6 +263,14 @@ final class ModuleSettings
 			);
 		}
 		$module->cloudflareTurnstileTheme = $theme;
+
+		$storage = strtolower(trim((string) $module->rateLimitStorage));
+		if (!in_array($storage, ['db', 'cache', 'auto'], true)) {
+			throw new InvalidConfigException(
+				'userextended.rateLimitStorage must be db, cache, or auto.'
+			);
+		}
+		$module->rateLimitStorage = $storage;
 
 		if ($module->enableCloudflareTurnstile) {
 			if (trim((string) $module->cloudflareSiteKey) === '' || trim((string) $module->cloudflareSecretKey) === '') {

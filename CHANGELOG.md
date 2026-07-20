@@ -11,6 +11,8 @@ Internal technical notes.
 - New module params: `avatarAllowedExtensions`, `avatarMaxSize`.
 - Login brute-force: IP+username rate limit (`LoginRateLimiter`), temporary lock, progressive delay, captcha after N failures, generic anti-enumeration messages.
 - Login module params: `enableLoginRateLimit`, `loginMaxAttempts`, `loginAttemptWindow`, `loginLockoutDuration`, `loginProgressiveDelay`, `loginDelayBaseSeconds`, `loginDelayMaxSeconds`, `loginCaptchaAfterAttempts`, `loginCaptchaAction`.
+- DB-backed lockout: `rateLimitStorage` default `db` via `RateLimitStore` + migration `m260720_190000_create_userextended_rate_limit_table` (login + registration); survives cache flush; `cache`/`auto` backends retained.
+- Review: DB writes use upsert (no duplicate-key race); expired rows ignored; fallback to cache if table missing.
 - User impersonation (`admin/switch`) disabled: AccessControl deny, `actionSwitch` → 403, `enableImpersonateUser = false`.
 
 ### Security audit

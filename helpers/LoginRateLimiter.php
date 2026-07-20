@@ -17,7 +17,8 @@ use cinghie\userextended\Module;
 use yii\base\InvalidConfigException;
 
 /**
- * Cache/session based login brute-force protection (IP + username/email).
+ * Cache/DB based login brute-force protection (IP + username/email).
+ * Counters use RateLimitStore (default DB so lockouts survive cache flush).
  */
 class LoginRateLimiter
 {

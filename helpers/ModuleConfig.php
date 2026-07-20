@@ -88,6 +88,7 @@ class ModuleConfig
 				'captcha' => (bool) $m->captcha,
 				'sessionTimeout' => (int) $m->sessionTimeout,
 				'enableLoginRateLimit' => (bool) $m->enableLoginRateLimit,
+				'rateLimitStorage' => (string) $m->rateLimitStorage,
 				'enableRbacRoleCache' => (bool) $m->enableRbacRoleCache,
 			];
 		});
