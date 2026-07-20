@@ -14,6 +14,7 @@ namespace cinghie\userextended;
 
 use Yii;
 use cinghie\userextended\assets\SessionExpireAsset;
+use cinghie\userextended\components\WebUser;
 use cinghie\userextended\models\Account;
 use cinghie\userextended\models\Assignment;
 use cinghie\userextended\models\LoginForm;
@@ -30,6 +31,7 @@ use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\web\Application as WebApplication;
 use yii\web\Cookie;
+use yii\web\User as YiiUser;
 use yii\web\View;
 
 /**
@@ -78,9 +80,46 @@ class Bootstrap implements BootstrapInterface
             }
 
             if ($app instanceof WebApplication) {
+                $this->registerWebUser($app, $module);
                 $this->configureSessionExpire($app, $module);
             }
         }
+    }
+
+    /**
+     * Prefer WebUser so authTimeout can invalidate remember-me without cookie re-login.
+     *
+     * @param WebApplication $app
+     * @param Module $module
+     * @return void
+     */
+    protected function registerWebUser(WebApplication $app, Module $module): void
+    {
+        if (!$module->invalidateRememberMeOnAuthTimeout) {
+            return;
+        }
+
+        $definitions = $app->getComponents(true);
+        if (!isset($definitions['user'])) {
+            Yii::$container->set(YiiUser::class, ['class' => WebUser::class]);
+            return;
+        }
+
+        $def = $definitions['user'];
+        if (is_string($def)) {
+            $def = ['class' => $def];
+        }
+        if (!is_array($def)) {
+            return;
+        }
+
+        $class = $def['class'] ?? YiiUser::class;
+        if ($class === YiiUser::class || $class === 'yii\web\User') {
+            $def['class'] = WebUser::class;
+            $app->set('user', $def);
+        }
+
+        Yii::$container->set(YiiUser::class, ['class' => WebUser::class]);
     }
 
     /**
@@ -97,20 +136,16 @@ class Bootstrap implements BootstrapInterface
             $timeout = 0;
         }
 
-        if ($timeout > 0 && $app->has('session')) {
+        if ($app->has('session')) {
             $session = $app->getSession();
-            $session->timeout = $timeout;
-
-            // Do not force cookie lifetime here: overriding it can break session cookies
+            if ($timeout > 0) {
+                $session->timeout = $timeout;
+            }
+            // Do not force cookie lifetime: overriding it can break session cookies
             // and produce corrupted HTML responses in some environments.
-            $cookieParams = $session->getCookieParams();
-            if (!isset($cookieParams['httponly'])) {
-                $cookieParams['httponly'] = true;
+            if ($module->hardenSessionCookies) {
+                $this->hardenSessionCookieParams($app, $module);
             }
-            if (!isset($cookieParams['sameSite'])) {
-                $cookieParams['sameSite'] = Cookie::SAME_SITE_LAX;
-            }
-            $session->setCookieParams($cookieParams);
         }
 
         $app->on(Application::EVENT_BEFORE_REQUEST, function () use ($app, $module, $timeout) {
@@ -120,15 +155,24 @@ class Bootstrap implements BootstrapInterface
 
             $request = $app->getRequest();
             $user = $app->getUser();
+
             if ($module->disableAutoLogin) {
                 $user->enableAutoLogin = false;
             }
 
             if ($timeout > 0) {
                 $user->authTimeout = $timeout;
-                if ($module->useAbsoluteAuthTimeout) {
-                    $user->absoluteAuthTimeout = $timeout;
-                }
+            }
+
+            $absolute = (int) $module->absoluteAuthTimeout;
+            if ($absolute > 0) {
+                $user->absoluteAuthTimeout = $absolute;
+            } elseif ($module->useAbsoluteAuthTimeout && $timeout > 0) {
+                $user->absoluteAuthTimeout = $timeout;
+            }
+
+            if ($module->hardenSessionCookies) {
+                $this->hardenIdentityCookie($app, $module, $user);
             }
 
             // Client asset only on full HTML page loads for authenticated users
@@ -175,5 +219,90 @@ class Bootstrap implements BootstrapInterface
                 );
             });
         });
+    }
+
+    /**
+     * @param WebApplication $app
+     * @param Module $module
+     * @return void
+     */
+    protected function hardenSessionCookieParams(WebApplication $app, Module $module): void
+    {
+        $session = $app->getSession();
+        $cookieParams = $session->getCookieParams();
+
+        if (!isset($cookieParams['httponly'])) {
+            $cookieParams['httponly'] = true;
+        }
+
+        if (!array_key_exists('secure', $cookieParams) || $module->sessionCookieSecure !== null) {
+            $cookieParams['secure'] = $this->resolveSecureFlag($app, $module);
+        }
+
+        if (!isset($cookieParams['sameSite'])) {
+            $sameSite = $module->sessionSameSite;
+            if ($sameSite === null || $sameSite === '') {
+                $sameSite = Cookie::SAME_SITE_LAX;
+            }
+            $cookieParams['sameSite'] = $sameSite;
+        }
+
+        $session->setCookieParams($cookieParams);
+    }
+
+    /**
+     * @param WebApplication $app
+     * @param Module $module
+     * @param YiiUser $user
+     * @return void
+     */
+    protected function hardenIdentityCookie(WebApplication $app, Module $module, YiiUser $user): void
+    {
+        if (!$user->enableAutoLogin) {
+            return;
+        }
+
+        $cookie = $user->identityCookie;
+        if (!is_array($cookie)) {
+            $cookie = ['name' => '_identity'];
+        }
+
+        if (!isset($cookie['httpOnly'])) {
+            $cookie['httpOnly'] = true;
+        }
+        if (!array_key_exists('secure', $cookie) || $module->sessionCookieSecure !== null) {
+            $cookie['secure'] = $this->resolveSecureFlag($app, $module);
+        }
+        if (!isset($cookie['sameSite'])) {
+            $sameSite = $module->sessionSameSite;
+            if ($sameSite === null || $sameSite === '') {
+                $sameSite = Cookie::SAME_SITE_LAX;
+            }
+            $cookie['sameSite'] = $sameSite;
+        }
+
+        $user->identityCookie = $cookie;
+    }
+
+    /**
+     * @param WebApplication $app
+     * @param Module $module
+     * @return bool
+     */
+    protected function resolveSecureFlag(WebApplication $app, Module $module): bool
+    {
+        if ($module->sessionCookieSecure !== null) {
+            return (bool) $module->sessionCookieSecure;
+        }
+
+        if (defined('YII_ENV_PROD') && YII_ENV_PROD) {
+            return true;
+        }
+
+        if ($app->has('request')) {
+            return $app->getRequest()->getIsSecureConnection();
+        }
+
+        return false;
     }
 }

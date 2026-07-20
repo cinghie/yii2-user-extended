@@ -15,7 +15,11 @@ Note tecniche interne.
 
 ### Sessione
 
-- Timeout sessione/auth gestito dal modulo (`sessionTimeout`, `useAbsoluteAuthTimeout`, `disableAutoLogin`).
+- Timeout sessione/auth gestito dal modulo (`sessionTimeout`, `useAbsoluteAuthTimeout`, `absoluteAuthTimeout`, `disableAutoLogin`).
+- Default CRM: `disableAutoLogin = true` (authTimeout efficace; niente remember-me).
+- Cookie sessione: `hardenSessionCookies` applica HttpOnly + Secure (auto HTTPS/prod) + SameSite se mancanti (non forza `lifetime`).
+- `components\WebUser`: allo scadere di auth/absolute timeout invalida remember-me e non ri-loga dal cookie della stessa request.
+- Regenerazione session ID: Yii `switchIdentity` + `regenerateSessionId` su login; logout con `logout(true)`.
 - Redirect client a login allo scadere (`SessionExpireAsset` / `session-expire.js`).
 - Flash su login con `?expired=1`.
 - Fix: non forzare `session.cookieParams.lifetime`; registra asset session-expire solo su HTML non-AJAX in `EVENT_BEGIN_PAGE` (evita HTML corrotto sulle pagine interne).

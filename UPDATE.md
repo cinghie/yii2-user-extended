@@ -33,12 +33,13 @@ Le voci con ✅ sono già state applicate nel package.
    - ~~Validazione server-side siteverify; fail chiuso; secret solo in web-local.~~
    - Fix: `TurnstileVerifier` + `TurnstileAsset` + widget in login/register; rate limit resta seconda barriera.
 
-6. **Sessione e autenticazione**
-   - Default più sicuri: valutare `disableAutoLogin = true` in ambienti CRM.
-   - Cookie sessione: `Secure` + `HttpOnly` + `SameSite` coerenti per environment.
-   - Regenerare session ID al login/logout.
-   - Opzione `absoluteAuthTimeout` per durata massima login.
-   - Invalidare remember-me cookie allo scadere di `authTimeout`.
+6. **Sessione e autenticazione** ✅
+   - ~~Default più sicuri: valutare `disableAutoLogin = true` in ambienti CRM.~~
+   - ~~Cookie sessione: `Secure` + `HttpOnly` + `SameSite` coerenti per environment.~~
+   - ~~Regenerare session ID al login/logout.~~
+   - ~~Opzione `absoluteAuthTimeout` per durata massima login.~~
+   - ~~Invalidare remember-me cookie allo scadere di `authTimeout`.~~
+   - Fix: default `disableAutoLogin = true`; `hardenSessionCookies` / `sessionCookieSecure` / `sessionSameSite`; `absoluteAuthTimeout`; `WebUser` non ri-loga da cookie dopo timeout; regenerate su login + logout.
 
 7. **CSRF / verbs**
    - Verificare che tutte le azioni mutative restino su POST + CSRF.

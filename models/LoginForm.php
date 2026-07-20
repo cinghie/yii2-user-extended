@@ -238,6 +238,11 @@ class LoginForm extends BaseLoginForm
 			return false;
 		}
 
+		// CRM default: no remember-me when disableAutoLogin is enabled
+		if (ModuleConfig::get('disableAutoLogin')) {
+			$this->rememberMe = false;
+		}
+
 		$loggedIn = parent::login();
 		if ($loggedIn) {
 			$limiter->clear($this->login);

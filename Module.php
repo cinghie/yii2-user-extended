@@ -35,11 +35,19 @@ class Module extends BaseUser
     public $sessionTimeout = 3600;
 
     /**
-     * If true, also set user.absoluteAuthTimeout to sessionTimeout.
+     * If true and absoluteAuthTimeout is 0, also set user.absoluteAuthTimeout to sessionTimeout.
      *
      * @var bool
      */
     public $useAbsoluteAuthTimeout = false;
+
+    /**
+     * Absolute max login duration in seconds (independent of idle activity).
+     * 0 = disabled unless useAbsoluteAuthTimeout is true (then uses sessionTimeout).
+     *
+     * @var int
+     */
+    public $absoluteAuthTimeout = 0;
 
     /**
      * If true, register client-side redirect to login when the session expires.
@@ -57,11 +65,49 @@ class Module extends BaseUser
     public $clientWarningBeforeExpire = 60;
 
     /**
-     * If true, disables Yii auto-login so an expired session always requires credentials again.
+     * If true, disables Yii auto-login (remember-me) so authTimeout works and
+     * an expired session always requires credentials again. Recommended for CRM.
      *
      * @var bool
      */
-    public $disableAutoLogin = false;
+    public $disableAutoLogin = true;
+
+    /**
+     * Apply Secure / HttpOnly / SameSite on the session cookie when missing.
+     *
+     * @var bool
+     */
+    public $hardenSessionCookies = true;
+
+    /**
+     * Session cookie Secure flag: null = auto (true on HTTPS or YII_ENV_PROD), true/false = force.
+     *
+     * @var bool|null
+     */
+    public $sessionCookieSecure = null;
+
+    /**
+     * Session cookie SameSite when not already set (Lax|Strict|None). null = Lax.
+     *
+     * @var string|null
+     */
+    public $sessionSameSite = null;
+
+    /**
+     * Regenerate session ID after successful login and on logout (defense in depth;
+     * Yii User::switchIdentity already regenerates).
+     *
+     * @var bool
+     */
+    public $regenerateSessionId = true;
+
+    /**
+     * After idle/absolute auth timeout, clear remember-me and do not re-login from cookie.
+     * Requires components\WebUser (registered by Bootstrap).
+     *
+     * @var bool
+     */
+    public $invalidateRememberMeOnAuthTimeout = true;
 
     /**
      * @var string Path to avatar file

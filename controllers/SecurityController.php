@@ -65,6 +65,7 @@ class SecurityController extends BaseController
 
 			if ($model->login()) {
 				$limiter->clear($model->login);
+				$this->regenerateSessionIdIfEnabled();
 				Yii::$app->session->setFlash('login', Yii::t('userextended', 'Login successful'));
 				$this->trigger(self::EVENT_AFTER_LOGIN, $event);
 				return $this->goBack();
@@ -107,5 +108,40 @@ class SecurityController extends BaseController
 		}
 
 		return Yii::t('userextended', 'Incorrect Username or Password');
+	}
+
+	/**
+	 * Logs the user out (destroys session + clears identity cookie via switchIdentity).
+	 *
+	 * @return Response
+	 */
+	public function actionLogout()
+	{
+		$event = $this->getUserEvent(Yii::$app->user->identity);
+
+		$this->trigger(self::EVENT_BEFORE_LOGOUT, $event);
+
+		// logout(true): switchIdentity regenerates session id then destroys the session
+		Yii::$app->getUser()->logout(true);
+
+		$this->trigger(self::EVENT_AFTER_LOGOUT, $event);
+
+		return $this->goHome();
+	}
+
+	/**
+	 * @return void
+	 */
+	protected function regenerateSessionIdIfEnabled()
+	{
+		$module = Yii::$app->getModule('userextended');
+		if (!$module || empty($module->regenerateSessionId) || !Yii::$app->has('session')) {
+			return;
+		}
+
+		$session = Yii::$app->getSession();
+		if ($session->getIsActive()) {
+			$session->regenerateID(true);
+		}
 	}
 }

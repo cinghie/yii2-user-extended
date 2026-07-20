@@ -145,12 +145,18 @@ Set on your configuration file, in modules section
         'avatarAllowedExtensions' => ['jpg', 'jpeg', 'png', 'webp'],
         'avatarMaxSize' => 2097152, // 2MB
 
-        // Session expire
+        // Session expire / auth hardening
         'sessionTimeout' => 3600, // seconds; 0 disables module session handling
-        'useAbsoluteAuthTimeout' => false,
+        'useAbsoluteAuthTimeout' => false, // if true and absoluteAuthTimeout=0, use sessionTimeout
+        'absoluteAuthTimeout' => 0, // max login duration in seconds (0 = off unless useAbsoluteAuthTimeout)
         'enableClientSessionExpireRedirect' => true,
         'clientWarningBeforeExpire' => 60, // 0 disables warning
-        'disableAutoLogin' => false,
+        'disableAutoLogin' => true, // CRM recommended: no remember-me
+        'hardenSessionCookies' => true,
+        'sessionCookieSecure' => null, // null = auto (HTTPS or prod), true/false = force
+        'sessionSameSite' => null, // null = Lax when not already set
+        'regenerateSessionId' => true,
+        'invalidateRememberMeOnAuthTimeout' => true,
 
         // Login rate limit / brute-force
         'enableLoginRateLimit' => true,
@@ -276,10 +282,16 @@ Module parameters (0.6.4)
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `sessionTimeout` | `3600` | Idle session/auth timeout in seconds. `0` disables module session handling. |
-| `useAbsoluteAuthTimeout` | `false` | Also set `user.absoluteAuthTimeout`. |
+| `useAbsoluteAuthTimeout` | `false` | If `absoluteAuthTimeout` is `0`, also set `user.absoluteAuthTimeout` to `sessionTimeout`. |
+| `absoluteAuthTimeout` | `0` | Max login duration in seconds (`0` = off unless `useAbsoluteAuthTimeout`). |
 | `enableClientSessionExpireRedirect` | `true` | Client JS redirects to login with `?expired=1`. |
 | `clientWarningBeforeExpire` | `60` | Warning seconds before expire (`0` = off). |
-| `disableAutoLogin` | `false` | Force credentials again after expire. |
+| `disableAutoLogin` | `true` | Disable remember-me so idle `authTimeout` works (CRM recommended). |
+| `hardenSessionCookies` | `true` | Apply HttpOnly / Secure / SameSite on session (and identity) cookies when missing. |
+| `sessionCookieSecure` | `null` | `null` = auto (HTTPS or prod); `true`/`false` force Secure. |
+| `sessionSameSite` | `null` | SameSite when unset (`null` → `Lax`). |
+| `regenerateSessionId` | `true` | Extra session ID regenerate after login (logout uses Yii `logout(true)`). |
+| `invalidateRememberMeOnAuthTimeout` | `true` | Use `WebUser` so timeout clears remember-me without cookie re-login. |
 
 ### Avatar upload security
 
