@@ -169,6 +169,9 @@ Set on your configuration file, in modules section
         'absoluteAuthTimeout' => 0, // max login duration in seconds (0 = off unless useAbsoluteAuthTimeout)
         'enableClientSessionExpireRedirect' => true,
         'clientWarningBeforeExpire' => 60, // 0 disables warning
+        'clientWarningOnce' => true,
+        'clientSessionHeartbeatInterval' => 0, // e.g. 300 to ping every 5 minutes
+        'clientSessionHeartbeatUrl' => null, // null = current page
         'disableAutoLogin' => true, // CRM recommended: no remember-me
         'hardenSessionCookies' => true,
         'sessionCookieSecure' => null, // null = auto (HTTPS or prod), true/false = force
@@ -302,6 +305,10 @@ Module parameters (0.6.4)
 | `absoluteAuthTimeout` | `0` | Max login duration in seconds (`0` = off unless `useAbsoluteAuthTimeout`). |
 | `enableClientSessionExpireRedirect` | `true` | Client JS redirects to login with `?expired=1`. |
 | `clientWarningBeforeExpire` | `60` | Warning seconds before expire (`0` = off). |
+| `clientWarningOnce` | `true` | Show toast at most once per idle cycle. |
+| `clientSessionHeartbeatInterval` | `0` | Optional heartbeat seconds (`0` = off). While it succeeds, client + server idle timers renew. |
+| `clientSessionHeartbeatUrl` | `null` | Heartbeat URL; when null and interval > 0, uses `/user/security/session-ping` (204). |
+| `clientSessionHeartbeatUrl` | `null` | Heartbeat URL (`null` = current page); sent as AJAX. |
 | `disableAutoLogin` | `true` | Disable remember-me so idle `authTimeout` works (CRM recommended). |
 | `hardenSessionCookies` | `true` | Apply HttpOnly / Secure / SameSite on session (and identity) cookies when missing. |
 | `sessionCookieSecure` | `null` | `null` = auto (HTTPS or prod); `true`/`false` force Secure. |

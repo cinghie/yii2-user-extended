@@ -73,8 +73,12 @@ Internal technical notes.
 - Fix: `WebUser` registration updates DI only (preserves `identityClass`); no longer replaces the `user` component with a partial config; repair on `EVENT_BEFORE_REQUEST`.
 - Session ID regeneration: Yii `switchIdentity` + `regenerateSessionId` on login; logout with `logout(true)`.
 - Client redirect to login on expire (`SessionExpireAsset` / `session-expire.js`).
+- Non-blocking toast warning (no `alert()`); `clientWarningOnce` (default true).
+- Optional heartbeat: `clientSessionHeartbeatInterval` / `clientSessionHeartbeatUrl` (defaults to `GET /user/security/session-ping` → 204; AJAX skips asset registration).
+- Warning window capped below `sessionTimeout`; timers cleared on redirect; no full-page heartbeat GET.
 - Login flash with `?expired=1`.
-- Fix: do not force `session.cookieParams.lifetime`; register session-expire asset only on non-AJAX HTML in `EVENT_BEGIN_PAGE` (avoids corrupted HTML on internal pages).
+- Fix: do not force `session.cookieParams.lifetime`; register session-expire asset only on non-AJAX/PJAX HTML (skips JSON Accept) in `EVENT_BEGIN_PAGE`.
+- Asset `sourcePath` uses `__DIR__` (package-relative).
 
 ### Other
 

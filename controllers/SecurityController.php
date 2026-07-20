@@ -19,6 +19,8 @@ use cinghie\userextended\models\LoginForm;
 use dektrium\user\controllers\SecurityController as BaseController;
 use yii\base\ExitException;
 use yii\base\InvalidConfigException;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Response;
 
 /**
@@ -32,6 +34,53 @@ class SecurityController extends BaseController
 	public function getViewPath()
 	{
 		return Yii::getAlias('@vendor/cinghie/yii2-user-extended/views/adminlte/security');
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function behaviors()
+	{
+		$behaviors = parent::behaviors();
+
+		if (isset($behaviors['access']['rules']) && is_array($behaviors['access']['rules'])) {
+			$behaviors['access']['rules'][] = [
+				'allow' => true,
+				'actions' => ['session-ping'],
+				'roles' => ['@'],
+			];
+		} else {
+			$behaviors['access'] = [
+				'class' => AccessControl::class,
+				'rules' => [
+					['allow' => true, 'actions' => ['session-ping'], 'roles' => ['@']],
+				],
+			];
+		}
+
+		if (!isset($behaviors['verbs'])) {
+			$behaviors['verbs'] = [
+				'class' => VerbFilter::class,
+				'actions' => [],
+			];
+		}
+		$behaviors['verbs']['actions']['session-ping'] = ['get', 'head'];
+
+		return $behaviors;
+	}
+
+	/**
+	 * Lightweight keep-alive for client session heartbeat (no HTML body).
+	 *
+	 * @return Response
+	 */
+	public function actionSessionPing()
+	{
+		Yii::$app->response->format = Response::FORMAT_RAW;
+		Yii::$app->response->statusCode = 204;
+		Yii::$app->response->content = '';
+
+		return Yii::$app->response;
 	}
 
 	/**

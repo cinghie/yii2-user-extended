@@ -1,0 +1,51 @@
+/* Non-blocking session expire warning toast */
+.userextended-session-toast {
+    position: fixed;
+    z-index: 100000;
+    left: 50%;
+    bottom: 1.25rem;
+    transform: translateX(-50%) translateY(120%);
+    max-width: min(28rem, calc(100vw - 2rem));
+    box-sizing: border-box;
+    padding: 0.75rem 2.25rem 0.75rem 1rem;
+    background: #1f2937;
+    color: #f9fafb;
+    border-radius: 0.375rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    font: 14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.userextended-session-toast.is-visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.userextended-session-toast__msg {
+    display: block;
+}
+
+.userextended-session-toast__close {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.4rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.75;
+}
+
+.userextended-session-toast__close:hover,
+.userextended-session-toast__close:focus {
+    opacity: 1;
+}

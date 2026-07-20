@@ -107,11 +107,12 @@ Items marked ✅ have already been applied in the package.
    - ~~Cache frequently used module config per request.~~
    - Fix: `RbacRoleCache` + invalidate from `RoleController`; `ModuleConfig` per-request memo.
 
-3. **Client session expire**
-   - Avoid intrusive `alert()`: non-blocking toast/banner.
-   - Optional light heartbeat to align client/server timers.
-   - Do not register JS assets on AJAX JSON responses.
-   - Show warning once, configurable.
+3. **Client session expire** ✅
+   - ~~Avoid intrusive `alert()`: non-blocking toast/banner.~~
+   - ~~Optional light heartbeat to align client/server timers.~~
+   - ~~Do not register JS assets on AJAX JSON responses.~~
+   - ~~Show warning once, configurable.~~
+   - Fix: toast CSS/JS (no `alert`); `clientWarningOnce`; optional heartbeat via `/user/security/session-ping` (204); skip asset on AJAX/PJAX/JSON Accept; cap `warningBefore`; require `heartbeatUrl` (no full-page GET); stop timers on redirect.
 
 4. **Code / maintainability**
    - Align file header versions to `0.6.4`.
@@ -148,8 +149,7 @@ Items marked ✅ have already been applied in the package.
 | ~~High~~ | ~~Login rate limit~~ ✅ |
 | ~~Medium~~ | ~~Cloudflare Turnstile widget on login~~ ✅ |
 | Medium | Stricter session defaults + parameter docs |
-| ~~Medium~~ | ~~Eager loading / admin queries~~ ✅ |
-| Medium | Session expire UX (no blocking alert) |
+| ~~Medium~~ | ~~Session expire UX (no blocking alert)~~ ✅ |
 | Low | Version cleanup, en i18n, minify assets |
 
 ## Notes

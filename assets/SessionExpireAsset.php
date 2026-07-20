@@ -16,26 +16,33 @@ use yii\web\AssetBundle;
 use yii\web\YiiAsset;
 
 /**
- * Client-side session expire redirect asset.
+ * Client-side session expire redirect + non-blocking warning toast.
  */
 class SessionExpireAsset extends AssetBundle
 {
-    /**
-     * {@inheritdoc}
-     */
-    public $sourcePath = '@vendor/cinghie/yii2-user-extended/assets';
+	/**
+	 * {@inheritdoc}
+	 */
+	public $sourcePath = __DIR__;
 
-    /**
-     * {@inheritdoc}
-     */
-    public $js = [
-        'js/session-expire.js',
-    ];
+	/**
+	 * {@inheritdoc}
+	 */
+	public $css = [
+		'css/session-expire.css',
+	];
 
-    /**
-     * {@inheritdoc}
-     */
-    public $depends = [
-        YiiAsset::class,
-    ];
+	/**
+	 * {@inheritdoc}
+	 */
+	public $js = [
+		'js/session-expire.js',
+	];
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public $depends = [
+		YiiAsset::class,
+	];
 }

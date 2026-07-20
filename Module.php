@@ -65,6 +65,30 @@ class Module extends BaseUser
     public $clientWarningBeforeExpire = 60;
 
     /**
+     * Show the expire warning at most once per idle cycle (until activity renews the timer).
+     *
+     * @var bool
+     */
+    public $clientWarningOnce = true;
+
+    /**
+     * Optional client heartbeat interval in seconds to align with server authTimeout.
+     * 0 disables heartbeat. Uses an AJAX GET with X-Requested-With so assets are not registered.
+     * Note: while heartbeat succeeds, the client timer (and server authTimeout) keep renewing.
+     *
+     * @var int
+     */
+    public $clientSessionHeartbeatInterval = 0;
+
+    /**
+     * Heartbeat URL. When null and heartbeat interval > 0, defaults to `/user/security/session-ping`
+     * (204 keep-alive). Do not point this at a full HTML page.
+     *
+     * @var string|null
+     */
+    public $clientSessionHeartbeatUrl = null;
+
+    /**
      * If true, disables Yii auto-login (remember-me) so authTimeout works and
      * an expired session always requires credentials again. Recommended for CRM.
      *

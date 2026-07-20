@@ -343,17 +343,18 @@ class Bootstrap implements BootstrapInterface
                 || !$module->enableClientSessionExpireRedirect
                 || $user->getIsGuest()
                 || $request->getIsAjax()
+                || (method_exists($request, 'getIsPjax') && $request->getIsPjax())
             ) {
                 return;
             }
 
             $accept = (string) $request->getHeaders()->get('Accept', '');
-            if (
-                $accept !== ''
-                && stripos($accept, 'text/html') === false
-                && stripos($accept, '*/*') === false
-            ) {
-                return;
+            if ($accept !== '') {
+                $acceptsHtml = stripos($accept, 'text/html') !== false || stripos($accept, '*/*') !== false;
+                $jsonOnly = stripos($accept, 'application/json') !== false && stripos($accept, 'text/html') === false;
+                if ($jsonOnly || !$acceptsHtml) {
+                    return;
+                }
             }
 
             $view = $app->getView();
@@ -364,21 +365,44 @@ class Bootstrap implements BootstrapInterface
                 }
                 $registered = true;
 
-                SessionExpireAsset::register($view);
-
+                // Config must be in HEAD before the asset JS (typically POS_END) reads it
                 $loginUrl = Url::to(['/user/security/login', 'expired' => 1]);
+                $heartbeatInterval = max(0, (int) $module->clientSessionHeartbeatInterval);
+                $heartbeatUrl = $module->clientSessionHeartbeatUrl;
+                if (is_string($heartbeatUrl) && $heartbeatUrl !== '') {
+                    $heartbeatUrl = Url::to($heartbeatUrl);
+                } elseif ($heartbeatInterval > 0) {
+                    // Cheap authenticated endpoint — never heartbeat the full current HTML page
+                    $heartbeatUrl = Url::to(['/user/security/session-ping']);
+                } else {
+                    $heartbeatUrl = null;
+                }
+
+                $warningBefore = max(0, (int) $module->clientWarningBeforeExpire);
+                // Avoid showing the warning immediately on load
+                if ($timeout > 1) {
+                    $warningBefore = min($warningBefore, $timeout - 1);
+                } else {
+                    $warningBefore = 0;
+                }
+
                 $config = [
                     'timeout' => $timeout,
-                    'warningBefore' => max(0, (int) $module->clientWarningBeforeExpire),
+                    'warningBefore' => $warningBefore,
+                    'warnOnce' => (bool) $module->clientWarningOnce,
                     'warningMessage' => Yii::t('userextended', 'Your session is about to expire. Please save your work.'),
                     'loginUrl' => $loginUrl,
                     'loginPath' => '/user/security/login',
+                    'heartbeatInterval' => $heartbeatInterval,
+                    'heartbeatUrl' => $heartbeatUrl,
                 ];
 
                 $view->registerJs(
                     'window.userextendedSessionExpire = ' . Json::htmlEncode($config) . ';',
                     View::POS_HEAD
                 );
+
+                SessionExpireAsset::register($view);
             });
         });
     }
