@@ -21,6 +21,12 @@ Internal technical notes.
 - Never logs passwords, tokens, auth keys, or CSRF values (`sanitizeData`).
 - Review: reserved context keys always win; `session_expire_client` logged once per session; case-insensitive secret key stripping.
 
+### Dependencies / packaging
+
+- Decision: retain abandoned **Dektrium** (`yii2-user` + `yii2-rbac`) for now; security controls live in userextended overrides.
+- Package `composer.json`: require `dektrium/yii2-user` + `dektrium/yii2-rbac`; remove `2amigos/yii2-usuario`; conflict usuario.
+- Keep Yii2 core up to date; medium-term migration to a maintained user module still recommended.
+
 ### CSRF / verbs
 
 - `AdminController`: VerbFilter POST on `delete`, `deletemultiple`, `block`, `confirm`, `resend-password`, `activemultiple`, `deactivemultiple`, `switch`; sanitized bulk ids; no self-delete/block.

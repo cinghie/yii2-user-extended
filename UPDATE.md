@@ -65,10 +65,22 @@ Items marked ✅ have already been applied in the package.
     - Fix: `BackendFilter` documented (blocks only `registration`+`recovery`); CRM `user.as backend`; optional `blockRegistrationAndRecovery` via Bootstrap.
     - Fix: `RegistrationController` + `RegistrationRateLimiter` (IP+email); captcha/terms/Turnstile already on `RegistrationForm`; confirmation = `user.enableConfirmation`.
 
-11. **Dependencies and packaging**
-    - Align `composer.json` (Dektrium vs 2amigos/usuario) with the dependency actually used.
-    - Update versions / security advisories.
-    - Avoid abandoned dependencies; plan a modern auth migration if needed.
+11. **Dependencies and packaging** ✅ (Dektrium retained for now)
+    - Decision: **keep `dektrium/yii2-user` + `dektrium/yii2-rbac`** (abandoned upstream, but CRM already hardened via userextended).
+    - ~~Align `composer.json` (Dektrium vs 2amigos/usuario) with the dependency actually used.~~
+    - Fix: package `composer.json` now requires `dektrium/yii2-user` + `dektrium/yii2-rbac` (removed `2amigos/yii2-usuario`); `conflict` on usuario.
+    - Keep `yiisoft/yii2` patched (framework CVEs matter more than Dektrium itself).
+    - Medium-term: plan migration to a maintained fork (e.g. `cgsmith/yii2-user`) when feasible — not blocking.
+
+    **Residual risks if staying on abandoned Dektrium** (optional further hardening):
+    - **2FA/TOTP for admins** — not in Dektrium; highest value add for CRM.
+    - **DB-backed lockout** — current rate limit is cache/session; survives cache flush if persisted.
+    - **Password history / no-reuse** — not implemented.
+    - **Raise bcrypt `cost`** — Dektrium default `10` is weak by 2026 standards (prefer ≥12–13).
+    - If recovery/registration are ever re-enabled: shorter token TTL, recovery throttle, secure email-change strategy (`STRATEGY_SECURE`), never email plaintext generated passwords.
+    - Keep social/`yii2-authclient` disabled unless needed (historical authclient CVEs).
+    - Optional: admin route IP allowlist; WAF/fail2ban on `/user/security/login`.
+    - Treat vendor Dektrium as a **frozen fork**: review diffs before any composer update; prefer path/VCS pin.
 
 12. **Security logging** ✅
     - ~~Structured logs: login fail/success, block, delete user, role assign, switch user, session expire, Turnstile fail.~~
