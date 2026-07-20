@@ -27,6 +27,8 @@ use yii\helpers\Html;
         ],
     ]) ?>
 
+        <?= $form->errorSummary($profile) ?>
+
         <?php if(Yii::$app->getModule('userextended')->avatar): ?>
 
             <div class="form-group field-profile-avatar-view">

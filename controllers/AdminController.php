@@ -131,14 +131,19 @@ class AdminController extends BaseController
             $profile->link('user', $user);
         }
 
+        $profile->scenario = 'update';
+
         // Load Old Image
         $oldImage = $profile->avatar;
 
         // Load avatarPath from Module Params
         $avatarPath = Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath);
 
-        // Create uploadAvatar Instance
-        $image = $profile->uploadAvatar($avatarPath);
+        // Create uploadAvatar Instance (only when avatar feature is enabled)
+        $image = false;
+        if (Yii::$app->getModule('userextended')->avatar) {
+            $image = $profile->uploadAvatar($avatarPath);
+        }
 
         // Profile Event
         $event = $this->getProfileEvent($profile);
@@ -148,27 +153,27 @@ class AdminController extends BaseController
 
         $this->trigger(self::EVENT_BEFORE_PROFILE_UPDATE, $event);
 
-        if ($profile->load(Yii::$app->request->post()) && $profile->save())
-        {
-            // revert back if no valid file instance uploaded
+        if ($profile->load(Yii::$app->request->post())) {
+            // File inputs clear avatar on load(); restore correct value before save
             if ($image === false) {
-                if ($profile->avatar !== $oldImage) {
-                    $profile->updateAttributes(['avatar' => $oldImage]);
-                }
+                $profile->avatar = $oldImage;
             } else {
-                // if is there an old image, delete it
-                if ($oldImage && $oldImage !== $image->name) {
-                    $profile->deleteImage($oldImage);
-                }
-                // persist new avatar filename
-                $profile->updateAttributes(['avatar' => $image->name]);
+                $profile->avatar = $image->name;
             }
 
-            Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Profile details have been updated'));
+            if ($profile->save()) {
+                if ($image !== false && $oldImage && $oldImage !== $image->name) {
+                    $profile->deleteImage($oldImage);
+                    // deleteImage() nulls current avatar; persist the new one again
+                    $profile->updateAttributes(['avatar' => $image->name]);
+                }
 
-            $this->trigger(self::EVENT_AFTER_PROFILE_UPDATE, $event);
+                Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Profile details have been updated'));
 
-            return $this->refresh();
+                $this->trigger(self::EVENT_AFTER_PROFILE_UPDATE, $event);
+
+                return $this->refresh();
+            }
         }
 
         return $this->render('_profile', [

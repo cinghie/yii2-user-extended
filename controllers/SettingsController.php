@@ -49,6 +49,8 @@ class SettingsController extends BaseController
             $model->link('user', Yii::$app->user->identity);
         }
 
+        $model->scenario = 'update';
+
         // Load Old Image
         $oldImage = $model->avatar;
 
@@ -56,7 +58,10 @@ class SettingsController extends BaseController
         $avatarPath = Yii::getAlias( Yii::$app->getModule('userextended')->avatarPath);
 
         // Create uploadAvatar Instance
-        $image = $model->uploadAvatar($avatarPath);
+        $image = false;
+        if (Yii::$app->getModule('userextended')->avatar) {
+            $image = $model->uploadAvatar($avatarPath);
+        }
 
         // Profile Event
         $event = $this->getProfileEvent($model);
@@ -66,28 +71,25 @@ class SettingsController extends BaseController
 
         $this->trigger(self::EVENT_BEFORE_PROFILE_UPDATE, $event);
 
-        if ( $model->load( Yii::$app->request->post()) && $model->save())
-        {
-            // revert back if no valid file instance uploaded
+        if ($model->load(Yii::$app->request->post())) {
             if ($image === false) {
-                if ($model->avatar !== $oldImage) {
-                    $model->updateAttributes(['avatar' => $oldImage]);
-                }
+                $model->avatar = $oldImage;
             } else {
-                // if is there an old image, delete it
-                if ($oldImage && $oldImage !== $image->name) {
-                    $model->deleteImage($oldImage);
-                }
-
-                // persist new avatar filename
-                $model->updateAttributes(['avatar' => $image->name]);
+                $model->avatar = $image->name;
             }
 
-            Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Your profile has been updated'));
+            if ($model->save()) {
+                if ($image !== false && $oldImage && $oldImage !== $image->name) {
+                    $model->deleteImage($oldImage);
+                    $model->updateAttributes(['avatar' => $image->name]);
+                }
 
-            $this->trigger(self::EVENT_AFTER_PROFILE_UPDATE, $event);
+                Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Your profile has been updated'));
 
-            return $this->refresh();
+                $this->trigger(self::EVENT_AFTER_PROFILE_UPDATE, $event);
+
+                return $this->refresh();
+            }
         }
 
         return $this->render('profile', [

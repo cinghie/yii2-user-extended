@@ -70,48 +70,64 @@ class Profile extends BaseProfile
     public function scenarios()
     {
         $scenarios = parent::scenarios();
+	    $base = isset($scenarios[self::SCENARIO_DEFAULT]) ? $scenarios[self::SCENARIO_DEFAULT] : [];
+	    foreach (['create', 'update', 'register'] as $scenario) {
+		    $scenarios[$scenario] = $base;
+	    }
+
 	    $cfg = ModuleConfig::snapshot();
 
 	    if (ModuleConfig::get('account')) {
+		    $scenarios['default'][]  = 'account';
 		    $scenarios['create'][]   = 'account';
 		    $scenarios['update'][]   = 'account';
 		    $scenarios['register'][] = 'account';
 	    }
 
 	    if (!empty($cfg['avatar'])) {
+		    $scenarios['default'][]  = 'avatar';
 		    $scenarios['create'][]   = 'avatar';
 		    $scenarios['update'][]   = 'avatar';
 		    $scenarios['register'][] = 'avatar';
 	    }
 
 	    if (!empty($cfg['birthday'])) {
+		    $scenarios['default'][]  = 'birthday';
 		    $scenarios['create'][]   = 'birthday';
 		    $scenarios['update'][]   = 'birthday';
 		    $scenarios['register'][] = 'birthday';
 	    }
 
 	    if (ModuleConfig::get('contact')) {
+		    $scenarios['default'][]  = 'contact';
 		    $scenarios['create'][]   = 'contact';
 		    $scenarios['update'][]   = 'contact';
 		    $scenarios['register'][] = 'contact';
 	    }
 
 	    if (!empty($cfg['firstname'])) {
+		    $scenarios['default'][]  = 'firstname';
 		    $scenarios['create'][]   = 'firstname';
 		    $scenarios['update'][]   = 'firstname';
 		    $scenarios['register'][] = 'firstname';
 	    }
 
 	    if (!empty($cfg['lastname'])) {
+		    $scenarios['default'][]  = 'lastname';
 		    $scenarios['create'][]   = 'lastname';
 		    $scenarios['update'][]   = 'lastname';
 		    $scenarios['register'][] = 'lastname';
 	    }
 
 	    if (!empty($cfg['signature'])) {
+		    $scenarios['default'][]  = 'signature';
 		    $scenarios['create'][]   = 'signature';
 		    $scenarios['update'][]   = 'signature';
 		    $scenarios['register'][] = 'signature';
+	    }
+
+	    foreach ($scenarios as $name => $attrs) {
+		    $scenarios[$name] = array_values(array_unique($attrs));
 	    }
 
         return $scenarios;
@@ -126,8 +142,10 @@ class Profile extends BaseProfile
 	    $cfg = ModuleConfig::snapshot();
 
 	    if (ModuleConfig::get('account')) {
-		    $rules['accountLength'] = ['account', 'integer'];
-		    $rules['accountTrim'] = ['account', 'trim'];
+		    $rules['accountFilter'] = ['account', 'filter', 'filter' => function ($value) {
+			    return $value === '' || $value === null ? null : $value;
+		    }];
+		    $rules['accountInteger'] = ['account', 'integer', 'skipOnEmpty' => true];
 	    }
 
 	    if (!empty($cfg['birthday'])) {
@@ -137,8 +155,10 @@ class Profile extends BaseProfile
 	    }
 
 	    if (ModuleConfig::get('contact')) {
-		    $rules['contactLength'] = ['contact', 'integer'];
-		    $rules['contactTrim'] = ['contact', 'trim'];
+		    $rules['contactFilter'] = ['contact', 'filter', 'filter' => function ($value) {
+			    return $value === '' || $value === null ? null : $value;
+		    }];
+		    $rules['contactInteger'] = ['contact', 'integer', 'skipOnEmpty' => true];
 	    }
 
 	    if (!empty($cfg['firstname'])) {
@@ -166,7 +186,7 @@ class Profile extends BaseProfile
 	 */
 	public function beforeValidate()
 	{
-		if ($this->avatarUploadError !== null) {
+		if (ModuleConfig::get('avatar') && $this->avatarUploadError !== null) {
 			$this->addError('avatar', $this->avatarUploadError);
 		}
 
