@@ -17,7 +17,7 @@ Note tecniche interne.
 
 - `AdminController`: VerbFilter POST su `delete`, `deletemultiple`, `block`, `confirm`, `resend-password`, `activemultiple`, `deactivemultiple`, `switch`; ids bulk sanitizzati; no self-delete/block.
 - `RoleController` / `PermissionController`: VerbFilter POST su `delete` (upstream RBAC ItemController non lo aveva).
-- Form login/register/settings/admin profile/connect: `enableCsrfValidation => true`.
+- Form login/register/settings/admin profile: CSRF via controller (default) + hidden field ActiveForm; non usare `enableCsrfValidation` su ActiveForm (non esiste su kartik).
 - Bulk AJAX utenti (`UserSearch`): payload include CSRF token esplicito.
 
 ### XSS output

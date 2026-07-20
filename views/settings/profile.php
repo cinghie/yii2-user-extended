@@ -44,7 +44,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	            <?php $form = ActiveForm::begin([
                     'id' => 'profile-form',
-                    'enableCsrfValidation' => true,
                     'options' => ['class' => 'form-horizontal','enctype'=>'multipart/form-data'],
                     'fieldConfig' => [
                         'template' => "{label}\n<div class=\"col-lg-9\">{input}</div>\n<div class=\"col-sm-offset-3 col-lg-9\">{error}\n{hint}</div>",

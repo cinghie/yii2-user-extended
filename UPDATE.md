@@ -44,7 +44,7 @@ Le voci con ✅ sono già state applicate nel package.
 7. **CSRF / verbs** ✅
    - ~~Verificare che tutte le azioni mutative restino su POST + CSRF.~~
    - ~~Controllare form login/register/settings e azioni multiple admin.~~
-   - Fix: VerbFilter POST su admin bulk/block/delete/confirm + role/permission delete; CSRF esplicito nei form login/register/settings/profile; bulk AJAX admin include token CSRF; no self-delete/block in bulk.
+   - Fix: VerbFilter POST su admin bulk/block/delete/confirm + role/permission delete; CSRF via controller + token ActiveForm (non proprietà ActiveForm); bulk AJAX admin include token CSRF; no self-delete/block in bulk.
 
 8. **XSS output** ✅
    - ~~Audit view admin/profile/settings: encode sistematico di username, nome, signature, bio.~~

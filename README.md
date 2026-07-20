@@ -300,7 +300,7 @@ Module parameters (0.6.4)
 
 ### CSRF / HTTP verbs
 
-Mutating admin actions (`block`, `confirm`, `delete`, bulk activate/deactivate/delete, `resend-password`) and RBAC role/permission `delete` require **POST**. Login, register, settings and admin profile forms keep **CSRF** enabled. Bulk user AJAX posts include the CSRF token explicitly.
+Mutating admin actions (`block`, `confirm`, `delete`, bulk activate/deactivate/delete, `resend-password`) and RBAC role/permission `delete` require **POST**. CSRF is enforced by the controller (`enableCsrfValidation`, default on); ActiveForm emits the token field automatically. Bulk user AJAX posts include the CSRF token explicitly.
 
 ### XSS output
 

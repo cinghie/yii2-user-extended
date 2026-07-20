@@ -26,7 +26,6 @@ use yii\helpers\Html;
 
 	            <?php $form = ActiveForm::begin([
 		            'id' => 'registration-form',
-		            'enableCsrfValidation' => true,
 		            'enableAjaxValidation' => false,
 		            'enableClientValidation' => true,
 	            ]) ?>

@@ -42,7 +42,6 @@ $fieldOptions2 = [
 
         <?php $form = ActiveForm::begin([
             'id' => 'login-form',
-            'enableCsrfValidation'   => true,
             // AJAX validation burns single-use Turnstile tokens before the real submit
             'enableAjaxValidation'   => !\cinghie\userextended\helpers\TurnstileVerifier::shouldProtectLogin(),
             'enableClientValidation' => false,
