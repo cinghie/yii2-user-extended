@@ -15,6 +15,7 @@ namespace cinghie\userextended;
 use Yii;
 use cinghie\userextended\assets\SessionExpireAsset;
 use cinghie\userextended\components\WebUser;
+use cinghie\userextended\filters\BackendFilter;
 use cinghie\userextended\filters\PasswordExpireFilter;
 use cinghie\userextended\models\Account;
 use cinghie\userextended\models\Assignment;
@@ -88,8 +89,34 @@ class Bootstrap implements BootstrapInterface
                 $this->registerWebUser($app, $module);
                 $this->configureSessionExpire($app, $module);
                 $this->configurePasswordExpire($app, $module);
+                $this->configureBackendFilter($app, $module);
             }
         }
+    }
+
+    /**
+     * Optionally attach BackendFilter on the `user` module (registration + recovery → 404).
+     *
+     * @param WebApplication $app
+     * @param Module $module
+     * @return void
+     */
+    protected function configureBackendFilter(WebApplication $app, Module $module): void
+    {
+        if (!$module->blockRegistrationAndRecovery || !$app->hasModule('user')) {
+            return;
+        }
+
+        $userModule = $app->getModule('user');
+        if ($userModule->getBehavior('backend') !== null
+            || $userModule->getBehavior('userextendedBackendFilter') !== null
+        ) {
+            return;
+        }
+
+        $userModule->attachBehavior('userextendedBackendFilter', [
+            'class' => BackendFilter::class,
+        ]);
     }
 
     /**

@@ -59,9 +59,11 @@ Le voci con ✅ sono già state applicate nel package.
    - Fix: `PasswordPolicy` + validator; `password_changed_at` migration; `PasswordExpireFilter`; form register/settings/recovery/User; hash/verify solo `Password::hash` / `Password::validate`.
    - Review: `PasswordPolicy::generate()` per create/register/resend; `resendPassword` salva anche `password_changed_at`; guard `hasAttribute` se migration non applicata; policy User limitata a scenari password.
 
-10. **Registrazione**
-    - BackendFilter già blocca recovery/registration in alcuni contesti: rendere esplicito e documentato.
-    - Se registration abilitata: captcha / Turnstile, terms, email confirmation, throttle.
+10. **Registrazione** ✅
+    - ~~BackendFilter già blocca recovery/registration in alcuni contesti: rendere esplicito e documentato.~~
+    - ~~Se registration abilitata: captcha / Turnstile, terms, email confirmation, throttle.~~
+    - Fix: `BackendFilter` documentato (blocca solo `registration`+`recovery`); CRM `user.as backend`; opzionale `blockRegistrationAndRecovery` via Bootstrap.
+    - Fix: `RegistrationController` + `RegistrationRateLimiter` (IP+email); captcha/terms/Turnstile già su `RegistrationForm`; confirmation = `user.enableConfirmation`.
 
 11. **Dipendenze e packaging**
     - Allineare `composer.json` (Dektrium vs 2amigos/usuario) alla dipendenza reale usata.

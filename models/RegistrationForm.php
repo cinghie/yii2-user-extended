@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.3
+ * @version 0.6.4
  */
 
 namespace cinghie\userextended\models;
@@ -22,7 +22,10 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidArgumentException;
 
 /**
- * Class RegistrationForm
+ * Registration form with optional captcha, Turnstile, terms, and password policy.
+ *
+ * When enabling public registration, also set user.enableConfirmation and map
+ * RegistrationController for IP/email throttle; remove BackendFilter if present.
  */
 class RegistrationForm extends BaseRegistrationForm
 {

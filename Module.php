@@ -245,6 +245,52 @@ class Module extends BaseUser
      */
     public $cloudflareTurnstileOnRegistration = false;
 
+    /**
+     * Attach BackendFilter to the `user` module (404 on registration + recovery).
+     * Prefer this OR explicit `'as backend' => BackendFilter::class` on `user` (not both).
+     * CRM/backend: true when public signup/recovery must stay unavailable.
+     *
+     * @var bool
+     */
+    public $blockRegistrationAndRecovery = false;
+
+    /**
+     * Throttle public registration / confirmation resend (IP + email).
+     *
+     * @var bool
+     */
+    public $enableRegistrationRateLimit = true;
+
+    /**
+     * @var int
+     */
+    public $registrationMaxAttempts = 5;
+
+    /**
+     * @var int
+     */
+    public $registrationAttemptWindow = 900;
+
+    /**
+     * @var int
+     */
+    public $registrationLockoutDuration = 900;
+
+    /**
+     * @var bool
+     */
+    public $registrationProgressiveDelay = true;
+
+    /**
+     * @var int
+     */
+    public $registrationDelayBaseSeconds = 1;
+
+    /**
+     * @var int
+     */
+    public $registrationDelayMaxSeconds = 5;
+
 	/**
 	 * @var string default User Role
 	 */

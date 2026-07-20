@@ -241,38 +241,36 @@ and in components section
 ]
 ```
 
-If you have a Yii2 App Advanced add in Yii2 User Module config
+If you have a Yii2 App Advanced **or a CRM that must not expose public signup/password recovery**, attach the userextended filter on the `user` module:
 
 ```
 'modules' =>  [
 
     'user' => [
         'class' => 'dektrium\user\Module',
-        // restrict access to recovery and registration controllers from backend
-        'as backend' => 'dektrium\user\filters\BackendFilter',
-        // Settings
+        // 404 on /user/registration/* and /user/recovery/*
+        // (unlike dektrium BackendFilter, profile + settings stay available)
+        'as backend' => [
+            'class' => 'cinghie\userextended\filters\BackendFilter',
+            // 'controllers' => ['registration', 'recovery'],
+        ],
         'enableRegistration' => false,
+        'enablePasswordRecovery' => false,
         'enableImpersonateUser' => false,
-    ],
-    
-],		
-```
-
-Or use userextended filter that active profile and settings on backend (dektrium filter disable it)
-
-```
-'modules' =>  [
-
-    'user' => [
-        'class' => 'dektrium\user\Module',
-        // restrict access to recovery and registration controllers from backend
-        'as backend' => 'cinghie\userextended\filters\BackendFilter',
-        // Settings
-        'enableRegistration' => false,
-        'enableImpersonateUser' => false,
+        'controllerMap' => [
+            'registration' => 'cinghie\userextended\controllers\RegistrationController',
+        ],
     ],
 
 ],
+```
+
+Alternative: set `userextended.blockRegistrationAndRecovery = true` (Bootstrap attaches the same filter if `as backend` is not already set).
+
+Dektrium’s own filter also blocks `profile` and `settings` — prefer userextended on backend/CRM:
+
+```
+'as backend' => 'dektrium\user\filters\BackendFilter',
 ```
 
 ### 6. Set captcha in Controller
@@ -365,6 +363,32 @@ Uploads are renamed randomly, MIME/`getimagesize` checked, double extensions blo
 | `loginCaptchaAction` | `['/site/captcha']` | Captcha route. |
 
 Failed login messages are generic (anti user enumeration).
+
+### Registration (when `user.enableRegistration` is true)
+
+Remove `BackendFilter` / set `blockRegistrationAndRecovery` to `false`, then enable:
+
+| Setting | Where | Notes |
+|---------|--------|--------|
+| `enableRegistration` | `user` | Required |
+| `enableConfirmation` | `user` | Recommended (email confirm) |
+| `captcha` | `userextended` | Yii captcha on register form |
+| `terms` | `userextended` | Terms checkbox |
+| `enableCloudflareTurnstile` + `cloudflareTurnstileOnRegistration` | `userextended` | Optional Turnstile |
+| `enableRegistrationRateLimit` | `userextended` | IP + email throttle (default on) |
+
+Map `registration` → `cinghie\userextended\controllers\RegistrationController` for throttle on register/resend.
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `blockRegistrationAndRecovery` | `false` | Bootstrap attaches `BackendFilter` on `user` if no `as backend` yet. |
+| `enableRegistrationRateLimit` | `true` | Enable IP + email counters. |
+| `registrationMaxAttempts` | `5` | Attempts before lock. |
+| `registrationAttemptWindow` | `900` | Counter TTL (seconds). |
+| `registrationLockoutDuration` | `900` | Lock duration (seconds). |
+| `registrationProgressiveDelay` | `true` | Sleep after failed attempt. |
+| `registrationDelayBaseSeconds` | `1` | Delay = min(base × attempts, max). |
+| `registrationDelayMaxSeconds` | `5` | Max delay. |
 
 ### Cloudflare Turnstile (optional)
 
@@ -481,6 +505,7 @@ Features
     <li>Add default Role on User Registration</li>
     <li>Session timeout with optional client redirect / warning</li>
     <li>Login brute-force protection (rate limit, lockout, progressive delay, captcha after N failures)</li>
+    <li>Registration throttle (IP + email) + BackendFilter for CRM/backend (blocks registration/recovery)</li>
     <li>Optional Cloudflare Turnstile on login (and registration)</li>
     <li>Admin users grid performance (eager loading, role cache, DB indexes)</li>
     <li>User impersonation disabled by default</li>

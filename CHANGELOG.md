@@ -36,6 +36,13 @@ Note tecniche interne.
 - Hash/verify solo tramite `dektrium\user\helpers\Password` (Yii security).
 - Review: `PasswordPolicy::generate()` usata in create/register/resendPassword; `resendPassword` persiste `password_changed_at`; guard `hasAttribute` se colonna assente; settings non assegna `password` se `new_password` vuota.
 
+### Registrazione
+
+- `BackendFilter`: 404 su controller `registration` e `recovery` (profile/settings restano); attach su `user` con `as backend` oppure `userextended.blockRegistrationAndRecovery`.
+- `RegistrationController` + `RegistrationRateLimiter` (IP + email, anche su resend confirmation).
+- Parametri: `enableRegistrationRateLimit`, `registrationMaxAttempts`, `registrationAttemptWindow`, `registrationLockoutDuration`, `registrationProgressiveDelay`, `registrationDelay*`.
+- Protezioni form già presenti: `captcha`, `terms`, Turnstile (`cloudflareTurnstileOnRegistration`); confirmation Dektrium `enableConfirmation`.
+
 ### Sessione
 
 - Timeout sessione/auth gestito dal modulo (`sessionTimeout`, `useAbsoluteAuthTimeout`, `absoluteAuthTimeout`, `disableAutoLogin`).

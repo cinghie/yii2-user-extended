@@ -64,6 +64,7 @@ return [
     'Security verification failed. Please try again.' => 'Verifica di sicurezza non riuscita. Riprova.',
 	'Signature' => 'Firma',
     'Too many failed login attempts. Please try again later.' => 'Troppi tentativi di accesso falliti. Riprova più tardi.',
+    'Too many registration attempts. Please try again later.' => 'Troppi tentativi di registrazione. Riprova più tardi.',
     'Type your credentials' => 'Inserisci le tue credenziali',
     'Update' => 'Modifica',
     'User impersonation is disabled.' => 'L\'impersonificazione utente è disabilitata.',
