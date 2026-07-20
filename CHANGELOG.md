@@ -1,0 +1,37 @@
+# Changelog — yii2-user-extended
+
+Note tecniche interne.
+
+## 0.6.4
+
+### Sicurezza
+
+- `UserSearch`: filtro `rule` con query parametrizzata e validazione contro ruoli RBAC.
+- Upload avatar: whitelist MIME/extension (jpg/png/webp), max size, blocco double-extension/eseguibili, rename random, path confinato sotto `avatarPath`.
+- Nuovi parametri modulo: `avatarAllowedExtensions`, `avatarMaxSize`.
+- Login brute-force: rate limit IP+username (`LoginRateLimiter`), lock temporaneo, delay progressivo, captcha dopo N fallimenti, messaggi generici anti-enumeration.
+- Parametri modulo login: `enableLoginRateLimit`, `loginMaxAttempts`, `loginAttemptWindow`, `loginLockoutDuration`, `loginProgressiveDelay`, `loginDelayBaseSeconds`, `loginDelayMaxSeconds`, `loginCaptchaAfterAttempts`, `loginCaptchaAction`.
+- Impersonificazione utente (`admin/switch`) disabilitata: AccessControl deny, `actionSwitch` → 403, `enableImpersonateUser = false`.
+
+### Sessione
+
+- Timeout sessione/auth gestito dal modulo (`sessionTimeout`, `useAbsoluteAuthTimeout`, `disableAutoLogin`).
+- Redirect client a login allo scadere (`SessionExpireAsset` / `session-expire.js`).
+- Flash su login con `?expired=1`.
+
+### Altro
+
+- Persistenza filename avatar via `updateAttributes` dopo upload (Admin/Settings).
+- `SecurityController` usa il `LoginForm` del package; `LoginForm` nel `modelMap` user.
+
+### Performance admin utenti
+
+- `UserSearch`: eager load `profile` + `roles`; filtro ruolo con `INNER JOIN` parametrizzato.
+- `AuthAssignment` ActiveRecord; `getRolesHTML()` usa la relazione (niente SQL concatenato).
+- Migration `m260720_111500_add_user_admin_indexes`: indice su `user.last_login_at`.
+
+### Caching
+
+- `RbacRoleCache`: cache lista ruoli per filtri admin + invalidate su create/update/delete ruolo (`RoleController`).
+- `ModuleConfig`: memo per-request delle impostazioni modulo (Profile, LoginRateLimiter, avatar).
+- Parametri: `enableRbacRoleCache`, `rbacRoleCacheDuration`.
