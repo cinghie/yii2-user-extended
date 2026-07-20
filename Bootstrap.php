@@ -7,12 +7,13 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.3
+ * @version 0.6.4
  */
 
 namespace cinghie\userextended;
 
 use Yii;
+use cinghie\userextended\assets\SessionExpireAsset;
 use cinghie\userextended\models\Account;
 use cinghie\userextended\models\Assignment;
 use cinghie\userextended\models\LoginForm;
@@ -23,8 +24,13 @@ use cinghie\userextended\models\SettingsForm;
 use cinghie\userextended\models\User;
 use yii\base\Application;
 use yii\base\BootstrapInterface;
-use yii\base\Module;
+use yii\base\Module as BaseModule;
 use yii\db\ActiveRecord;
+use yii\helpers\Json;
+use yii\helpers\Url;
+use yii\web\Application as WebApplication;
+use yii\web\Cookie;
+use yii\web\View;
 
 /**
  * Bootstrap class
@@ -45,34 +51,106 @@ class Bootstrap implements BootstrapInterface
         'User' => User::class,
     ];
 
-	/**
-	 * @param Application $app
-	 */
+    /**
+     * @param Application $app
+     */
     public function bootstrap($app)
     {
         /**
          * @var Module $module
          * @var ActiveRecord $modelName
          */
-        if ($app->hasModule('userextended') && ($module = $app->getModule('userextended')) instanceof Module)
-        {
+        if ($app->hasModule('userextended') && ($module = $app->getModule('userextended')) instanceof BaseModule) {
             $this->_modelMap = array_merge($this->_modelMap, $module->modelMap);
 
-            foreach ($this->_modelMap as $name => $definition)
-            {
+            foreach ($this->_modelMap as $name => $definition) {
                 $class = "cinghie\\userextended\\models\\" . $name;
 
                 Yii::$container->set($class, $definition);
                 $modelName = is_array($definition) ? $definition['class'] : $definition;
                 $module->modelMap[$name] = $modelName;
 
-                if (in_array($name,['Account','Assignment','LoginForm','Permission','Profile','RegistrationForm','SettingsForm','User']))
-                {
+                if (in_array($name, ['Account', 'Assignment', 'LoginForm', 'Permission', 'Profile', 'RegistrationForm', 'SettingsForm', 'User'], true)) {
                     Yii::$container->set($name . 'Query', function () use ($modelName) {
                         return $modelName::find();
                     });
                 }
             }
+
+            if ($app instanceof WebApplication) {
+                $this->configureSessionExpire($app, $module);
+            }
         }
+    }
+
+    /**
+     * Configure session/auth timeout and client expire redirect.
+     *
+     * @param WebApplication $app
+     * @param Module $module
+     * @return void
+     */
+    protected function configureSessionExpire(WebApplication $app, Module $module): void
+    {
+        $timeout = (int) $module->sessionTimeout;
+        if ($timeout < 0) {
+            $timeout = 0;
+        }
+
+        if ($timeout > 0 && $app->has('session')) {
+            $session = $app->getSession();
+            $session->timeout = $timeout;
+
+            $cookieParams = $session->getCookieParams();
+            $cookieParams['lifetime'] = $timeout;
+            if (!isset($cookieParams['httponly'])) {
+                $cookieParams['httponly'] = true;
+            }
+            if (!isset($cookieParams['sameSite'])) {
+                $cookieParams['sameSite'] = Cookie::SAME_SITE_LAX;
+            }
+            $session->setCookieParams($cookieParams);
+        }
+
+        $app->on(Application::EVENT_BEFORE_REQUEST, function () use ($app, $module, $timeout) {
+            if (!$app->has('user')) {
+                return;
+            }
+
+            $user = $app->getUser();
+            if ($module->disableAutoLogin) {
+                $user->enableAutoLogin = false;
+            }
+
+            if ($timeout > 0) {
+                $user->authTimeout = $timeout;
+                if ($module->useAbsoluteAuthTimeout) {
+                    $user->absoluteAuthTimeout = $timeout;
+                }
+            }
+
+            if (
+                $timeout > 0
+                && $module->enableClientSessionExpireRedirect
+                && !$user->getIsGuest()
+            ) {
+                $view = $app->getView();
+                SessionExpireAsset::register($view);
+
+                $loginUrl = Url::to(['/user/security/login', 'expired' => 1]);
+                $config = [
+                    'timeout' => $timeout,
+                    'warningBefore' => max(0, (int) $module->clientWarningBeforeExpire),
+                    'warningMessage' => Yii::t('userextended', 'Your session is about to expire. Please save your work.'),
+                    'loginUrl' => $loginUrl,
+                    'loginPath' => '/user/security/login',
+                ];
+
+                $view->registerJs(
+                    'window.userextendedSessionExpire = ' . Json::encode($config) . ';',
+                    View::POS_HEAD
+                );
+            }
+        });
     }
 }

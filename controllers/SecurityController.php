@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.3
+ * @version 0.6.4
  */
 
 namespace cinghie\userextended\controllers;
@@ -52,10 +52,13 @@ class SecurityController extends BaseController
 		$this->performAjaxValidation($model);
 		$this->trigger(self::EVENT_BEFORE_LOGIN, $event);
 
-		Yii::$app->session->setFlash('login', Yii::t('userextended','Type your credentials'));
+		if (Yii::$app->request->get('expired')) {
+			Yii::$app->session->setFlash('login', Yii::t('userextended', 'Your session has expired. Please sign in again.'));
+		} else {
+			Yii::$app->session->setFlash('login', Yii::t('userextended', 'Type your credentials'));
+		}
 
-		if($model->load(Yii::$app->getRequest()->post()))
-		{
+		if ($model->load(Yii::$app->getRequest()->post())) {
 			if ($model->login()) {
 				Yii::$app->session->setFlash('login', Yii::t('userextended', 'Login successful'));
 				$this->trigger(self::EVENT_AFTER_LOGIN, $event);
@@ -68,7 +71,7 @@ class SecurityController extends BaseController
 		$view = Yii::$app->getModule('userextended')->templateLogin;
 
 		return $this->render($view, [
-			'model'  => $model,
+			'model' => $model,
 			'module' => $this->module,
 		]);
 	}

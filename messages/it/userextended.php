@@ -57,4 +57,6 @@ return [
 	'Type your credentials' => 'Inserisci le tue credenziali',
     'Update' => 'Modifica',
 	'You must agree to the terms and conditions' => 'Devi accettare Termini&Condizioni',
+    'Your session has expired. Please sign in again.' => 'La sessione è scaduta. Effettua di nuovo l\'accesso.',
+    'Your session is about to expire. Please save your work.' => 'La sessione sta per scadere. Salva il lavoro in corso.',
 ];

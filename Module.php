@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.3
+ * @version 0.6.4
  */
 
 namespace cinghie\userextended;
@@ -24,7 +24,44 @@ class Module extends BaseUser
     /**
      * @var string Module version
      */
-    private $version = '0.6.3';
+    private $version = '0.6.4';
+
+    /**
+     * Session/auth idle timeout in seconds.
+     * 0 disables module-driven session expire handling.
+     *
+     * @var int
+     */
+    public $sessionTimeout = 3600;
+
+    /**
+     * If true, also set user.absoluteAuthTimeout to sessionTimeout.
+     *
+     * @var bool
+     */
+    public $useAbsoluteAuthTimeout = false;
+
+    /**
+     * If true, register client-side redirect to login when the session expires.
+     *
+     * @var bool
+     */
+    public $enableClientSessionExpireRedirect = true;
+
+    /**
+     * Seconds before expire when a browser warning can be shown.
+     * 0 disables the warning.
+     *
+     * @var int
+     */
+    public $clientWarningBeforeExpire = 60;
+
+    /**
+     * If true, disables Yii auto-login so an expired session always requires credentials again.
+     *
+     * @var bool
+     */
+    public $disableAutoLogin = false;
 
     /**
      * @var string Path to avatar file
