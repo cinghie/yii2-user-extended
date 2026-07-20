@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.3
+ * @version 0.6.4
  */
 
 namespace cinghie\userextended\models;
@@ -59,7 +59,8 @@ class UserSearch extends BaseUserSearch
     public function rules()
     {
         return [
-            'fieldsSafe' => [['id', 'username', 'firstname', 'lastname', 'birthday','email', 'rule', 'registration_ip', 'created_at', 'blocked_at', 'last_login_at'], 'safe'],
+            'fieldsSafe' => [['id', 'username', 'firstname', 'lastname', 'birthday', 'email', 'rule', 'registration_ip', 'created_at', 'blocked_at', 'last_login_at'], 'safe'],
+            'ruleInList' => ['rule', 'in', 'range' => array_keys($this->getNameList()), 'skipOnEmpty' => true],
             'createdDefault' => ['created_at', 'default', 'value' => null],
             'lastloginDefault' => ['last_login_at', 'default', 'value' => null],
         ];
@@ -146,16 +147,16 @@ class UserSearch extends BaseUserSearch
               ->andFilterWhere([$table_name . '.id' => $this->id])
               ->andFilterWhere([$table_name . '.registration_ip' => $this->registration_ip]);
 
-        if ($this->rule !== '' && $this->blocked_at !== NULL)
-		{
-            $query->andWhere('`id` IN (
-                SELECT {{%auth_assignment}}.user_id FROM {{%auth_assignment}} 
-                WHERE {{%auth_assignment}}.`item_name` = "'.$this->rule.'")'
-            );
+        if ($this->rule !== null && $this->rule !== '') {
+            $query->andWhere([
+                'in',
+                $table_name . '.id',
+                (new Query())
+                    ->select(['user_id'])
+                    ->from('{{%auth_assignment}}')
+                    ->where(['item_name' => $this->rule]),
+            ]);
         }
-
-        // Print SQL query
-	    //var_dump($query->createCommand()->sql); exit();
 
         return $dataProvider;
     }
