@@ -448,13 +448,17 @@ class Bootstrap implements BootstrapInterface
             $cookieParams['secure'] = $this->resolveSecureFlag($app, $module);
         }
 
-        if (!isset($cookieParams['sameSite'])) {
+        // getCookieParams() lowercases keys (PHP style: samesite).
+        // Checking only camelCase sameSite would miss app Strict and overwrite it with Lax.
+        $existingSameSite = $cookieParams['samesite'] ?? $cookieParams['sameSite'] ?? null;
+        if ($existingSameSite === null || $existingSameSite === '') {
             $sameSite = $module->sessionSameSite;
             if ($sameSite === null || $sameSite === '') {
                 $sameSite = Cookie::SAME_SITE_LAX;
             }
-            $cookieParams['sameSite'] = $sameSite;
+            $cookieParams['samesite'] = $sameSite;
         }
+        unset($cookieParams['sameSite']);
 
         $session->setCookieParams($cookieParams);
     }

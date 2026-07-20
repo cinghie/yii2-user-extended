@@ -29,14 +29,14 @@ class SecurityAudit
 		'self_escalation_block',
 	];
 
-	/** @var string[] Payload keys that must never be stored */
+	/** @var string[] Payload keys that must never be stored (exact normalized match) */
 	private static $blockedKeys = [
 		'password',
 		'new_password',
 		'current_password',
 		'token',
 		'turnstiletoken',
-		'cf-turnstile-response',
+		'cf_turnstile_response',
 		'auth_key',
 		'authkey',
 		'hash',
@@ -44,6 +44,25 @@ class SecurityAudit
 		'cookie',
 		'csrf',
 		'_csrf',
+		'secret',
+		'secret_key',
+		'cloudflaresecretkey',
+		'cloudflare_secret_key',
+		'api_key',
+		'apikey',
+		'private_key',
+		'privatekey',
+	];
+
+	/** @var string[] Substrings that mark a key as secret (normalized); keep narrow to avoid dropping safe fields like password_changed_at */
+	private static $blockedKeySubstrings = [
+		'secret',
+		'private_key',
+		'privatekey',
+		'api_key',
+		'apikey',
+		'auth_key',
+		'password_hash',
 	];
 
 	/**
@@ -185,7 +204,7 @@ class SecurityAudit
 		$clean = [];
 		foreach ($data as $key => $value) {
 			$normalized = strtolower(str_replace([' ', '-'], '_', (string) $key));
-			if (in_array($normalized, self::$blockedKeys, true)) {
+			if (in_array($normalized, self::$blockedKeys, true) || self::isBlockedKeyName($normalized)) {
 				continue;
 			}
 			if (is_array($value)) {
@@ -196,5 +215,21 @@ class SecurityAudit
 		}
 
 		return $clean;
+	}
+
+	/**
+	 * @param string $normalizedKey
+	 *
+	 * @return bool
+	 */
+	protected static function isBlockedKeyName($normalizedKey)
+	{
+		foreach (self::$blockedKeySubstrings as $needle) {
+			if ($needle !== '' && strpos($normalizedKey, $needle) !== false) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

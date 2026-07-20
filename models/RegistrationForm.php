@@ -71,12 +71,16 @@ class RegistrationForm extends BaseRegistrationForm
 		    $rules[] = [
 			    'turnstileToken',
 			    'required',
+			    'when' => static function () {
+				    return !Yii::$app->request->isAjax;
+			    },
 			    'message' => Yii::t('userextended', 'Security verification failed. Please try again.'),
 		    ];
 		    $rules[] = [
 			    'turnstileToken',
 			    function ($attribute) {
-				    if ($this->hasErrors($attribute)) {
+				    // Tokens are single-use: never call siteverify during AJAX validation
+				    if (Yii::$app->request->isAjax || $this->hasErrors($attribute)) {
 					    return;
 				    }
 				    if (!TurnstileVerifier::verify($this->$attribute)) {

@@ -1,165 +1,44 @@
 # Update - yii2-user-extended
 
-Optimization and security proposals for the module.  
-Items marked ✅ have already been applied in the package.
+Open hardening / dependency work only.  
+Completed backlog (SQL injection, avatar, impersonation off, login rate limit, Turnstile, session hardening, CSRF/verbs, XSS, password policy, registration throttle, security audit, RBAC assignment, admin query/cache, session-expire UX, i18n, assets, ModuleSettings, tests) lives in `CHANGELOG.md` / `README.md`.
 
-## Security
+**Review (2026-07-20):** Re-audited applied work — no critical regressions. Fixed registration Turnstile consuming single-use tokens during AJAX validation; widened `SecurityAudit` secret-key sanitization. Core SQL/avatar/switch/session/CSRF/assignment paths look sound; no material performance regressions found on admin grid / RBAC cache.
 
-1. **SQL injection in `UserSearch`** ✅
-   - ~~The `rule` filter concatenated `$this->rule` into the SQL query.~~
-   - Fix applied: parameterized query + `rule` validated against the RBAC role list.
+---
 
-2. **Avatar upload** ✅
-   - ~~Restrict MIME/extension (jpg/png/webp), max size, safe file rename.~~
-   - ~~Block executable uploads / double extensions.~~
-   - ~~Sanitize/normalize the filename and ensure it stays under `avatarPath`.~~
-   - Fix applied in `Profile::uploadAvatar` / `deleteImage` + module params `avatarAllowedExtensions` / `avatarMaxSize`.
+## 1. Dependencies and packaging (Dektrium)
 
-3. **Admin access control** ✅
-   - ~~Review `AdminController`: `switch` allowed for all authenticated users (`@`).~~
-   - ~~Limit user switch to privileged roles and log every impersonation.~~
-   - Decision applied: **switch/impersonation disabled** (deny access + `actionSwitch` 403 + `enableImpersonateUser = false`).
+**Status:** Dektrium **kept for now** (composer aligned to `dektrium/yii2-user` + `dektrium/yii2-rbac`; `conflict` on `2amigos/yii2-usuario`). CRM hardening sits in userextended, not upstream.
 
-4. **Login / brute force** ✅
-   - ~~Rate limit failed attempts (IP + username).~~
-   - ~~Progressive delay or temporary account lock.~~
-   - ~~Optional captcha after N failures.~~
-   - ~~Generic error messages (already partially present): avoid username/email enumeration.~~
-   - Fix applied: `LoginRateLimiter` + `LoginForm` / `SecurityController` (IP+login cache, lock, delay, optional captcha).
+### Still open if staying on abandoned Dektrium
 
-5. **Cloudflare Turnstile on login** ✅
-   - ~~Add optional Cloudflare Turnstile widget support on the login form.~~
-   - ~~Dedicated module params (disabled by default).~~
-   - ~~Server-side siteverify validation; fail closed; secret only in web-local.~~
-   - Fix: `TurnstileVerifier` + `TurnstileAsset` + widget on login/register; rate limit remains a second barrier.
+1. **2FA/TOTP for admins** — highest value for a CRM; not in Dektrium.
+2. **DB-backed lockout** — login/registration counters are cache/session today; persist so locks survive cache flush.
+3. **Password history / no-reuse** — reject recently used passwords on change.
+4. **Raise bcrypt `cost`** — Dektrium default `10` is weak by 2026 standards (prefer ≥12–13), without breaking existing hashes.
+5. **If recovery/registration are ever re-enabled:** shorter token TTL, recovery throttle, email-change `STRATEGY_SECURE`, never email plaintext generated passwords.
+6. **Keep social / `yii2-authclient` disabled** unless required (historical authclient CVEs).
+7. **Optional ops hardening:** admin route IP allowlist; WAF / fail2ban on `/user/security/login`.
+8. **Treat vendor Dektrium as a frozen fork:** review diffs before any Composer update; prefer path/VCS pin.
+9. **Medium-term:** plan migration to a maintained fork (e.g. `cgsmith/yii2-user`) when feasible — not blocking day-to-day.
 
-6. **Session and authentication** ✅
-   - ~~Safer defaults: consider `disableAutoLogin = true` in CRM environments.~~
-   - ~~Session cookie: consistent `Secure` + `HttpOnly` + `SameSite` per environment.~~
-   - ~~Regenerate session ID on login/logout.~~
-   - ~~`absoluteAuthTimeout` option for max login duration.~~
-   - ~~Invalidate remember-me cookie when `authTimeout` expires.~~
-   - Fix: default `disableAutoLogin = true`; `hardenSessionCookies` / `sessionCookieSecure` / `sessionSameSite`; `absoluteAuthTimeout`; `WebUser` does not re-login from cookie after timeout; regenerate on login + logout.
+Also keep `yiisoft/yii2` patched (framework CVEs matter more than Dektrium itself).
 
-7. **CSRF / verbs** ✅
-   - ~~Ensure all mutating actions stay on POST + CSRF.~~
-   - ~~Check login/register/settings forms and admin bulk actions.~~
-   - Fix: VerbFilter POST on admin bulk/block/delete/confirm + role/permission delete; CSRF via controller + ActiveForm token (not an ActiveForm property); admin bulk AJAX includes CSRF token; no self-delete/block in bulk.
-
-8. **XSS output** ✅
-   - ~~Audit admin/profile/settings views: systematic encode of username, name, signature, bio.~~
-   - ~~Avoid `format => raw` without sanitization.~~
-   - ~~Signature/HTML editor: tag whitelist or plain-text storage.~~
-   - Fix: `SafeHtml` helper; encode in admin/profile/settings/login; role names encoded; signature default plain text (`signatureAllowHtml=false`) + HtmlPurifier whitelist when enabled; bio always plain text.
-
-9. **Password policy** ✅
-   - ~~Configurable policy (min length, complexity, ban common passwords).~~
-   - ~~Force periodic password change (module parameter).~~
-   - ~~Hash only via Dektrium/Yii helpers (no unsafe custom comparisons).~~
-   - Fix: `PasswordPolicy` + validator; `password_changed_at` migration; `PasswordExpireFilter`; register/settings/recovery/User forms; hash/verify only via `Password::hash` / `Password::validate`.
-   - Review: `PasswordPolicy::generate()` for create/register/resend; `resendPassword` also saves `password_changed_at`; `hasAttribute` guard if migration not applied; User policy limited to password scenarios.
-
-10. **Registration** ✅
-    - ~~`BackendFilter` already blocks recovery/registration in some contexts: make it explicit and documented.~~
-    - ~~If registration is enabled: captcha / Turnstile, terms, email confirmation, throttle.~~
-    - Fix: `BackendFilter` documented (blocks only `registration`+`recovery`); CRM `user.as backend`; optional `blockRegistrationAndRecovery` via Bootstrap.
-    - Fix: `RegistrationController` + `RegistrationRateLimiter` (IP+email); captcha/terms/Turnstile already on `RegistrationForm`; confirmation = `user.enableConfirmation`.
-
-11. **Dependencies and packaging** ✅ (Dektrium retained for now)
-    - Decision: **keep `dektrium/yii2-user` + `dektrium/yii2-rbac`** (abandoned upstream, but CRM already hardened via userextended).
-    - ~~Align `composer.json` (Dektrium vs 2amigos/usuario) with the dependency actually used.~~
-    - Fix: package `composer.json` now requires `dektrium/yii2-user` + `dektrium/yii2-rbac` (removed `2amigos/yii2-usuario`); `conflict` on usuario.
-    - Keep `yiisoft/yii2` patched (framework CVEs matter more than Dektrium itself).
-    - Medium-term: plan migration to a maintained fork (e.g. `cgsmith/yii2-user`) when feasible — not blocking.
-
-    **Residual risks if staying on abandoned Dektrium** (optional further hardening):
-    - **2FA/TOTP for admins** — not in Dektrium; highest value add for CRM.
-    - **DB-backed lockout** — current rate limit is cache/session; survives cache flush if persisted.
-    - **Password history / no-reuse** — not implemented.
-    - **Raise bcrypt `cost`** — Dektrium default `10` is weak by 2026 standards (prefer ≥12–13).
-    - If recovery/registration are ever re-enabled: shorter token TTL, recovery throttle, secure email-change strategy (`STRATEGY_SECURE`), never email plaintext generated passwords.
-    - Keep social/`yii2-authclient` disabled unless needed (historical authclient CVEs).
-    - Optional: admin route IP allowlist; WAF/fail2ban on `/user/security/login`.
-    - Treat vendor Dektrium as a **frozen fork**: review diffs before any composer update; prefer path/VCS pin.
-
-12. **Security logging** ✅
-    - ~~Structured logs: login fail/success, block, delete user, role assign, switch user, session expire, Turnstile fail.~~
-    - ~~Do not log passwords or tokens in clear text.~~
-    - Fix: generalized `SecurityAudit` (`enableSecurityAudit`); hooks on login/logout, block/unblock/delete, switch denied, session expire, Turnstile fail, RBAC assign; secrets stripped; `WebUser` no longer logs auth keys.
-    - Review: reserved audit keys not overwritable by payload; `session_expire_client` once per session; logout safe when guest; case-insensitive secret sanitization.
-
-13. **RBAC authorization** ✅
-    - ~~Centralize role/permission assignment with CSRF + admin permission checks.~~
-    - ~~Prevent self-escalation (an admin must not assign higher roles to themselves without audit).~~
-    - Fix: `Assignment` model + `Assignments` widget; `AdminController::actionAssignments` and `AssignmentController` (POST/CSRF/admin); `blockSelfRoleAssignment`; `SecurityAudit` (logger or Yii::info).
-    - Review: `user_id` not mass-assignable from POST (`safeAttributes` + rebind from URL in controllers).
-
-## Optimizations
-
-1. **Admin query performance** ✅
-   - ~~Eager load `profile` / `roles` in the user grid (avoid N+1).~~
-   - ~~DB indexes on `email`, `username`, `last_login_at`, `auth_assignment.user_id`.~~
-   - ~~Replace string role subquery with join/param query.~~
-   - Fix: `UserSearch` eager load + role filter join; `AuthAssignment` AR; `getRolesHTML` without concatenated SQL; `last_login_at` index migration (`username`/`email`/`auth_assignment.user_id` already upstream).
-
-2. **Caching** ✅
-   - ~~Cache RBAC role list (`getNameList`) with invalidate on change.~~
-   - ~~Cache frequently used module config per request.~~
-   - Fix: `RbacRoleCache` + invalidate from `RoleController`; `ModuleConfig` per-request memo.
-
-3. **Client session expire** ✅
-   - ~~Avoid intrusive `alert()`: non-blocking toast/banner.~~
-   - ~~Optional light heartbeat to align client/server timers.~~
-   - ~~Do not register JS assets on AJAX JSON responses.~~
-   - ~~Show warning once, configurable.~~
-   - Fix: toast CSS/JS (no `alert`); `clientWarningOnce`; optional heartbeat via `/user/security/session-ping` (204); skip asset on AJAX/PJAX/JSON Accept; cap `warningBefore`; require `heartbeatUrl` (no full-page GET); stop timers on redirect.
-
-4. **Code / maintainability** ✅
-   - ~~Align file header versions to `0.6.4`.~~
-   - ~~Fix Profile scenario bug (`contact` incorrectly tied to `avatar` flag).~~ ✅ (fixed with `ModuleConfig` in scenarios/rules)
-   - ~~Type properties/methods and remove dead code / commented `var_dump`.~~
-   - ~~Extract common upload/session helpers into dedicated services.~~
-   - Fix: headers → `0.6.4`; removed scaffold comment in `UserSearch`; typed rate-limiter APIs; `ProfileAvatarService` (upload after AJAX validate + rollback on failed save), `SessionHelper`, `RateLimitStore` (session guard).
-
-5. **i18n** ✅
-   - ~~Complete catalogs (`en` as well as `it`) for all new session/security messages.~~
-   - ~~Consistent keys and no hardcoded strings in views.~~
-   - Fix: `messages/en/userextended.php` + completed `messages/it`; `sourceLanguage=en`; session toast `Close` via i18n; Prestashop login placeholders translated; Assignments config error translated.
-   - Review: `LoginForm::shouldCountAsLoginFailure` no longer matches English lock text (broke under `it`); `isset` for i18n registration; ICU `yyyy` (not week-year `YYYY`); hardcoded Avatar labels / email placeholder.
-
-6. **Assets** ✅
-   - ~~Publish assets with hash/versioning.~~
-   - ~~Minify session-expire JS in prod.~~
-   - ~~Robust `sourcePath` (path relative to the package, not only `@vendor/...`).~~
-   - Fix: `SessionExpireAsset` publishes from `assets/static` (`realpath`, no `@vendor` alias; safe with `linkAssets`); `appendTimestamp`; min JS/CSS when `YII_ENV_PROD` or `!YII_DEBUG`; `forceCopy` only in debug (not forced `false`).
-
-7. **Module configuration** ✅
-   - ~~Document all parameters in README (`sessionTimeout`, captcha, Cloudflare Turnstile, avatar, etc.).~~
-   - ~~Validate parameter ranges in `Module::init()` (e.g. timeout >= 0; if Turnstile on → site/secret keys required).~~
-   - ~~Environment presets: `dev` / `prod` security defaults.~~
-   - Fix: `ModuleSettings` validate/clamp + Turnstile/SameSite checks; `securityPreset` / `Module::securityPreset()`; README sections for all params + profile flags.
-
-8. **Tests** ✅
-   - ~~Unit/integration: login fail limit, session timeout, avatar upload reject, UserSearch rule injection, admin/switch access.~~
-   - ~~Smoke test redirect to login with `?expired=1`.~~
-   - ~~Turnstile tests: missing token, invalid token, valid token (mock siteverify).~~
-   - Fix: PHPUnit suite under `tests/` (`vendor/bin/phpunit -c tests/phpunit.xml`); Turnstile `$siteVerifyHandler` mock hook.
-   - Review: smoke calls `SecurityController::actionLogin`; i18n-safe lock counting; `Yii2BestPracticesTest` (AccessControl/VerbFilter/CSRF, AssetBundle `sourcePath`, safeAttributes, BootstrapInterface, param-bound UserSearch, SafeHtml).
+---
 
 ## Suggested priorities
 
 | Priority | Item |
 |----------|------|
-| ~~High~~ | ~~Fix SQL injection `UserSearch.rule`~~ ✅ |
-| ~~High~~ | ~~Avatar upload hardening~~ ✅ |
-| ~~High~~ | ~~User switch disabled~~ ✅ |
-| ~~High~~ | ~~Login rate limit~~ ✅ |
-| ~~Medium~~ | ~~Cloudflare Turnstile widget on login~~ ✅ |
-| ~~Medium~~ | ~~Stricter session defaults + parameter docs~~ ✅ |
-| ~~Medium~~ | ~~Session expire UX (no blocking alert)~~ ✅ |
-| Low | ~~Version cleanup~~ ✅, ~~en i18n~~ ✅, ~~minify assets~~ ✅ |
+| High | 2FA/TOTP for admins |
+| High | DB-backed login/registration lockout |
+| Medium | Password history / no-reuse |
+| Medium | Raise bcrypt cost (≥12–13) |
+| Medium | Harden recovery/registration paths before re-enabling them |
+| Low | Admin IP allowlist / WAF; pin Dektrium; plan fork migration |
 
 ## Notes
 
-- Changes should be made in the `vendor/cinghie/yii2-user-extended` package (or a fork) and then propagated to project environments.
+- Implement in `vendor/cinghie/yii2-user-extended` (or a fork), then propagate to CRM environments.
 - After security changes, update CHANGELOG/README and bump the module version.
