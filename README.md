@@ -85,6 +85,7 @@ Set on your configuration file, in modules section
         // Invalidate cached role list after role CRUD
         'controllerMap' => [
             'role' => 'cinghie\userextended\controllers\RoleController',
+            'permission' => 'cinghie\userextended\controllers\PermissionController',
         ],
     ],
     // Yii2 User
@@ -293,6 +294,10 @@ Module parameters (0.6.4)
 | `regenerateSessionId` | `true` | Extra session ID regenerate after login (logout uses Yii `logout(true)`). |
 | `invalidateRememberMeOnAuthTimeout` | `true` | Use `WebUser` so timeout clears remember-me without cookie re-login. |
 
+### CSRF / HTTP verbs
+
+Mutating admin actions (`block`, `confirm`, `delete`, bulk activate/deactivate/delete, `resend-password`) and RBAC role/permission `delete` require **POST**. Login, register, settings and admin profile forms keep **CSRF** enabled. Bulk user AJAX posts include the CSRF token explicitly.
+
 ### Avatar upload security
 
 | Parameter | Default | Description |
@@ -337,7 +342,7 @@ Fail closed: missing/invalid token denies login. Script is loaded only when enab
 | `enableRbacRoleCache` | `true` | Cache role name list for admin filters. |
 | `rbacRoleCacheDuration` | `3600` | Cache TTL (seconds). |
 
-Map `rbac` `RoleController` to `cinghie\userextended\controllers\RoleController` so the cache is invalidated on role create/update/delete.
+Map `rbac` `RoleController` / `PermissionController` to the userextended controllers so role-list cache is invalidated and role/permission `delete` is POST-only.
 
 Admin user grid uses eager loading for `profile` / `roles`. Impersonation (`user/admin/switch`) is disabled in this package (`AdminController` + `enableImpersonateUser => false`).
 

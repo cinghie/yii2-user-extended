@@ -18,6 +18,7 @@ use yii\helpers\Html;
     <?php $form = ActiveForm::begin([
         'options' => ['enctype'=>'multipart/form-data'],
         'layout' => 'horizontal',
+        'enableCsrfValidation' => true,
         'enableAjaxValidation' => true,
         'enableClientValidation' => false,
         'fieldConfig' => [

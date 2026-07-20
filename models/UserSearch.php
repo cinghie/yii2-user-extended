@@ -19,6 +19,8 @@ use dektrium\user\models\UserSearch as BaseUserSearch;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\helpers\Json;
+use yii\helpers\Url;
 
 /**
  * @property array $nameList
@@ -202,4 +204,82 @@ class UserSearch extends BaseUserSearch
     {
         return RbacRoleCache::getRoleNames();
     }
+
+	/**
+	 * Bulk delete with explicit CSRF field (defense in depth vs relying only on yii.js ajaxSend).
+	 *
+	 * @param string $w
+	 *
+	 * @return string
+	 */
+	public function getDeleteButtonJavascript($w)
+	{
+		return $this->buildBulkActionJavascript($w, 'btn-delete', 'deletemultiple', true);
+	}
+
+	/**
+	 * @param string $w
+	 *
+	 * @return string
+	 */
+	public function getActiveButtonJavascript($w)
+	{
+		return $this->buildBulkActionJavascript($w, 'btn-active', 'activemultiple', false);
+	}
+
+	/**
+	 * @param string $w
+	 *
+	 * @return string
+	 */
+	public function getDeactiveButtonJavascript($w)
+	{
+		return $this->buildBulkActionJavascript($w, 'btn-deactive', 'deactivemultiple', false);
+	}
+
+	/**
+	 * @param string $w grid selector
+	 * @param string $btnClass
+	 * @param string $action
+	 * @param bool $confirm
+	 *
+	 * @return string
+	 */
+	protected function buildBulkActionJavascript($w, $btnClass, $action, $confirm)
+	{
+		$route = '/' . Yii::$app->controller->getRoute();
+		$controllerRoute = substr($route, 0, strrpos($route, '/'));
+		$url = Url::to([$controllerRoute . '/' . $action]);
+		$indexUrl = Url::to([$route]);
+		$csrf = Json::htmlEncode([
+			Yii::$app->request->csrfParam => Yii::$app->request->getCsrfToken(),
+		]);
+		$confirmMsg = Json::htmlEncode(Yii::t('traits', 'Do you want delete selected items?'));
+		$selectMsg = Json::htmlEncode(Yii::t('traits', 'Select at least one item'));
+
+		$confirmBlock = $confirm
+			? 'var choose = confirm(' . $confirmMsg . '); if (!choose) { return; }'
+			: '';
+
+		return '$("a.' . $btnClass . '").on("click", function(e) {
+            e.preventDefault();
+            var selectedId = $("' . $w . '").find("input[name=\"selection[]\"]:checked").map(function() {
+                return $(this).val();
+            }).get();
+            if (selectedId.length == 0) {
+                alert(' . $selectMsg . ');
+                return;
+            }
+            ' . $confirmBlock . '
+            var payload = $.extend({ids: selectedId}, ' . $csrf . ');
+            $.ajax({
+                type: "POST",
+                url: ' . Json::htmlEncode($url) . ' + "?id=" + selectedId[0],
+                data: payload,
+                success: function() {
+                    $.pjax.reload({url: ' . Json::htmlEncode($indexUrl) . ', container: "' . $w . '-container", push: false, replace: false, timeout: 8000});
+                }
+            });
+        });';
+	}
 }

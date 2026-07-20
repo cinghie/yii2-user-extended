@@ -35,6 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?php $form = ActiveForm::begin([
                     'id' => 'connect-account-form',
+                    'enableCsrfValidation' => true,
                 ]); ?>
 
                 <?= $form->field($model, 'email') ?>

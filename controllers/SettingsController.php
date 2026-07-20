@@ -20,6 +20,7 @@ use yii\base\ExitException;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
+use yii\filters\VerbFilter;
 use yii\web\Response;
 
 /**
@@ -27,6 +28,23 @@ use yii\web\Response;
  */
 class SettingsController extends BaseController
 {
+	/**
+	 * @inheritdoc
+	 * Keeps Dektrium VerbFilter (disconnect/delete POST) + CSRF on ActiveForm posts.
+	 */
+	public function behaviors()
+	{
+		$behaviors = parent::behaviors();
+		$behaviors['verbs'] = [
+			'class' => VerbFilter::class,
+			'actions' => [
+				'disconnect' => ['POST'],
+				'delete' => ['POST'],
+			],
+		];
+
+		return $behaviors;
+	}
 
 	/**
 	 * Shows profile settings form.

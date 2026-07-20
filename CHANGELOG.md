@@ -13,6 +13,13 @@ Note tecniche interne.
 - Parametri modulo login: `enableLoginRateLimit`, `loginMaxAttempts`, `loginAttemptWindow`, `loginLockoutDuration`, `loginProgressiveDelay`, `loginDelayBaseSeconds`, `loginDelayMaxSeconds`, `loginCaptchaAfterAttempts`, `loginCaptchaAction`.
 - Impersonificazione utente (`admin/switch`) disabilitata: AccessControl deny, `actionSwitch` → 403, `enableImpersonateUser = false`.
 
+### CSRF / verbs
+
+- `AdminController`: VerbFilter POST su `delete`, `deletemultiple`, `block`, `confirm`, `resend-password`, `activemultiple`, `deactivemultiple`, `switch`; ids bulk sanitizzati; no self-delete/block.
+- `RoleController` / `PermissionController`: VerbFilter POST su `delete` (upstream RBAC ItemController non lo aveva).
+- Form login/register/settings/admin profile/connect: `enableCsrfValidation => true`.
+- Bulk AJAX utenti (`UserSearch`): payload include CSRF token esplicito.
+
 ### Sessione
 
 - Timeout sessione/auth gestito dal modulo (`sessionTimeout`, `useAbsoluteAuthTimeout`, `absoluteAuthTimeout`, `disableAutoLogin`).

@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.3
+ * @version 0.6.4
  */
 
 namespace cinghie\userextended\controllers;
@@ -29,7 +29,7 @@ use yii\filters\AccessRule;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
-use yii\Web\Response;
+use yii\web\Response;
 
 /**
  * Class AdminController
@@ -61,15 +61,16 @@ class AdminController extends BaseController
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'activemultiple'   => ['post'],
-                    'deactivemultiple' => ['post'],
-                    'delete'           => ['post'],
-                    'deletemultiple'   => ['post'],
-                    'confirm'          => ['post'],
-                    'resend-password'  => ['post'],
-                    'block'            => ['post'],
+                    'activemultiple'   => ['POST'],
+                    'deactivemultiple' => ['POST'],
+                    'delete'           => ['POST'],
+                    'deletemultiple'   => ['POST'],
+                    'confirm'          => ['POST'],
+                    'resend-password'  => ['POST'],
+                    'block'            => ['POST'],
+                    'switch'           => ['POST'],
                 ],
-            ]
+            ],
         ];
     }
 
@@ -193,7 +194,7 @@ class AdminController extends BaseController
 	 */
     public function actionBlock($id)
     {
-        if ( Yii::$app->user->getId() === $id ) {
+        if ( Yii::$app->user->getId() === (int) $id ) {
             Yii::$app->getSession()->setFlash('danger', Yii::t('user', 'You can not block your own account'));
         } else {
 	        $user  = $this->findModel($id);
@@ -216,22 +217,15 @@ class AdminController extends BaseController
 
 	/**
 	 * Active selected User models.
-	 * If deletion is successful, the browser will be redirected to the 'index' page.
 	 *
 	 * @throws NotFoundHttpException
 	 */
     public function actionActivemultiple()
     {
-        $ids = Yii::$app->request->post('ids');
-
-        if (!$ids) {
-            return;
-        }
-
-        foreach ($ids as $id) {
+        foreach ($this->getPostedIds() as $id) {
             $model = $this->findModel($id);
 
-            if($model->getIsBlocked()) {
+            if ($model->getIsBlocked()) {
                 $model->unblock();
                 Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been unblocked'));
             }
@@ -240,23 +234,22 @@ class AdminController extends BaseController
 
 	/**
 	 * Deactive selected User models.
-	 * If deletion is successful, the browser will be redirected to the 'index' page.
 	 *
 	 * @throws NotFoundHttpException
 	 */
     public function actionDeactivemultiple()
     {
-        $ids = Yii::$app->request->post('ids');
+        $currentId = (int) Yii::$app->user->getId();
 
-        if (!$ids) {
-            return;
-        }
+        foreach ($this->getPostedIds() as $id) {
+            if ($id === $currentId) {
+                Yii::$app->getSession()->setFlash('danger', Yii::t('user', 'You can not block your own account'));
+                continue;
+            }
 
-        foreach ($ids as $id)
-        {
             $model = $this->findModel($id);
 
-            if(!$model->getIsBlocked()) {
+            if (!$model->getIsBlocked()) {
                 $model->block();
                 Yii::$app->getSession()->setFlash('warning', Yii::t('user', 'User has been blocked'));
             }
@@ -265,7 +258,6 @@ class AdminController extends BaseController
 
 	/**
 	 * Deletes selected User models.
-	 * If deletion is successful, the browser will be redirected to the 'index' page.
 	 *
 	 * @throws \Exception
 	 * @throws \yii\db\Exception
@@ -277,18 +269,23 @@ class AdminController extends BaseController
 	 */
 	public function actionDeletemultiple()
 	{
-		$ids = Yii::$app->request->post('ids');
-
+		$ids = $this->getPostedIds();
 		if (!$ids) {
 			return false;
 		}
 
+		$currentId = (int) Yii::$app->user->getId();
+
 		foreach ($ids as $id) {
+			if ($id === $currentId) {
+				Yii::$app->session->setFlash('danger', Yii::t('user', 'You can not remove your own account'));
+				continue;
+			}
+
 			Yii::$app->db->createCommand()->delete('{{%auth_assignment}}', ['user_id' => $id])->execute();
 			$this->findModel($id)->delete();
 		}
 
-		// Set Success Message
 		Yii::$app->session->setFlash('success', Yii::t('userextended', 'Delete Success!'));
 
 		$searchModel  = Yii::createObject(UserSearch::class);
@@ -298,5 +295,28 @@ class AdminController extends BaseController
 			'dataProvider' => $dataProvider,
 			'searchModel'  => $searchModel,
 		]);
+	}
+
+	/**
+	 * Sanitize posted bulk-action ids (POST only; VerbFilter enforced).
+	 *
+	 * @return int[]
+	 */
+	protected function getPostedIds()
+	{
+		$ids = Yii::$app->request->post('ids', []);
+		if (!is_array($ids)) {
+			return [];
+		}
+
+		$normalized = [];
+		foreach ($ids as $id) {
+			$id = (int) $id;
+			if ($id > 0) {
+				$normalized[$id] = $id;
+			}
+		}
+
+		return array_values($normalized);
 	}
 }

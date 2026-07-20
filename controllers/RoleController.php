@@ -14,6 +14,7 @@ namespace cinghie\userextended\controllers;
 
 use cinghie\userextended\helpers\RbacRoleCache;
 use dektrium\rbac\controllers\RoleController as BaseRoleController;
+use yii\filters\VerbFilter;
 use yii\web\Response;
 
 /**
@@ -21,6 +22,21 @@ use yii\web\Response;
  */
 class RoleController extends BaseRoleController
 {
+	/**
+	 * @inheritdoc
+	 */
+	public function behaviors()
+	{
+		return array_merge(parent::behaviors(), [
+			'verbs' => [
+				'class' => VerbFilter::class,
+				'actions' => [
+					'delete' => ['POST'],
+				],
+			],
+		]);
+	}
+
 	/**
 	 * @inheritdoc
 	 */
