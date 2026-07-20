@@ -93,6 +93,15 @@ use yii\helpers\Html;
 
 		            <?php endif ?>
 
+                    <?php if (\cinghie\userextended\helpers\TurnstileVerifier::isEnabledForRegistration()): ?>
+                        <div class="row" style="margin-bottom: 15px;">
+                            <div class="col-md-12">
+                                <?= $this->render('@vendor/cinghie/yii2-user-extended/views/_turnstile') ?>
+                                <?= $form->field($model, 'turnstileToken')->hiddenInput()->label(false) ?>
+                            </div>
+                        </div>
+                    <?php endif ?>
+
 		            <?php if(Yii::$app->getModule('userextended')->terms): ?>
 
                         <div class="row form-register-terms">

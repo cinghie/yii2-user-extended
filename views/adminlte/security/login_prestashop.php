@@ -152,6 +152,11 @@ $this->registerCss('
             ]) ?>
         <?php endif ?>
 
+        <?php if ($model->isTurnstileRequired()): ?>
+            <?= $this->render('@vendor/cinghie/yii2-user-extended/views/_turnstile') ?>
+            <?= $form->field($model, 'turnstileToken')->hiddenInput()->label(false) ?>
+        <?php endif ?>
+
         <div class="row form-group row-padding-top">
             <div class="col-xs-12">
 	            <?= Html::submitButton(Yii::t('user', 'Sign in'), ['class' => 'btn bg-aqua btn-block']) ?>

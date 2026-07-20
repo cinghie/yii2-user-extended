@@ -10,6 +10,8 @@ Yii2 User Extended to extend Yii2 User by Dektrium: https://github.com/dektrium/
 
 This is not an standalone module to manage users but a module to extend Yii2 User extension.
 
+Current package version: **0.6.4** (see `CHANGELOG.md`).
+
 Installation
 -----------------
 
@@ -69,6 +71,8 @@ $ php yii migrate/up --migrationPath=@yii/rbac/migrations
 $ php yii migrate/up --migrationPath=@vendor/cinghie/yii2-user-extended/migrations
 ```
 
+This also applies admin performance indexes (e.g. `user.last_login_at`).
+
 ### 5. Set configuration file
 
 Set on your configuration file, in modules section
@@ -77,19 +81,26 @@ Set on your configuration file, in modules section
 'modules' =>  [
     // Yii2 RBAC
     'rbac' => [
-        'class' => 'dektrium\rbac\Module'
+        'class' => 'dektrium\rbac\RbacWebModule',
+        // Invalidate cached role list after role CRUD
+        'controllerMap' => [
+            'role' => 'cinghie\userextended\controllers\RoleController',
+        ],
     ],
     // Yii2 User
     'user' => [
         'class' => 'dektrium\user\Module',
+        // Disable user impersonation (recommended)
+        'enableImpersonateUser' => false,
         // Yii2 User Controllers Overrides
         'controllerMap' => [
             'admin' => 'cinghie\userextended\controllers\AdminController',
             'security' => 'cinghie\userextended\controllers\SecurityController',
-            'settings' => 'cinghie\userextended\controllers\SettingsController'
+            'settings' => 'cinghie\userextended\controllers\SettingsController',
         ],
         // Yii2 User Models Overrides
         'modelMap' => [
+            'LoginForm' => 'cinghie\userextended\models\LoginForm',
             'RegistrationForm' => 'cinghie\userextended\models\RegistrationForm',
             'Profile' => 'cinghie\userextended\models\Profile',
             'SettingsForm' => 'cinghie\userextended\models\SettingsForm',
@@ -99,13 +110,19 @@ Set on your configuration file, in modules section
     // Yii2 User Extended
     'userextended' => [
         'class' => 'cinghie\userextended\Module',
-        'avatarPath' => '@webroot/img/users/', // Path to your avatar files
-        'avatarURL' => '@web/img/users/', // Url to your avatar files
+
+        // Paths
+        'avatarPath' => '@webroot/img/users/',
+        'avatarURL' => '@web/img/users/',
+
+        // Profile fields
         'defaultRole' => '', // example 'registered'
+        'account' => false,
         'avatar' => true,
         'bio' => false,
         'captcha' => true,
         'birthday' => true,
+        'contact' => false,
         'firstname' => true,
         'gravatarEmail' => false,
         'lastname' => true,
@@ -113,20 +130,76 @@ Set on your configuration file, in modules section
         'onlyEmail' => false,
         'publicEmail' => false,
         'signature' => true,
-        'templateLogin' => 'login_prestashop', // login or login_prestashop
-        'templateLogoURL' => '@web/logo.png', // Url to logo
-        'templateRegister' => '_two_column', // _one_column or _two_column
         'terms' => true,
         'website' => false,
+
+        // Templates / UI
+        'templateLogin' => 'login_prestashop', // login or login_prestashop
+        'templateLogoURL' => '@web/logo.png',
+        'templateRegister' => '_two_column', // _one_column or _two_column
+        'showAlert' => true,
         'showTitles' => true, // Set false in adminLTE
+        'socialLogin' => false,
+
+        // Avatar upload hardening
+        'avatarAllowedExtensions' => ['jpg', 'jpeg', 'png', 'webp'],
+        'avatarMaxSize' => 2097152, // 2MB
+
+        // Session expire
+        'sessionTimeout' => 3600, // seconds; 0 disables module session handling
+        'useAbsoluteAuthTimeout' => false,
+        'enableClientSessionExpireRedirect' => true,
+        'clientWarningBeforeExpire' => 60, // 0 disables warning
+        'disableAutoLogin' => false,
+
+        // Login rate limit / brute-force
+        'enableLoginRateLimit' => true,
+        'loginMaxAttempts' => 5,
+        'loginAttemptWindow' => 900,
+        'loginLockoutDuration' => 900,
+        'loginProgressiveDelay' => true,
+        'loginDelayBaseSeconds' => 1,
+        'loginDelayMaxSeconds' => 5,
+        'loginCaptchaAfterAttempts' => 3, // 0 disables
+        'loginCaptchaAction' => ['/site/captcha'],
+
+        // RBAC role list cache (admin filters)
+        'enableRbacRoleCache' => true,
+        'rbacRoleCacheDuration' => 3600,
+
+        // Cloudflare Turnstile (optional; keep secret in web-local / env)
+        'enableCloudflareTurnstile' => false,
+        'cloudflareSiteKey' => '',
+        'cloudflareSecretKey' => '', // never commit real secrets
+        'cloudflareTurnstileTheme' => 'auto', // auto|light|dark
+        'cloudflareTurnstileOnRegistration' => false,
     ],
 ]
+```
+
+Put secrets and environment-specific overrides in `web-local.php` (example):
+
+```
+'modules' => [
+    'userextended' => [
+        'enableCloudflareTurnstile' => true,
+        'cloudflareSiteKey' => 'your-site-key',
+        'cloudflareSecretKey' => 'your-secret-key',
+        'cloudflareTurnstileTheme' => 'auto',
+        'cloudflareTurnstileOnRegistration' => false,
+        // 'sessionTimeout' => 3600,
+        // 'disableAutoLogin' => true,
+    ],
+],
 ```
 
 and in components section
 
 ```
 'components' =>  [
+    'cache' => [
+        'class' => 'yii\caching\FileCache', // required for rate limit + RBAC role cache
+    ],
     'view' => [
         'theme' => [
             'pathMap' => [
@@ -155,6 +228,7 @@ If you have a Yii2 App Advanced add in Yii2 User Module config
         'as backend' => 'dektrium\user\filters\BackendFilter',
         // Settings
         'enableRegistration' => false,
+        'enableImpersonateUser' => false,
     ],
     
 ],		
@@ -171,6 +245,7 @@ Or use userextended filter that active profile and settings on backend (dektrium
         'as backend' => 'cinghie\userextended\filters\BackendFilter',
         // Settings
         'enableRegistration' => false,
+        'enableImpersonateUser' => false,
     ],
 
 ],
@@ -178,15 +253,81 @@ Or use userextended filter that active profile and settings on backend (dektrium
 
 ### 6. Set captcha in Controller
 
-in your SiteController set in actions() function
+Required when registration captcha is enabled and/or login rate-limit captcha (`loginCaptchaAfterAttempts`) is used.
+
+In your `SiteController` set in `actions()`:
 
 ```
 'captcha' => [
     'class' => 'yii\captcha\CaptchaAction',
+    'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
     'minLength' => 6,
-    'maxLength' => 6
+    'maxLength' => 6,
 ],
 ```
+
+Allow guests to reach the captcha action in `AccessControl` (`actions` => `['error', 'captcha']`).
+
+Module parameters (0.6.4)
+-----------------
+
+### Session expire
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `sessionTimeout` | `3600` | Idle session/auth timeout in seconds. `0` disables module session handling. |
+| `useAbsoluteAuthTimeout` | `false` | Also set `user.absoluteAuthTimeout`. |
+| `enableClientSessionExpireRedirect` | `true` | Client JS redirects to login with `?expired=1`. |
+| `clientWarningBeforeExpire` | `60` | Warning seconds before expire (`0` = off). |
+| `disableAutoLogin` | `false` | Force credentials again after expire. |
+
+### Avatar upload security
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `avatarAllowedExtensions` | `jpg,jpeg,png,webp` | Allowed extensions. |
+| `avatarMaxSize` | `2097152` | Max upload size in bytes (2MB). |
+
+Uploads are renamed randomly, MIME/`getimagesize` checked, double extensions blocked, path confined under `avatarPath`.
+
+### Login rate limit
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `enableLoginRateLimit` | `true` | Enable IP + username/email counters (uses `cache`, falls back to session). |
+| `loginMaxAttempts` | `5` | Failures before lock. |
+| `loginAttemptWindow` | `900` | Counter TTL / window (seconds). |
+| `loginLockoutDuration` | `900` | Lock duration (seconds). |
+| `loginProgressiveDelay` | `true` | Sleep after failed login. |
+| `loginDelayBaseSeconds` | `1` | Delay = min(base × attempts, max). |
+| `loginDelayMaxSeconds` | `5` | Max delay. |
+| `loginCaptchaAfterAttempts` | `3` | Show Yii captcha after N failures (`0` disables). |
+| `loginCaptchaAction` | `['/site/captcha']` | Captcha route. |
+
+Failed login messages are generic (anti user enumeration).
+
+### Cloudflare Turnstile (optional)
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `enableCloudflareTurnstile` | `false` | Show/validate Turnstile on login. |
+| `cloudflareSiteKey` | `''` | Public site key. |
+| `cloudflareSecretKey` | `''` | Secret key (**web-local / env only**). |
+| `cloudflareTurnstileTheme` | `auto` | `auto` / `light` / `dark`. |
+| `cloudflareTurnstileOnRegistration` | `false` | Also require Turnstile on registration. |
+
+Fail closed: missing/invalid token denies login. Script is loaded only when enabled and configured. Use together with rate limit (Turnstile first, rate limit second).
+
+### Caching / performance
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `enableRbacRoleCache` | `true` | Cache role name list for admin filters. |
+| `rbacRoleCacheDuration` | `3600` | Cache TTL (seconds). |
+
+Map `rbac` `RoleController` to `cinghie\userextended\controllers\RoleController` so the cache is invalidated on role create/update/delete.
+
+Admin user grid uses eager loading for `profile` / `roles`. Impersonation (`user/admin/switch`) is disabled in this package (`AdminController` + `enableImpersonateUser => false`).
 
 ## Overrides
 
@@ -256,6 +397,7 @@ Features
                 	<li>The avatar can be uploaded</li>
                     <li>The avatar can be updated</li>
                     <li>On update avatar old image was deleted</li>
+                    <li>Hardened upload (MIME/extension whitelist, max size, safe rename, path confinement)</li>
                 </ol>
             </li>
             <li>birthday</li>
@@ -277,4 +419,9 @@ Features
         </ul>
     </li>
     <li>Add default Role on User Registration</li>
+    <li>Session timeout with optional client redirect / warning</li>
+    <li>Login brute-force protection (rate limit, lockout, progressive delay, captcha after N failures)</li>
+    <li>Optional Cloudflare Turnstile on login (and registration)</li>
+    <li>Admin users grid performance (eager loading, role cache, DB indexes)</li>
+    <li>User impersonation disabled by default</li>
 </ol>

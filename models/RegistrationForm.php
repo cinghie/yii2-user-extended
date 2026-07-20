@@ -14,6 +14,8 @@ namespace cinghie\userextended\models;
 
 use Exception;
 use Yii;
+use cinghie\userextended\helpers\ModuleConfig;
+use cinghie\userextended\helpers\TurnstileVerifier;
 use dektrium\user\models\RegistrationForm as BaseRegistrationForm;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidArgumentException;
@@ -29,6 +31,7 @@ class RegistrationForm extends BaseRegistrationForm
      * @var string $lastname
      * @var integer $terms
      * @var string $captcha
+     * @var string|null $turnstileToken
      */
     public $name;
     public $firstname;
@@ -36,6 +39,7 @@ class RegistrationForm extends BaseRegistrationForm
     public $birthday;
     public $terms;
     public $captcha;
+    public $turnstileToken;
 
     /**
      * @inheritdoc
@@ -44,35 +48,72 @@ class RegistrationForm extends BaseRegistrationForm
     {
         $rules = parent::rules();
 
-	    if(Yii::$app->getModule('userextended')->birthday) {
+	    if (ModuleConfig::get('birthday')) {
 		    $rules[] = ['birthday', 'safe'];
 		    $rules[] = ['birthday', 'date', 'format' => 'yyyy-mm-dd'];
 		    $rules[] = ['birthday', 'required'];
 	    }
 
-	    if(Yii::$app->getModule('userextended')->captcha) {
+	    if (ModuleConfig::get('captcha')) {
 		    $rules[] = ['captcha', 'captcha'];
 		    $rules[] = ['captcha', 'required'];
 	    }
 
-	    if(Yii::$app->getModule('userextended')->firstname) {
+	    if (TurnstileVerifier::isEnabledForRegistration()) {
+		    $rules[] = [
+			    'turnstileToken',
+			    'required',
+			    'message' => Yii::t('userextended', 'Security verification failed. Please try again.'),
+		    ];
+		    $rules[] = [
+			    'turnstileToken',
+			    function ($attribute) {
+				    if ($this->hasErrors($attribute)) {
+					    return;
+				    }
+				    if (!TurnstileVerifier::verify($this->$attribute)) {
+					    $this->addError(
+						    $attribute,
+						    Yii::t('userextended', 'Security verification failed. Please try again.')
+					    );
+				    }
+			    },
+		    ];
+	    }
+
+	    if (ModuleConfig::get('firstname')) {
 		    $rules[] = ['firstname', 'trim'];
 		    $rules[] = ['firstname', 'string', 'max' => 255];
 		    $rules[] = ['firstname', 'required'];
 	    }
 
-	    if(Yii::$app->getModule('userextended')->lastname) {
+	    if (ModuleConfig::get('lastname')) {
 		    $rules[] = ['lastname', 'trim'];
 		    $rules[] = ['lastname', 'string', 'max' => 255];
 		    $rules[] = ['lastname', 'required'];
 	    }
 
-	    if(Yii::$app->getModule('userextended')->terms) {
+	    if (ModuleConfig::get('terms')) {
 		    $rules[] = ['terms', 'required', 'requiredValue' => true, 'message' => Yii::t('userextended','You must agree to the terms and conditions')];
 	    }
 
         return $rules;
     }
+
+	/**
+	 * @inheritdoc
+	 */
+	public function beforeValidate()
+	{
+		if (TurnstileVerifier::isEnabledForRegistration()) {
+			$posted = Yii::$app->request->post('cf-turnstile-response');
+			if (is_string($posted) && $posted !== '') {
+				$this->turnstileToken = $posted;
+			}
+		}
+
+		return parent::beforeValidate();
+	}
 
     /**
      * @inheritdoc

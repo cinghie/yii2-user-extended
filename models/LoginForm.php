@@ -14,6 +14,8 @@ namespace cinghie\userextended\models;
 
 use Yii;
 use cinghie\userextended\helpers\LoginRateLimiter;
+use cinghie\userextended\helpers\ModuleConfig;
+use cinghie\userextended\helpers\TurnstileVerifier;
 use dektrium\user\helpers\Password;
 use dektrium\user\models\LoginForm as BaseLoginForm;
 
@@ -26,6 +28,13 @@ class LoginForm extends BaseLoginForm
 	 * @var string|null
 	 */
 	public $captcha;
+
+	/**
+	 * Cloudflare Turnstile token (also read from cf-turnstile-response).
+	 *
+	 * @var string|null
+	 */
+	public $turnstileToken;
 
 	/**
 	 * @inheritdoc
@@ -44,6 +53,25 @@ class LoginForm extends BaseLoginForm
 							$attribute,
 							Yii::t('userextended', 'Too many failed login attempts. Please try again later.')
 						);
+					}
+				},
+			],
+			'turnstileRequired' => [
+				'turnstileToken',
+				'required',
+				'when' => function () {
+					return $this->isTurnstileRequired();
+				},
+				'message' => Yii::t('userextended', 'Incorrect Username or Password'),
+			],
+			'turnstileValidate' => [
+				'turnstileToken',
+				function ($attribute) {
+					if (!$this->isTurnstileRequired() || $this->hasErrors($attribute)) {
+						return;
+					}
+					if (!TurnstileVerifier::verify($this->$attribute)) {
+						$this->addError($attribute, Yii::t('userextended', 'Incorrect Username or Password'));
 					}
 				},
 			],
@@ -89,7 +117,7 @@ class LoginForm extends BaseLoginForm
 				'passwordValidate' => [
 					'password',
 					function ($attribute) {
-						if ($this->hasErrors('login')) {
+						if ($this->hasErrors('login') || $this->hasErrors('turnstileToken')) {
 							return;
 						}
 						if ($this->user === null || !Password::validate($this->password, $this->user->password_hash)) {
@@ -110,8 +138,24 @@ class LoginForm extends BaseLoginForm
 	{
 		$labels = parent::attributeLabels();
 		$labels['captcha'] = Yii::t('userextended', 'Captcha');
+		$labels['turnstileToken'] = Yii::t('userextended', 'Security check');
 
 		return $labels;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function beforeValidate()
+	{
+		if ($this->isTurnstileRequired()) {
+			$posted = Yii::$app->request->post('cf-turnstile-response');
+			if (is_string($posted) && $posted !== '') {
+				$this->turnstileToken = $posted;
+			}
+		}
+
+		return parent::beforeValidate();
 	}
 
 	/**
@@ -125,11 +169,21 @@ class LoginForm extends BaseLoginForm
 	}
 
 	/**
+	 * Whether Cloudflare Turnstile must be validated.
+	 *
+	 * @return bool
+	 */
+	public function isTurnstileRequired()
+	{
+		return TurnstileVerifier::isEnabledForLogin();
+	}
+
+	/**
 	 * @return string|array
 	 */
 	protected function getCaptchaAction()
 	{
-		$action = Yii::$app->getModule('userextended')->loginCaptchaAction;
+		$action = ModuleConfig::get('loginCaptchaAction');
 
 		return $action ?: ['/site/captcha'];
 	}

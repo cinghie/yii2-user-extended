@@ -60,6 +60,8 @@ return [
     'Select at least one item' => 'Seleziona almeno 1 elemento!',
     'Select only 1 item' => 'Seleziona solo 1 elemento!',
 	'Select role' => 'Ruolo ...',
+    'Security check' => 'Verifica di sicurezza',
+    'Security verification failed. Please try again.' => 'Verifica di sicurezza non riuscita. Riprova.',
 	'Signature' => 'Firma',
     'Too many failed login attempts. Please try again later.' => 'Troppi tentativi di accesso falliti. Riprova più tardi.',
     'Type your credentials' => 'Inserisci le tue credenziali',

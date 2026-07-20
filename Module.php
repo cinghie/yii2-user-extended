@@ -164,6 +164,41 @@ class Module extends BaseUser
      */
     public $loginCaptchaAction = ['/site/captcha'];
 
+    /**
+     * Enable Cloudflare Turnstile on login.
+     *
+     * @var bool
+     */
+    public $enableCloudflareTurnstile = false;
+
+    /**
+     * Cloudflare Turnstile site key (public).
+     *
+     * @var string
+     */
+    public $cloudflareSiteKey = '';
+
+    /**
+     * Cloudflare Turnstile secret key (private — set only in web-local).
+     *
+     * @var string
+     */
+    public $cloudflareSecretKey = '';
+
+    /**
+     * Turnstile widget theme: auto|light|dark.
+     *
+     * @var string
+     */
+    public $cloudflareTurnstileTheme = 'auto';
+
+    /**
+     * Also require Turnstile on registration when enableCloudflareTurnstile is true.
+     *
+     * @var bool
+     */
+    public $cloudflareTurnstileOnRegistration = false;
+
 	/**
 	 * @var string default User Role
 	 */

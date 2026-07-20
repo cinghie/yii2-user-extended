@@ -27,19 +27,11 @@ Le voci con ✅ sono già state applicate nel package.
    - ~~Messaggi di errore generici (già parzialmente presenti): evitare enumeration username/email.~~
    - Fix applicato: `LoginRateLimiter` + `LoginForm` / `SecurityController` (cache IP+login, lock, delay, captcha opzionale).
 
-5. **Cloudflare Turnstile sul login**
-   - Aggiungere supporto opzionale al widget Cloudflare Turnstile nel form di login (`SecurityController` + view `login` / `login_prestashop`).
-   - Parametri modulo dedicati, con default disabilitati:
-     - `enableCloudflareTurnstile` (bool, default `false`)
-     - `cloudflareSiteKey` (string)
-     - `cloudflareSecretKey` (string)
-     - `cloudflareTurnstileTheme` (`auto` / `light` / `dark`, default `auto`)
-     - `cloudflareTurnstileOnRegistration` (bool, default `false`) se si vuole riusarlo anche in registrazione
-   - Validazione server-side del token (`cf-turnstile-response`) verso l’API Cloudflare siteverify prima di accettare il login.
-   - Fallire chiuso: token assente/invalid → login negato con messaggio generico.
-   - Non loggare site/secret key; secret solo in config environment (`web-local`).
-   - Asset: caricare lo script Cloudflare solo quando il widget è abilitato.
-   - Compatibilità con rate limit interno: Turnstile come prima barriera bot, rate limit come seconda.
+5. **Cloudflare Turnstile sul login** ✅
+   - ~~Aggiungere supporto opzionale al widget Cloudflare Turnstile nel form di login.~~
+   - ~~Parametri modulo dedicati (default disabilitati).~~
+   - ~~Validazione server-side siteverify; fail chiuso; secret solo in web-local.~~
+   - Fix: `TurnstileVerifier` + `TurnstileAsset` + widget in login/register; rate limit resta seconda barriera.
 
 6. **Sessione e autenticazione**
    - Default più sicuri: valutare `disableAutoLogin = true` in ambienti CRM.
@@ -131,7 +123,7 @@ Le voci con ✅ sono già state applicate nel package.
 | ~~Alta~~ | ~~Hardening upload avatar~~ ✅ |
 | ~~Alta~~ | ~~Switch utente disabilitato~~ ✅ |
 | ~~Alta~~ | ~~Rate limit login~~ ✅ |
-| Media | Widget Cloudflare Turnstile sul login |
+| ~~Media~~ | ~~Widget Cloudflare Turnstile sul login~~ ✅ |
 | Media | Default sessione più strict + docs parametri |
 | ~~Media~~ | ~~Eager loading / query admin~~ ✅ |
 | Media | UX session expire (no alert bloccante) |

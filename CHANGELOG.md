@@ -35,3 +35,9 @@ Note tecniche interne.
 - `RbacRoleCache`: cache lista ruoli per filtri admin + invalidate su create/update/delete ruolo (`RoleController`).
 - `ModuleConfig`: memo per-request delle impostazioni modulo (Profile, LoginRateLimiter, avatar).
 - Parametri: `enableRbacRoleCache`, `rbacRoleCacheDuration`.
+
+### Cloudflare Turnstile
+
+- Widget opzionale su login (`login` / `login_prestashop`) e registrazione (flag dedicato).
+- `TurnstileVerifier` (siteverify, fail closed); `TurnstileAsset` solo se abilitato.
+- Parametri: `enableCloudflareTurnstile`, `cloudflareSiteKey`, `cloudflareSecretKey`, `cloudflareTurnstileTheme`, `cloudflareTurnstileOnRegistration` (default off; secret da `web-local`).

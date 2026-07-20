@@ -64,6 +64,11 @@ $fieldOptions2 = [
             ])->label(false) ?>
         <?php endif ?>
 
+        <?php if ($model->isTurnstileRequired()): ?>
+            <?= $this->render('@vendor/cinghie/yii2-user-extended/views/_turnstile') ?>
+            <?= $form->field($model, 'turnstileToken')->hiddenInput()->label(false) ?>
+        <?php endif ?>
+
         <div class="row">
             <div class="col-xs-8">
                 <div class="checkbox icheck">
