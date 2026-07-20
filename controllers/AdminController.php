@@ -13,6 +13,7 @@
 namespace cinghie\userextended\controllers;
 
 use Throwable;
+use cinghie\userextended\helpers\ProfileAvatarService;
 use Yii;
 use cinghie\userextended\helpers\SecurityAudit;
 use cinghie\userextended\models\Assignment;
@@ -189,40 +190,21 @@ class AdminController extends BaseController
 
         $profile->scenario = 'update';
 
-        // Load Old Image
-        $oldImage = $profile->avatar;
-
-        // Load avatarPath from Module Params
-        $avatarPath = Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath);
-
-        // Create uploadAvatar Instance (only when avatar feature is enabled)
-        $image = false;
-        if (Yii::$app->getModule('userextended')->avatar) {
-            $image = $profile->uploadAvatar($avatarPath);
-        }
-
         // Profile Event
         $event = $this->getProfileEvent($profile);
 
-        // Ajax Validation
+        // Ajax Validation (before avatar upload — avoids orphan files on AJAX validate)
         $this->performAjaxValidation($profile);
+
+        $avatarUpdate = ProfileAvatarService::begin($profile);
 
         $this->trigger(self::EVENT_BEFORE_PROFILE_UPDATE, $event);
 
         if ($profile->load(Yii::$app->request->post())) {
-            // File inputs clear avatar on load(); restore correct value before save
-            if ($image === false) {
-                $profile->avatar = $oldImage;
-            } else {
-                $profile->avatar = $image->name;
-            }
+            $avatarUpdate->applyAfterLoad();
 
             if ($profile->save()) {
-                if ($image !== false && $oldImage && $oldImage !== $image->name) {
-                    $profile->deleteImage($oldImage);
-                    // deleteImage() nulls current avatar; persist the new one again
-                    $profile->updateAttributes(['avatar' => $image->name]);
-                }
+                $avatarUpdate->finalizeAfterSave();
 
                 Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Profile details have been updated'));
 
@@ -230,6 +212,8 @@ class AdminController extends BaseController
 
                 return $this->refresh();
             }
+
+            $avatarUpdate->rollbackFailedSave();
         }
 
         return $this->render('_profile', [

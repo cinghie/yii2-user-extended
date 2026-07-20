@@ -13,6 +13,7 @@
 namespace cinghie\userextended\controllers;
 
 use Yii;
+use cinghie\userextended\helpers\ProfileAvatarService;
 use cinghie\userextended\models\Profile;
 use dektrium\user\controllers\SettingsController as BaseController;
 use yii\base\Exception;
@@ -69,38 +70,21 @@ class SettingsController extends BaseController
 
         $model->scenario = 'update';
 
-        // Load Old Image
-        $oldImage = $model->avatar;
-
-        // Load avatarPath from Module Params
-        $avatarPath = Yii::getAlias( Yii::$app->getModule('userextended')->avatarPath);
-
-        // Create uploadAvatar Instance
-        $image = false;
-        if (Yii::$app->getModule('userextended')->avatar) {
-            $image = $model->uploadAvatar($avatarPath);
-        }
-
         // Profile Event
         $event = $this->getProfileEvent($model);
 
-        // Ajax Validation
+        // Ajax Validation (before avatar upload — avoids orphan files on AJAX validate)
         $this->performAjaxValidation($model);
+
+        $avatarUpdate = ProfileAvatarService::begin($model);
 
         $this->trigger(self::EVENT_BEFORE_PROFILE_UPDATE, $event);
 
         if ($model->load(Yii::$app->request->post())) {
-            if ($image === false) {
-                $model->avatar = $oldImage;
-            } else {
-                $model->avatar = $image->name;
-            }
+            $avatarUpdate->applyAfterLoad();
 
             if ($model->save()) {
-                if ($image !== false && $oldImage && $oldImage !== $image->name) {
-                    $model->deleteImage($oldImage);
-                    $model->updateAttributes(['avatar' => $image->name]);
-                }
+                $avatarUpdate->finalizeAfterSave();
 
                 Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Your profile has been updated'));
 
@@ -108,6 +92,8 @@ class SettingsController extends BaseController
 
                 return $this->refresh();
             }
+
+            $avatarUpdate->rollbackFailedSave();
         }
 
         return $this->render('profile', [

@@ -15,6 +15,7 @@ namespace cinghie\userextended\controllers;
 use Yii;
 use cinghie\userextended\helpers\LoginRateLimiter;
 use cinghie\userextended\helpers\SecurityAudit;
+use cinghie\userextended\helpers\SessionHelper;
 use cinghie\userextended\models\LoginForm;
 use dektrium\user\controllers\SecurityController as BaseController;
 use yii\base\ExitException;
@@ -168,7 +169,7 @@ class SecurityController extends BaseController
 	 *
 	 * @return string
 	 */
-	protected function resolveLoginFailureFlash(LoginForm $model, LoginRateLimiter $limiter)
+	protected function resolveLoginFailureFlash(LoginForm $model, LoginRateLimiter $limiter): string
 	{
 		if ($limiter->isLocked($model->login)) {
 			return Yii::t('userextended', 'Too many failed login attempts. Please try again later.');
@@ -193,7 +194,7 @@ class SecurityController extends BaseController
 	 *
 	 * @return string
 	 */
-	protected function resolveLoginFailureReason(LoginForm $model, LoginRateLimiter $limiter)
+	protected function resolveLoginFailureReason(LoginForm $model, LoginRateLimiter $limiter): string
 	{
 		if ($limiter->isLocked($model->login)) {
 			return 'locked';
@@ -239,19 +240,8 @@ class SecurityController extends BaseController
 		return $this->goHome();
 	}
 
-	/**
-	 * @return void
-	 */
-	protected function regenerateSessionIdIfEnabled()
+	protected function regenerateSessionIdIfEnabled(): void
 	{
-		$module = Yii::$app->getModule('userextended');
-		if (!$module || empty($module->regenerateSessionId) || !Yii::$app->has('session')) {
-			return;
-		}
-
-		$session = Yii::$app->getSession();
-		if ($session->getIsActive()) {
-			$session->regenerateID(true);
-		}
+		SessionHelper::regenerateIdIfEnabled();
 	}
 }

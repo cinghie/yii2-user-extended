@@ -83,6 +83,9 @@ Internal technical notes.
 ### Other
 
 - Persist avatar filename via `updateAttributes` after upload (Admin/Settings).
+- Shared `ProfileAvatarService` for Admin/Settings profile avatar update flow (upload after AJAX validation; rollback orphan file on failed save).
+- `SessionHelper::regenerateIdIfEnabled()`; `RateLimitStore` for login/registration limiters (session fallback guarded).
+- File headers aligned to `0.6.4`; scaffold comment removed from `UserSearch`.
 - `SecurityController` uses the package `LoginForm`; `LoginForm` in the user `modelMap`.
 
 ### Admin user performance

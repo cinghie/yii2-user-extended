@@ -14,7 +14,6 @@ namespace cinghie\userextended\helpers;
 
 use Yii;
 use cinghie\userextended\Module;
-use cinghie\userextended\helpers\ModuleConfig;
 use yii\base\InvalidConfigException;
 
 /**
@@ -22,26 +21,22 @@ use yii\base\InvalidConfigException;
  */
 class LoginRateLimiter
 {
-	const KEY_PREFIX = 'userextended.login.';
+	public const KEY_PREFIX = 'userextended.login.';
 
-	/** @var Module */
-	protected $module;
+	protected Module $module;
 
 	/**
-	 * @param Module|null $module
-	 *
 	 * @throws InvalidConfigException
 	 */
-	public function __construct($module = null)
+	public function __construct(?Module $module = null)
 	{
 		$this->module = $module ?: ModuleConfig::module();
 	}
 
 	/**
-	 * @return self
 	 * @throws InvalidConfigException
 	 */
-	public static function create()
+	public static function create(): self
 	{
 		return new self();
 	}
@@ -269,56 +264,28 @@ class LoginRateLimiter
 	}
 
 	/**
-	 * @param string $key
-	 *
-	 * @return array|null
+	 * @return array<string, mixed>|null
 	 */
-	protected function getData($key)
+	protected function getData(string $key): ?array
 	{
-		if (Yii::$app->has('cache')) {
-			$data = Yii::$app->cache->get($key);
-			return is_array($data) ? $data : null;
-		}
-
-		$session = Yii::$app->session;
-		$data = $session->get($key);
-		return is_array($data) ? $data : null;
+		return RateLimitStore::get($key);
 	}
 
 	/**
-	 * @param string $key
-	 * @param array $data
-	 *
-	 * @return void
+	 * @param array<string, mixed> $data
 	 */
-	protected function setData($key, array $data)
+	protected function setData(string $key, array $data): void
 	{
 		$ttl = max(
 			(int) $this->module->loginAttemptWindow,
 			(int) $this->module->loginLockoutDuration,
 			60
 		);
-
-		if (Yii::$app->has('cache')) {
-			Yii::$app->cache->set($key, $data, $ttl);
-			return;
-		}
-
-		Yii::$app->session->set($key, $data);
+		RateLimitStore::set($key, $data, $ttl);
 	}
 
-	/**
-	 * @param string $key
-	 *
-	 * @return void
-	 */
-	protected function deleteData($key)
+	protected function deleteData(string $key): void
 	{
-		if (Yii::$app->has('cache')) {
-			Yii::$app->cache->delete($key);
-			return;
-		}
-
-		Yii::$app->session->remove($key);
+		RateLimitStore::delete($key);
 	}
 }
