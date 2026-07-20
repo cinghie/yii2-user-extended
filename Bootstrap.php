@@ -15,16 +15,20 @@ namespace cinghie\userextended;
 use Yii;
 use cinghie\userextended\assets\SessionExpireAsset;
 use cinghie\userextended\components\WebUser;
+use cinghie\userextended\filters\PasswordExpireFilter;
 use cinghie\userextended\models\Account;
 use cinghie\userextended\models\Assignment;
 use cinghie\userextended\models\LoginForm;
 use cinghie\userextended\models\Permission;
 use cinghie\userextended\models\Profile;
+use cinghie\userextended\models\RecoveryForm;
 use cinghie\userextended\models\RegistrationForm;
 use cinghie\userextended\models\SettingsForm;
 use cinghie\userextended\models\User;
 use yii\base\Application;
 use yii\base\BootstrapInterface;
+use yii\base\Controller;
+use yii\base\Event;
 use yii\base\Module as BaseModule;
 use yii\db\ActiveRecord;
 use yii\helpers\Json;
@@ -48,6 +52,7 @@ class Bootstrap implements BootstrapInterface
         'LoginForm' => LoginForm::class,
         'Permission' => Permission::class,
         'Profile' => Profile::class,
+        'RecoveryForm' => RecoveryForm::class,
         'RegistrationForm' => RegistrationForm::class,
         'SettingsForm' => SettingsForm::class,
         'User' => User::class,
@@ -72,7 +77,7 @@ class Bootstrap implements BootstrapInterface
                 $modelName = is_array($definition) ? $definition['class'] : $definition;
                 $module->modelMap[$name] = $modelName;
 
-                if (in_array($name, ['Account', 'Assignment', 'LoginForm', 'Permission', 'Profile', 'RegistrationForm', 'SettingsForm', 'User'], true)) {
+                if (in_array($name, ['Account', 'Assignment', 'LoginForm', 'Permission', 'Profile', 'RecoveryForm', 'RegistrationForm', 'SettingsForm', 'User'], true)) {
                     Yii::$container->set($name . 'Query', function () use ($modelName) {
                         return $modelName::find();
                     });
@@ -82,6 +87,7 @@ class Bootstrap implements BootstrapInterface
             if ($app instanceof WebApplication) {
                 $this->registerWebUser($app, $module);
                 $this->configureSessionExpire($app, $module);
+                $this->configurePasswordExpire($app, $module);
             }
         }
     }
@@ -349,6 +355,28 @@ class Bootstrap implements BootstrapInterface
                     View::POS_HEAD
                 );
             });
+        });
+    }
+
+    /**
+     * Force password change when passwordMaxAgeDays is set.
+     *
+     * @param WebApplication $app
+     * @param Module $module
+     * @return void
+     */
+    protected function configurePasswordExpire(WebApplication $app, Module $module): void
+    {
+        if ((int) $module->passwordMaxAgeDays <= 0) {
+            return;
+        }
+
+        Event::on(Controller::class, Controller::EVENT_BEFORE_ACTION, function ($event) {
+            /** @var \yii\base\ActionEvent $event */
+            $filter = Yii::createObject(PasswordExpireFilter::class);
+            if (!$filter->beforeAction($event->action)) {
+                $event->isValid = false;
+            }
         });
     }
 

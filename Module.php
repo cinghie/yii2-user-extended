@@ -364,10 +364,70 @@ class Module extends BaseUser
      */
     public $showTitles = true;
 
-    /**
+	/**
      * @var boolean socialLogin
      */
     public $socialLogin = false;
+
+    /**
+     * Enable configurable password complexity policy.
+     *
+     * @var bool
+     */
+    public $enablePasswordPolicy = true;
+
+    /**
+     * @var int
+     */
+    public $passwordMinLength = 8;
+
+    /**
+     * Max length (capped at 72 for bcrypt).
+     *
+     * @var int
+     */
+    public $passwordMaxLength = 72;
+
+    /**
+     * @var bool
+     */
+    public $passwordRequireUppercase = true;
+
+    /**
+     * @var bool
+     */
+    public $passwordRequireLowercase = true;
+
+    /**
+     * @var bool
+     */
+    public $passwordRequireDigit = true;
+
+    /**
+     * @var bool
+     */
+    public $passwordRequireSpecial = false;
+
+    /**
+     * Reject passwords from the built-in + passwordCommonList lists.
+     *
+     * @var bool
+     */
+    public $passwordBanCommon = true;
+
+    /**
+     * Extra common passwords to ban (lowercase recommended).
+     *
+     * @var string[]
+     */
+    public $passwordCommonList = [];
+
+    /**
+     * Force password change after N days (0 = disabled). Uses user.password_changed_at.
+     *
+     * @var int
+     */
+    public $passwordMaxAgeDays = 0;
 
     /**
      * @inheritdoc

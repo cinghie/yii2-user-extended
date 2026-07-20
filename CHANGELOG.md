@@ -27,6 +27,15 @@ Note tecniche interne.
 - Profile: sanitizza signature/bio/name/firstname/lastname/location/website in validazione; `getSignatureHtml()` / `getBioHtml()` per output.
 - Views: encode username/ruoli/avatar/alt/title; login flash encoded; `format => raw` solo per icone statiche block/confirm.
 
+### Password policy
+
+- `PasswordPolicy` / `PasswordPolicyValidator`: min/max length, upper/lower/digit/special, ban common passwords.
+- Parametri: `enablePasswordPolicy`, `passwordMinLength` (8), `passwordMaxLength` (72), `passwordRequire*`, `passwordBanCommon`, `passwordCommonList`, `passwordMaxAgeDays` (0 = off).
+- Applicata a `User`, `RegistrationForm`, `SettingsForm`, `RecoveryForm`.
+- Migration `m260720_160000_add_password_changed_at_to_user`; `PasswordExpireFilter` redirect a `/user/settings/account`.
+- Hash/verify solo tramite `dektrium\user\helpers\Password` (Yii security).
+- Review: `PasswordPolicy::generate()` usata in create/register/resendPassword; `resendPassword` persiste `password_changed_at`; guard `hasAttribute` se colonna assente; settings non assegna `password` se `new_password` vuota.
+
 ### Sessione
 
 - Timeout sessione/auth gestito dal modulo (`sessionTimeout`, `useAbsoluteAuthTimeout`, `absoluteAuthTimeout`, `disableAutoLogin`).

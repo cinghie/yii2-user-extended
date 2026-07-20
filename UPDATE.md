@@ -52,10 +52,12 @@ Le voci con ✅ sono già state applicate nel package.
    - ~~Signature/editor HTML: whitelist tag o salvataggio plain text.~~
    - Fix: `SafeHtml` helper; encode in admin/profile/settings/login; role names encoded; signature default plain text (`signatureAllowHtml=false`) + HtmlPurifier whitelist se abilitato; bio sempre plain text.
 
-9. **Password policy**
-   - Policy configurabile (lunghezza minima, complessità, ban password comuni).
-   - Forzare cambio password periodico (parametro modulo).
-   - Hash solo tramite helper Dektrium/Yii (nessun confronto custom unsafe).
+9. **Password policy** ✅
+   - ~~Policy configurabile (lunghezza minima, complessità, ban password comuni).~~
+   - ~~Forzare cambio password periodico (parametro modulo).~~
+   - ~~Hash solo tramite helper Dektrium/Yii (nessun confronto custom unsafe).~~
+   - Fix: `PasswordPolicy` + validator; `password_changed_at` migration; `PasswordExpireFilter`; form register/settings/recovery/User; hash/verify solo `Password::hash` / `Password::validate`.
+   - Review: `PasswordPolicy::generate()` per create/register/resend; `resendPassword` salva anche `password_changed_at`; guard `hasAttribute` se migration non applicata; policy User limitata a scenari password.
 
 10. **Registrazione**
     - BackendFilter già blocca recovery/registration in alcuni contesti: rendere esplicito e documentato.

@@ -15,6 +15,7 @@ namespace cinghie\userextended\models;
 use Exception;
 use Yii;
 use cinghie\userextended\helpers\ModuleConfig;
+use cinghie\userextended\helpers\PasswordPolicy;
 use cinghie\userextended\helpers\TurnstileVerifier;
 use dektrium\user\models\RegistrationForm as BaseRegistrationForm;
 use yii\base\InvalidConfigException;
@@ -47,6 +48,9 @@ class RegistrationForm extends BaseRegistrationForm
     public function rules()
     {
         $rules = parent::rules();
+
+	    unset($rules['passwordLength']);
+	    $rules['passwordPolicy'] = PasswordPolicy::rule('password');
 
 	    if (ModuleConfig::get('birthday')) {
 		    $rules[] = ['birthday', 'safe'];

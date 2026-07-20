@@ -102,6 +102,7 @@ Set on your configuration file, in modules section
         // Yii2 User Models Overrides
         'modelMap' => [
             'LoginForm' => 'cinghie\userextended\models\LoginForm',
+            'RecoveryForm' => 'cinghie\userextended\models\RecoveryForm',
             'RegistrationForm' => 'cinghie\userextended\models\RegistrationForm',
             'Profile' => 'cinghie\userextended\models\Profile',
             'SettingsForm' => 'cinghie\userextended\models\SettingsForm',
@@ -149,6 +150,18 @@ Set on your configuration file, in modules section
         // XSS / signature
         'signatureAllowHtml' => false, // plain text by default; true = HtmlPurifier whitelist
         'signatureAllowedHtml' => 'p,br,strong,b,em,i,ul,ol,li,a[href|title|target|rel],span',
+
+        // Password policy
+        'enablePasswordPolicy' => true,
+        'passwordMinLength' => 8,
+        'passwordMaxLength' => 72,
+        'passwordRequireUppercase' => true,
+        'passwordRequireLowercase' => true,
+        'passwordRequireDigit' => true,
+        'passwordRequireSpecial' => false,
+        'passwordBanCommon' => true,
+        'passwordCommonList' => [], // extra banned passwords
+        'passwordMaxAgeDays' => 0, // 0 = disabled; e.g. 90 forces periodic change
 
         // Session expire / auth hardening
         'sessionTimeout' => 3600, // seconds; 0 disables module session handling
@@ -310,6 +323,23 @@ Mutating admin actions (`block`, `confirm`, `delete`, bulk activate/deactivate/d
 | `signatureAllowedHtml` | `p,br,strong,...` | HtmlPurifier `HTML.Allowed` when HTML is enabled. |
 
 Bio and name fields are always stripped to plain text on save. Views encode usernames, roles, and attributes; use `Profile::getBioHtml()` / `getSignatureHtml()` for display.
+
+### Password policy
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `enablePasswordPolicy` | `true` | Enforce complexity rules on new passwords. |
+| `passwordMinLength` | `8` | Minimum length. |
+| `passwordMaxLength` | `72` | Maximum length (bcrypt limit). |
+| `passwordRequireUppercase` | `true` | Require A–Z. |
+| `passwordRequireLowercase` | `true` | Require a–z. |
+| `passwordRequireDigit` | `true` | Require 0–9. |
+| `passwordRequireSpecial` | `false` | Require non-alphanumeric. |
+| `passwordBanCommon` | `true` | Reject common passwords. |
+| `passwordCommonList` | `[]` | Extra banned passwords. |
+| `passwordMaxAgeDays` | `0` | Force change after N days (`0` = off). Requires migration `password_changed_at`. |
+
+Hashing and verification use only `dektrium\user\helpers\Password` (Yii `security`). Map `RecoveryForm` to `cinghie\userextended\models\RecoveryForm`.
 
 ### Avatar upload security
 
