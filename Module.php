@@ -13,7 +13,9 @@
 namespace cinghie\userextended;
 
 use Yii;
+use cinghie\userextended\helpers\ModuleSettings;
 use dektrium\user\Module as BaseUser;
+use yii\base\InvalidConfigException;
 use yii\i18n\PhpMessageSource;
 
 /**
@@ -21,6 +23,16 @@ use yii\i18n\PhpMessageSource;
  */
 class Module extends BaseUser
 {
+    /**
+     * Soft-apply recommended security defaults: `null` (off), `auto`, `dev`, or `prod`.
+     * `auto` → `prod` when `YII_ENV_PROD`, otherwise `dev`.
+     * Only properties still at factory defaults are overwritten (explicit config wins).
+     * Prefer `array_merge(ModuleSettings::securityPreset('prod'), [...])` in app config for full control.
+     *
+     * @var string|null
+     */
+    public $securityPreset = null;
+
     /**
      * @var string Module version
      */
@@ -523,13 +535,28 @@ class Module extends BaseUser
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function init()
     {
         parent::init();
 
-        // Translate
+        ModuleSettings::applySecurityPreset($this);
+        ModuleSettings::validate($this);
         $this->registerTranslations();
+    }
+
+    /**
+     * Recommended security defaults for app config merge.
+     *
+     * @param string $name `dev`|`prod`|`auto`
+     *
+     * @return array<string, mixed>
+     * @throws InvalidConfigException
+     */
+    public static function securityPreset(string $name): array
+    {
+        return ModuleSettings::securityPreset($name);
     }
 
     /**

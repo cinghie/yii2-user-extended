@@ -296,6 +296,30 @@ Allow guests to reach the captcha action in `AccessControl` (`actions` => `['err
 Module parameters (0.6.4)
 -----------------
 
+Parameters are validated in `Module::init()` (ranges clamped; invalid Turnstile/SameSite/password lengths throw `InvalidConfigException`).
+
+### Security presets (`dev` / `prod`)
+
+| Option | Description |
+|--------|-------------|
+| `securityPreset` | `null` (off), `auto`, `dev`, or `prod`. Soft-applies recommended defaults only where values are still at factory defaults (explicit config wins). `auto` → `prod` when `YII_ENV_PROD`. |
+
+```php
+use cinghie\userextended\Module;
+
+'userextended' => array_merge(Module::securityPreset('prod'), [
+    'class' => Module::class,
+    // overrides / secrets
+    'cloudflareSiteKey' => '...',
+    'cloudflareSecretKey' => '...',
+]),
+```
+
+Or set `'securityPreset' => 'auto'` on the module and override only what you need.
+
+**prod** highlights: `sessionTimeout=1800`, `useAbsoluteAuthTimeout=true`, rate limits + progressive delay on, captcha after 3 failures, password policy on, self-role block + audit on.  
+**dev** highlights: `sessionTimeout=7200`, no progressive delay / login captcha-after-attempts, Turnstile off, still keeps rate limit + password policy + audit.
+
 ### Session expire
 
 | Parameter | Default | Description |
@@ -304,16 +328,36 @@ Module parameters (0.6.4)
 | `useAbsoluteAuthTimeout` | `false` | If `absoluteAuthTimeout` is `0`, also set `user.absoluteAuthTimeout` to `sessionTimeout`. |
 | `absoluteAuthTimeout` | `0` | Max login duration in seconds (`0` = off unless `useAbsoluteAuthTimeout`). |
 | `enableClientSessionExpireRedirect` | `true` | Client JS redirects to login with `?expired=1`. |
-| `clientWarningBeforeExpire` | `60` | Warning seconds before expire (`0` = off). |
+| `clientWarningBeforeExpire` | `60` | Warning seconds before expire (`0` = off). Capped below `sessionTimeout`. |
 | `clientWarningOnce` | `true` | Show toast at most once per idle cycle. |
 | `clientSessionHeartbeatInterval` | `0` | Optional heartbeat seconds (`0` = off). While it succeeds, client + server idle timers renew. |
 | `clientSessionHeartbeatUrl` | `null` | Heartbeat URL; when null and interval > 0, uses `/user/security/session-ping` (204). |
 | `disableAutoLogin` | `true` | Disable remember-me so idle `authTimeout` works (CRM recommended). |
 | `hardenSessionCookies` | `true` | Apply HttpOnly / Secure / SameSite on session (and identity) cookies when missing. |
 | `sessionCookieSecure` | `null` | `null` = auto (HTTPS or prod); `true`/`false` force Secure. |
-| `sessionSameSite` | `null` | SameSite when unset (`null` → `Lax`). |
+| `sessionSameSite` | `null` | SameSite when unset (`null` → `Lax`). Must be `Lax`/`Strict`/`None` if set. |
 | `regenerateSessionId` | `true` | Extra session ID regenerate after login (logout uses Yii `logout(true)`). |
 | `invalidateRememberMeOnAuthTimeout` | `true` | Use `WebUser` so timeout clears remember-me without cookie re-login. |
+
+### Profile / registration UI flags
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `avatar` | `true` | Enable avatar field / upload. |
+| `avatarPath` | `@webroot/img/users/` | Storage path alias. |
+| `avatarURL` | `@web/img/users/` | Public URL alias. |
+| `firstname` / `lastname` / `birthday` / `signature` | `true` | Profile fields. |
+| `bio` / `contact` / `account` / `location` / `website` / `publicEmail` / `gravatarEmail` | `false` | Optional profile fields. |
+| `captcha` | `true` | Yii captcha on registration form. |
+| `terms` | `true` | Terms checkbox on registration. |
+| `defaultRole` | `''` | Role name assigned after register (empty = none). |
+| `onlyEmail` | `false` | Registration email-only mode (Dektrium). |
+| `templateLogin` | `login` | Login view name (`login` / `login_prestashop`). |
+| `templateRegister` | `_two_column` | Register layout partial. |
+| `templateLogoURL` | `@web/logo.png` | Logo for Prestashop-style login. |
+| `showAlert` / `showTitles` | `true` | View chrome flags. |
+| `socialLogin` | `false` | Social auth UI hooks. |
+| `blockRegistrationAndRecovery` | `false` | Bootstrap attaches `BackendFilter` on `user` if missing. |
 
 ### i18n
 
@@ -341,8 +385,8 @@ Bio and name fields are always stripped to plain text on save. Views encode user
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `enablePasswordPolicy` | `true` | Enforce complexity rules on new passwords. |
-| `passwordMinLength` | `8` | Minimum length. |
-| `passwordMaxLength` | `72` | Maximum length (bcrypt limit). |
+| `passwordMinLength` | `8` | Minimum length (`>= 1`, `<= passwordMaxLength`). |
+| `passwordMaxLength` | `72` | Maximum length (clamped to bcrypt limit 72). |
 | `passwordRequireUppercase` | `true` | Require A–Z. |
 | `passwordRequireLowercase` | `true` | Require a–z. |
 | `passwordRequireDigit` | `true` | Require 0–9. |
@@ -357,8 +401,8 @@ Hashing and verification use only `dektrium\user\helpers\Password` (Yii `securit
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `avatarAllowedExtensions` | `jpg,jpeg,png,webp` | Allowed extensions. |
-| `avatarMaxSize` | `2097152` | Max upload size in bytes (2MB). |
+| `avatarAllowedExtensions` | `jpg,jpeg,png,webp` | Allowed extensions (required non-empty). |
+| `avatarMaxSize` | `2097152` | Max upload size in bytes (2MB, `>= 1`). |
 
 Uploads are renamed randomly, MIME/`getimagesize` checked, double extensions blocked, path confined under `avatarPath`.
 
@@ -408,11 +452,11 @@ Map `registration` → `cinghie\userextended\controllers\RegistrationController`
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `enableCloudflareTurnstile` | `false` | Show/validate Turnstile on login. |
+| `enableCloudflareTurnstile` | `false` | Show/validate Turnstile on login. Requires both keys when `true`. |
 | `cloudflareSiteKey` | `''` | Public site key. |
 | `cloudflareSecretKey` | `''` | Secret key (**web-local / env only**). |
 | `cloudflareTurnstileTheme` | `auto` | `auto` / `light` / `dark`. |
-| `cloudflareTurnstileOnRegistration` | `false` | Also require Turnstile on registration. |
+| `cloudflareTurnstileOnRegistration` | `false` | Also require Turnstile on registration (needs `enableCloudflareTurnstile`). |
 
 Fail closed: missing/invalid token denies login. Script is loaded only when enabled and configured. Use together with rate limit (Turnstile first, rate limit second).
 

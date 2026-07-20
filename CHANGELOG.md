@@ -89,6 +89,7 @@ Internal technical notes.
 - i18n: complete `messages/en` + `messages/it` catalogs (session/security/password/avatar); `sourceLanguage=en`; toast Close label translated.
 - Fix: login lock detection independent of translated messages; ICU date pattern uses `yyyy`; Avatar labels / Prestashop email placeholder via `Yii::t`.
 - Assets: `SessionExpireAsset` publishes `assets/static` only (safe with `linkAssets`), `appendTimestamp` cache busting, minified JS/CSS in prod, `forceCopy` in debug only.
+- Module config: `ModuleSettings` validates/clamps params (Turnstile keys required when enabled); `securityPreset` / `Module::securityPreset('dev'|'prod'|'auto')`; README parameter catalog completed.
 - `SecurityController` uses the package `LoginForm`; `LoginForm` in the user `modelMap`.
 
 ### Admin user performance

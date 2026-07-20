@@ -133,10 +133,11 @@ Items marked ✅ have already been applied in the package.
    - ~~Robust `sourcePath` (path relative to the package, not only `@vendor/...`).~~
    - Fix: `SessionExpireAsset` publishes from `assets/static` (`realpath`, no `@vendor` alias; safe with `linkAssets`); `appendTimestamp`; min JS/CSS when `YII_ENV_PROD` or `!YII_DEBUG`; `forceCopy` only in debug (not forced `false`).
 
-7. **Module configuration**
-   - Document all parameters in README (`sessionTimeout`, captcha, Cloudflare Turnstile, avatar, etc.).
-   - Validate parameter ranges in `Module::init()` (e.g. timeout >= 0; if Turnstile on → site/secret keys required).
-   - Environment presets: `dev` / `prod` security defaults.
+7. **Module configuration** ✅
+   - ~~Document all parameters in README (`sessionTimeout`, captcha, Cloudflare Turnstile, avatar, etc.).~~
+   - ~~Validate parameter ranges in `Module::init()` (e.g. timeout >= 0; if Turnstile on → site/secret keys required).~~
+   - ~~Environment presets: `dev` / `prod` security defaults.~~
+   - Fix: `ModuleSettings` validate/clamp + Turnstile/SameSite checks; `securityPreset` / `Module::securityPreset()`; README sections for all params + profile flags.
 
 8. **Tests**
    - Unit/integration: login fail limit, session timeout, avatar upload reject, UserSearch rule injection, admin/switch access.
@@ -152,7 +153,7 @@ Items marked ✅ have already been applied in the package.
 | ~~High~~ | ~~User switch disabled~~ ✅ |
 | ~~High~~ | ~~Login rate limit~~ ✅ |
 | ~~Medium~~ | ~~Cloudflare Turnstile widget on login~~ ✅ |
-| Medium | Stricter session defaults + parameter docs |
+| ~~Medium~~ | ~~Stricter session defaults + parameter docs~~ ✅ |
 | ~~Medium~~ | ~~Session expire UX (no blocking alert)~~ ✅ |
 | Low | ~~Version cleanup~~ ✅, ~~en i18n~~ ✅, ~~minify assets~~ ✅ |
 
