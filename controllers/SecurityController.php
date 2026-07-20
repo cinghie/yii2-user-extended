@@ -70,21 +70,12 @@ class SecurityController extends BaseController
 				return $this->goBack();
 			}
 
-			if ($limiter->isEnabled()) {
-				if (!$wasLocked) {
-					$limiter->recordFailure($model->login);
-				}
+			if ($limiter->isEnabled() && !$wasLocked && $model->shouldCountAsLoginFailure()) {
+				$limiter->recordFailure($model->login);
 				$limiter->applyDelay($model->login);
 			}
 
-			if ($limiter->isLocked($model->login)) {
-				Yii::$app->session->setFlash(
-					'login',
-					Yii::t('userextended', 'Too many failed login attempts. Please try again later.')
-				);
-			} else {
-				Yii::$app->session->setFlash('login', Yii::t('userextended', 'Incorrect Username or Password'));
-			}
+			Yii::$app->session->setFlash('login', $this->resolveLoginFailureFlash($model, $limiter));
 		}
 
 		$view = Yii::$app->getModule('userextended')->templateLogin;
@@ -93,5 +84,28 @@ class SecurityController extends BaseController
 			'model' => $model,
 			'module' => $this->module,
 		]);
+	}
+
+	/**
+	 * @param LoginForm $model
+	 * @param LoginRateLimiter $limiter
+	 *
+	 * @return string
+	 */
+	protected function resolveLoginFailureFlash(LoginForm $model, LoginRateLimiter $limiter)
+	{
+		if ($limiter->isLocked($model->login)) {
+			return Yii::t('userextended', 'Too many failed login attempts. Please try again later.');
+		}
+
+		if ($model->hasErrors('turnstileToken')) {
+			return Yii::t('userextended', 'Security verification failed. Please try again.');
+		}
+
+		if ($model->hasErrors('captcha')) {
+			return Yii::t('userextended', 'Captcha verification is required.');
+		}
+
+		return Yii::t('userextended', 'Incorrect Username or Password');
 	}
 }

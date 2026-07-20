@@ -4,6 +4,7 @@
 
 use dektrium\user\widgets\Connect;
 use kartik\widgets\ActiveForm;
+use cinghie\userextended\helpers\TurnstileVerifier;
 use yii\helpers\Html;
 
 $this->title = Yii::t('user', 'Sign in');
@@ -119,7 +120,8 @@ $this->registerCss('
 
 		<?php $form = ActiveForm::begin([
 			'id' => 'login-form',
-			'enableAjaxValidation'   => true,
+			// AJAX validation burns single-use Turnstile tokens before the real submit
+			'enableAjaxValidation'   => !\cinghie\userextended\helpers\TurnstileVerifier::shouldProtectLogin(),
 			'enableClientValidation' => false,
 			'validateOnBlur'         => false,
 			'validateOnType'         => false,

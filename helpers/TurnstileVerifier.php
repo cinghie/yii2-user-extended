@@ -36,6 +36,17 @@ class TurnstileVerifier
 	}
 
 	/**
+	 * Turnstile should be shown/enforced on login.
+	 *
+	 * @return bool
+	 * @throws InvalidConfigException
+	 */
+	public static function shouldProtectLogin()
+	{
+		return self::isEnabledForLogin() && self::isConfigured();
+	}
+
+	/**
 	 * Enabled for registration forms.
 	 *
 	 * @return bool

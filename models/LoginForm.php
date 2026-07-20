@@ -60,18 +60,26 @@ class LoginForm extends BaseLoginForm
 				'turnstileToken',
 				'required',
 				'when' => function () {
-					return $this->isTurnstileRequired();
+					return $this->isTurnstileRequired() && !Yii::$app->request->isAjax;
 				},
-				'message' => Yii::t('userextended', 'Incorrect Username or Password'),
+				'message' => Yii::t('userextended', 'Security verification failed. Please try again.'),
 			],
 			'turnstileValidate' => [
 				'turnstileToken',
 				function ($attribute) {
-					if (!$this->isTurnstileRequired() || $this->hasErrors($attribute)) {
+					// Tokens are single-use: never call siteverify during AJAX validation
+					if (
+						!$this->isTurnstileRequired()
+						|| Yii::$app->request->isAjax
+						|| $this->hasErrors($attribute)
+					) {
 						return;
 					}
 					if (!TurnstileVerifier::verify($this->$attribute)) {
-						$this->addError($attribute, Yii::t('userextended', 'Incorrect Username or Password'));
+						$this->addError(
+							$attribute,
+							Yii::t('userextended', 'Security verification failed. Please try again.')
+						);
 					}
 				},
 			],
@@ -82,7 +90,6 @@ class LoginForm extends BaseLoginForm
 						$confirmationRequired = $this->module->enableConfirmation
 							&& !$this->module->enableUnconfirmedLogin;
 						if ($confirmationRequired && !$this->user->getIsConfirmed()) {
-							// Generic message: avoid account enumeration
 							$this->addError($attribute, Yii::t('userextended', 'Incorrect Username or Password'));
 						}
 						if ($this->user->getIsBlocked()) {
@@ -117,7 +124,11 @@ class LoginForm extends BaseLoginForm
 				'passwordValidate' => [
 					'password',
 					function ($attribute) {
-						if ($this->hasErrors('login') || $this->hasErrors('turnstileToken')) {
+						if (
+							$this->hasErrors('login')
+							|| $this->hasErrors('turnstileToken')
+							|| $this->hasErrors('captcha')
+						) {
 							return;
 						}
 						if ($this->user === null || !Password::validate($this->password, $this->user->password_hash)) {
@@ -169,13 +180,37 @@ class LoginForm extends BaseLoginForm
 	}
 
 	/**
-	 * Whether Cloudflare Turnstile must be validated.
+	 * Whether Cloudflare Turnstile must be validated (enabled + keys configured).
 	 *
 	 * @return bool
 	 */
 	public function isTurnstileRequired()
 	{
-		return TurnstileVerifier::isEnabledForLogin();
+		return TurnstileVerifier::shouldProtectLogin();
+	}
+
+	/**
+	 * True when failure is credential-related (count toward rate limit).
+	 *
+	 * @return bool
+	 */
+	public function shouldCountAsLoginFailure()
+	{
+		if ($this->hasErrors('turnstileToken') || $this->hasErrors('captcha')) {
+			return false;
+		}
+
+		if ($this->hasErrors('password')) {
+			return true;
+		}
+
+		foreach ($this->getErrors('login') as $message) {
+			if (strpos($message, 'Too many failed') !== false) {
+				return false;
+			}
+		}
+
+		return $this->hasErrors('login');
 	}
 
 	/**

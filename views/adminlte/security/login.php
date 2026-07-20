@@ -3,6 +3,7 @@
 /** @var $module **/
 
 use dektrium\user\widgets\Connect;
+use cinghie\userextended\helpers\TurnstileVerifier;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -41,7 +42,8 @@ $fieldOptions2 = [
 
         <?php $form = ActiveForm::begin([
             'id' => 'login-form',
-            'enableAjaxValidation'   => true,
+            // AJAX validation burns single-use Turnstile tokens before the real submit
+            'enableAjaxValidation'   => !\cinghie\userextended\helpers\TurnstileVerifier::shouldProtectLogin(),
             'enableClientValidation' => false,
             'validateOnBlur'         => false,
             'validateOnType'         => false,

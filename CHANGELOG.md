@@ -41,3 +41,4 @@ Note tecniche interne.
 - Widget opzionale su login (`login` / `login_prestashop`) e registrazione (flag dedicato).
 - `TurnstileVerifier` (siteverify, fail closed); `TurnstileAsset` solo se abilitato.
 - Parametri: `enableCloudflareTurnstile`, `cloudflareSiteKey`, `cloudflareSecretKey`, `cloudflareTurnstileTheme`, `cloudflareTurnstileOnRegistration` (default off; secret da `web-local`).
+- Fix login: non validare Turnstile in AJAX (token monouso); disabilita `enableAjaxValidation` quando Turnstile è attivo; flash dedicati per captcha/Turnstile.
