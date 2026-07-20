@@ -90,7 +90,8 @@ class Bootstrap implements BootstrapInterface
      * Prefer WebUser so authTimeout can invalidate remember-me without cookie re-login.
      *
      * Must preserve Dektrium's container config (identityClass, loginUrl, …).
-     * Replacing it with only `class => WebUser` causes "User::identityClass must be set".
+     * Only the DI definition is updated — do not replace the app `user` component
+     * with a partial config (that caused "User::identityClass must be set").
      *
      * @param WebApplication $app
      * @param Module $module
@@ -102,9 +103,28 @@ class Bootstrap implements BootstrapInterface
             return;
         }
 
+        $config = $this->resolveUserComponentConfig($app);
+        if ($config === null) {
+            return;
+        }
+
+        $config['class'] = WebUser::class;
+
+        Yii::$container->set(YiiUser::class, $config);
+        Yii::$container->set('yii\web\User', $config);
+        Yii::$container->set(WebUser::class, $config);
+    }
+
+    /**
+     * Build User component config from DI + user module modelMap.
+     *
+     * @param WebApplication $app
+     * @return array|null null if identityClass cannot be resolved
+     */
+    protected function resolveUserComponentConfig(WebApplication $app): ?array
+    {
         $config = [];
 
-        // Merge existing DI definition (Dektrium Bootstrap sets identityClass / loginUrl)
         $definitions = Yii::$container->getDefinitions();
         foreach ([YiiUser::class, 'yii\web\User', WebUser::class] as $id) {
             if (!isset($definitions[$id])) {
@@ -119,81 +139,50 @@ class Bootstrap implements BootstrapInterface
             }
             if (is_array($existing)) {
                 $config = array_merge($config, $existing);
-            }
-            break;
-        }
-
-        // Fallback: identity from dektrium user module modelMap
-        if (empty($config['identityClass']) && $app->hasModule('user')) {
-            $userModule = $app->getModule('user');
-            if (is_object($userModule) && !empty($userModule->modelMap['User'])) {
-                $config['identityClass'] = $userModule->modelMap['User'];
+                break;
             }
         }
 
         if (empty($config['identityClass'])) {
-            // Avoid registering a broken User component
-            return;
+            $identityClass = $this->resolveIdentityClass($app);
+            if ($identityClass === null) {
+                return null;
+            }
+            $config['identityClass'] = $identityClass;
         }
 
-        $config['class'] = WebUser::class;
         if (empty($config['loginUrl'])) {
             $config['loginUrl'] = ['/user/security/login'];
         }
 
-        Yii::$container->set(YiiUser::class, $config);
-        Yii::$container->set(WebUser::class, $config);
-
-        // Keep application component definition in sync (core default is yii\web\User)
-        $components = $app->getComponents(true);
-        if (!isset($components['user'])) {
-            return;
-        }
-
-        $def = $components['user'];
-        if (is_string($def)) {
-            $def = ['class' => $def];
-        }
-        if (!is_array($def)) {
-            return;
-        }
-
-        $class = $def['class'] ?? YiiUser::class;
-        if (
-            $class === YiiUser::class
-            || $class === 'yii\web\User'
-            || $class === WebUser::class
-        ) {
-            $app->set('user', array_merge($def, $config));
-        }
+        return $config;
     }
 
     /**
-     * Ensure the application `user` component has identityClass before getUser().
+     * @param WebApplication $app
+     * @return string|null
+     */
+    protected function resolveIdentityClass(WebApplication $app): ?string
+    {
+        if ($app->hasModule('user')) {
+            $userModule = $app->getModule('user');
+            if (is_object($userModule) && !empty($userModule->modelMap['User'])) {
+                return (string) $userModule->modelMap['User'];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Ensure the application `user` component definition has identityClass before getUser().
      *
      * @param WebApplication $app
      * @return bool false when identityClass cannot be resolved
      */
     protected function ensureUserIdentityClass(WebApplication $app): bool
     {
-        $components = $app->getComponents(true);
-        if (!isset($components['user'])) {
-            return true;
-        }
-
-        $def = $components['user'];
-        if (is_string($def)) {
-            $def = ['class' => $def];
-        }
-        if (!is_array($def)) {
-            return true;
-        }
-
-        if (!empty($def['identityClass'])) {
-            return true;
-        }
-
-        $identityClass = null;
+        $identityClass = $this->resolveIdentityClass($app);
 
         $definitions = Yii::$container->getDefinitions();
         foreach ([YiiUser::class, 'yii\web\User', WebUser::class] as $id) {
@@ -206,27 +195,46 @@ class Bootstrap implements BootstrapInterface
             }
         }
 
-        if ($identityClass === null && $app->hasModule('user')) {
-            $userModule = $app->getModule('user');
-            if (is_object($userModule) && !empty($userModule->modelMap['User'])) {
-                $identityClass = $userModule->modelMap['User'];
-            }
-        }
-
-        if ($identityClass === null) {
+        if ($identityClass === null || $identityClass === '') {
             return false;
         }
 
-        $def['identityClass'] = $identityClass;
-        if (($def['class'] ?? null) === YiiUser::class || ($def['class'] ?? null) === 'yii\web\User') {
-            // Keep WebUser when remember-me invalidation is enabled and already registered
-            $webDefs = Yii::$container->getDefinitions();
-            if (isset($webDefs[YiiUser::class]['class']) && $webDefs[YiiUser::class]['class'] === WebUser::class) {
-                $def['class'] = WebUser::class;
+        // Keep DI definitions coherent (Dektrium + WebUser)
+        foreach ([YiiUser::class, 'yii\web\User', WebUser::class] as $id) {
+            $existing = isset($definitions[$id]) && is_array($definitions[$id]) ? $definitions[$id] : [];
+            if (empty($existing['identityClass'])) {
+                $existing['identityClass'] = $identityClass;
             }
+            if (empty($existing['loginUrl'])) {
+                $existing['loginUrl'] = ['/user/security/login'];
+            }
+            if ($id === WebUser::class || (!empty($existing['class']) && $existing['class'] === WebUser::class)) {
+                $existing['class'] = WebUser::class;
+            }
+            Yii::$container->set($id, $existing);
         }
 
-        $app->set('user', $def);
+        $components = $app->getComponents(true);
+        if (!isset($components['user'])) {
+            return true;
+        }
+
+        $def = $components['user'];
+        if (is_string($def)) {
+            $def = ['class' => $def];
+        }
+        if (!is_array($def)) {
+            return true;
+        }
+
+        if (empty($def['identityClass'])) {
+            $def['identityClass'] = $identityClass;
+            // Keep class as yii\web\User so Container can redirect to WebUser via DI
+            if (empty($def['class'])) {
+                $def['class'] = YiiUser::class;
+            }
+            $app->set('user', $def);
+        }
 
         return true;
     }
@@ -258,17 +266,26 @@ class Bootstrap implements BootstrapInterface
         }
 
         $app->on(Application::EVENT_BEFORE_REQUEST, function () use ($app, $module, $timeout) {
-            if (!$app->has('user') || !$app->has('request')) {
+            if (!$app->has('request')) {
                 return;
             }
 
-            // Repair identityClass if a prior bootstrap wiped Dektrium's User DI config
+            // Always repair identityClass before touching the user component
             if (!$this->ensureUserIdentityClass($app)) {
+                return;
+            }
+
+            if (!$app->has('user')) {
                 return;
             }
 
             $request = $app->getRequest();
             $user = $app->getUser();
+
+            // Guard: module id is also "user" — getUser() must return yii\web\User
+            if (!$user instanceof YiiUser) {
+                return;
+            }
 
             if ($module->disableAutoLogin) {
                 $user->enableAutoLogin = false;
