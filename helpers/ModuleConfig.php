@@ -91,6 +91,7 @@ class ModuleConfig
 				'rateLimitStorage' => (string) $m->rateLimitStorage,
 				'passwordHashCost' => (int) $m->passwordHashCost,
 				'rehashPasswordOnLogin' => (bool) $m->rehashPasswordOnLogin,
+				'mailPlaintextPasswords' => (bool) $m->mailPlaintextPasswords,
 				'enableRbacRoleCache' => (bool) $m->enableRbacRoleCache,
 			];
 		});

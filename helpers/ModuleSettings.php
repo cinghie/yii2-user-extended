@@ -59,6 +59,11 @@ final class ModuleSettings
 					'passwordBanCommon' => true,
 					'passwordHashCost' => 13,
 					'rehashPasswordOnLogin' => true,
+					'enableSecureEmailChange' => true,
+					'mailPlaintextPasswords' => false,
+					'recoverWithin' => 3600,
+					'confirmWithin' => 21600,
+					'enableRecoveryRateLimit' => true,
 					'blockSelfRoleAssignment' => true,
 					'enableSecurityAudit' => true,
 					'enableRbacAssignmentAudit' => true,
@@ -131,6 +136,17 @@ final class ModuleSettings
 			'registrationProgressiveDelay' => true,
 			'registrationDelayBaseSeconds' => 1,
 			'registrationDelayMaxSeconds' => 5,
+			'enableRecoveryRateLimit' => true,
+			'recoveryMaxAttempts' => 5,
+			'recoveryAttemptWindow' => 900,
+			'recoveryLockoutDuration' => 900,
+			'recoveryProgressiveDelay' => true,
+			'recoveryDelayBaseSeconds' => 1,
+			'recoveryDelayMaxSeconds' => 5,
+			'recoverWithin' => 3600,
+			'confirmWithin' => 21600,
+			'enableSecureEmailChange' => true,
+			'mailPlaintextPasswords' => false,
 			'enablePasswordPolicy' => true,
 			'passwordMinLength' => 8,
 			'passwordMaxLength' => 72,
@@ -207,6 +223,14 @@ final class ModuleSettings
 		$module->registrationDelayBaseSeconds = max(0, (int) $module->registrationDelayBaseSeconds);
 		$module->registrationDelayMaxSeconds = max(0, (int) $module->registrationDelayMaxSeconds);
 
+		$module->recoveryMaxAttempts = max(1, (int) $module->recoveryMaxAttempts);
+		$module->recoveryAttemptWindow = max(1, (int) $module->recoveryAttemptWindow);
+		$module->recoveryLockoutDuration = max(1, (int) $module->recoveryLockoutDuration);
+		$module->recoveryDelayBaseSeconds = max(0, (int) $module->recoveryDelayBaseSeconds);
+		$module->recoveryDelayMaxSeconds = max(0, (int) $module->recoveryDelayMaxSeconds);
+		$module->recoverWithin = max(60, (int) $module->recoverWithin);
+		$module->confirmWithin = max(60, (int) $module->confirmWithin);
+
 		$module->passwordMinLength = max(1, (int) $module->passwordMinLength);
 		$module->passwordMaxLength = max(1, (int) $module->passwordMaxLength);
 		$module->passwordMaxAgeDays = max(0, (int) $module->passwordMaxAgeDays);
@@ -230,6 +254,9 @@ final class ModuleSettings
 		}
 		if ($module->registrationDelayMaxSeconds < $module->registrationDelayBaseSeconds) {
 			$module->registrationDelayMaxSeconds = $module->registrationDelayBaseSeconds;
+		}
+		if ($module->recoveryDelayMaxSeconds < $module->recoveryDelayBaseSeconds) {
+			$module->recoveryDelayMaxSeconds = $module->recoveryDelayBaseSeconds;
 		}
 
 		$ext = $module->avatarAllowedExtensions;

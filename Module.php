@@ -358,6 +358,72 @@ class Module extends BaseUser
      */
     public $registrationDelayMaxSeconds = 5;
 
+    /**
+     * Throttle password-recovery requests (IP + email). Applied when recovery is enabled.
+     *
+     * @var bool
+     */
+    public $enableRecoveryRateLimit = true;
+
+    /**
+     * @var int
+     */
+    public $recoveryMaxAttempts = 5;
+
+    /**
+     * @var int
+     */
+    public $recoveryAttemptWindow = 900;
+
+    /**
+     * @var int
+     */
+    public $recoveryLockoutDuration = 900;
+
+    /**
+     * @var bool
+     */
+    public $recoveryProgressiveDelay = true;
+
+    /**
+     * @var int
+     */
+    public $recoveryDelayBaseSeconds = 1;
+
+    /**
+     * @var int
+     */
+    public $recoveryDelayMaxSeconds = 5;
+
+    /**
+     * Dektrium user.recoverWithin (seconds). Default 1 hour (upstream 6 hours).
+     *
+     * @var int
+     */
+    public $recoverWithin = 3600;
+
+    /**
+     * Dektrium user.confirmWithin (seconds). Default 6 hours (upstream 24 hours).
+     *
+     * @var int
+     */
+    public $confirmWithin = 21600;
+
+    /**
+     * Force Dektrium emailChangeStrategy = STRATEGY_SECURE (confirm old + new email).
+     *
+     * @var bool
+     */
+    public $enableSecureEmailChange = true;
+
+    /**
+     * When false (default): never email plaintext passwords (welcome/resend).
+     * Admin resend-password sends a recovery link instead.
+     *
+     * @var bool
+     */
+    public $mailPlaintextPasswords = false;
+
 	/**
 	 * @var string default User Role
 	 */

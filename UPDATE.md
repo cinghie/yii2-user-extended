@@ -15,11 +15,10 @@ Completed backlog lives in `CHANGELOG.md` / `README.md`.
 
 1. **2FA/TOTP for admins** — highest value for a CRM; not in Dektrium.
 2. **Password history / no-reuse** — reject recently used passwords on change.
-3. **If recovery/registration are ever re-enabled:** shorter token TTL, recovery throttle, email-change `STRATEGY_SECURE`, never email plaintext generated passwords.
-4. **Keep social / `yii2-authclient` disabled** unless required (historical authclient CVEs).
-5. **Optional ops hardening:** admin route IP allowlist; WAF / fail2ban on `/user/security/login`.
-6. **Treat vendor Dektrium as a frozen fork:** review diffs before any Composer update; prefer path/VCS pin.
-7. **Medium-term:** plan migration to a maintained fork (e.g. `cgsmith/yii2-user`) when feasible — not blocking day-to-day.
+3. **Keep social / `yii2-authclient` disabled** unless required (historical authclient CVEs).
+4. **Optional ops hardening:** admin route IP allowlist; WAF / fail2ban on `/user/security/login`.
+5. **Treat vendor Dektrium as a frozen fork:** review diffs before any Composer update; prefer path/VCS pin.
+6. **Medium-term:** plan migration to a maintained fork (e.g. `cgsmith/yii2-user`) when feasible — not blocking day-to-day.
 
 Also keep `yiisoft/yii2` patched (framework CVEs matter more than Dektrium itself).
 
@@ -31,7 +30,6 @@ Also keep `yiisoft/yii2` patched (framework CVEs matter more than Dektrium itsel
 |----------|------|
 | High | 2FA/TOTP for admins |
 | Medium | Password history / no-reuse |
-| Medium | Harden recovery/registration paths before re-enabling them |
 | Low | Admin IP allowlist / WAF; pin Dektrium; plan fork migration |
 
 ## Notes

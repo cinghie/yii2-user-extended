@@ -460,6 +460,20 @@ Remove `BackendFilter` / set `blockRegistrationAndRecovery` to `false`, then ena
 
 Map `registration` → `cinghie\userextended\controllers\RegistrationController` for throttle on register/resend.
 
+### Password recovery (when `user.enablePasswordRecovery` is true)
+
+Hardened defaults are applied by Bootstrap via `UserModuleHardening` even while recovery stays disabled in CRM:
+
+| Setting | Default | Notes |
+|---------|---------|--------|
+| `recoverWithin` | `3600` | Recovery token TTL (1h; Dektrium was 6h) → `user.recoverWithin` |
+| `confirmWithin` | `21600` | Confirmation token TTL (6h; Dektrium was 24h) → `user.confirmWithin` |
+| `enableSecureEmailChange` | `true` | Sets `user.emailChangeStrategy = STRATEGY_SECURE` |
+| `mailPlaintextPasswords` | `false` | No plaintext passwords in welcome/resend mail; admin resend sends a **recovery link** (mail first, then password rotation — no lockout if mail fails) |
+| `enableRecoveryRateLimit` | `true` | IP + email throttle on recovery request |
+
+Map `recovery` → `cinghie\userextended\controllers\RecoveryController`.
+
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `blockRegistrationAndRecovery` | `false` | Bootstrap attaches `BackendFilter` on `user` if no `as backend` yet. |

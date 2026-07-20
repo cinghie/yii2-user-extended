@@ -60,6 +60,8 @@ Internal technical notes.
 - `RegistrationController` + `RegistrationRateLimiter` (IP + email, including confirmation resend).
 - Params: `enableRegistrationRateLimit`, `registrationMaxAttempts`, `registrationAttemptWindow`, `registrationLockoutDuration`, `registrationProgressiveDelay`, `registrationDelay*`.
 - Form protections already present: `captcha`, `terms`, Turnstile (`cloudflareTurnstileOnRegistration`); Dektrium confirmation via `enableConfirmation`.
+- Recovery/registration hardening (safe before re-enable): shorter `recoverWithin`/`confirmWithin`, `STRATEGY_SECURE` email change, `mailPlaintextPasswords=false` (admin resend → recovery link), `RecoveryController` + `RecoveryRateLimiter`.
+- Review: admin reset sends mail **before** rotating password (no lockout on mail failure); revokes prior recovery tokens; legacy plaintext path sets `password_changed_at`.
 
 ### RBAC assignment
 

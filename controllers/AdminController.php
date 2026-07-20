@@ -397,6 +397,37 @@ class AdminController extends BaseController
 	}
 
 	/**
+	 * Reset password securely: recovery link by default (no plaintext email).
+	 *
+	 * @param int $id
+	 *
+	 * @return Response
+	 * @throws ForbiddenHttpException
+	 * @throws NotFoundHttpException
+	 */
+	public function actionResendPassword($id)
+	{
+		$user = $this->findModel($id);
+		if ($user->isAdmin) {
+			throw new ForbiddenHttpException(Yii::t('user', 'Password generation is not possible for admin users'));
+		}
+
+		if ($user->resendPassword()) {
+			Yii::$app->session->setFlash(
+				'success',
+				Yii::t('userextended', 'A password reset link has been sent to the user.')
+			);
+		} else {
+			Yii::$app->session->setFlash(
+				'danger',
+				Yii::t('userextended', 'Error while trying to send a password reset link.')
+			);
+		}
+
+		return $this->redirect(Url::previous('actions-redirect'));
+	}
+
+	/**
 	 * Sanitize posted bulk-action ids (POST only; VerbFilter enforced).
 	 *
 	 * @return int[]

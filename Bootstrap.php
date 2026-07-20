@@ -18,6 +18,7 @@ use cinghie\userextended\components\WebUser;
 use cinghie\userextended\filters\BackendFilter;
 use cinghie\userextended\filters\PasswordExpireFilter;
 use cinghie\userextended\helpers\PasswordHashCost;
+use cinghie\userextended\helpers\UserModuleHardening;
 use cinghie\userextended\models\Account;
 use cinghie\userextended\models\LoginForm;
 use cinghie\userextended\models\Permission;
@@ -86,6 +87,7 @@ class Bootstrap implements BootstrapInterface
 
             // Apply before web-only hooks so console user create/reset also uses the cost
             $this->configurePasswordHashCost($app, $module);
+            $this->configureUserModuleHardening($app, $module);
 
             if ($app instanceof WebApplication) {
                 $this->registerWebUser($app, $module);
@@ -110,6 +112,22 @@ class Bootstrap implements BootstrapInterface
         }
 
         PasswordHashCost::applyToUserModule($app->getModule('user'));
+    }
+
+    /**
+     * Shorter token TTL, STRATEGY_SECURE email change, disable plaintext password mails.
+     *
+     * @param Application $app
+     * @param Module $module
+     * @return void
+     */
+    protected function configureUserModuleHardening(Application $app, Module $module): void
+    {
+        if (!$app->hasModule('user')) {
+            return;
+        }
+
+        UserModuleHardening::apply($app->getModule('user'), $module);
     }
 
     /**

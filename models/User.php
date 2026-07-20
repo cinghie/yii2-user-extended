@@ -16,7 +16,9 @@ use Exception;
 use Yii;
 use cinghie\userextended\helpers\ModuleConfig;
 use cinghie\userextended\helpers\PasswordPolicy;
+use cinghie\userextended\helpers\SecurityAudit;
 use dektrium\user\helpers\Password;
+use dektrium\user\models\Token;
 use dektrium\user\models\User as BaseUser;
 use yii\base\InvalidArgumentException;
 use yii\db\ActiveQuery;
@@ -138,7 +140,9 @@ class User extends BaseUser
 
 			$this->confirm();
 
-			$this->mailer->sendWelcomeMessage($this, null, true);
+			// Never pass showPassword=true unless mailPlaintextPasswords is explicitly enabled
+			$showPassword = (bool) ModuleConfig::get('mailPlaintextPasswords', false);
+			$this->mailer->sendWelcomeMessage($this, null, $showPassword);
 			$this->trigger(self::AFTER_CREATE);
 
 			$transaction->commit();
@@ -197,19 +201,80 @@ class User extends BaseUser
 	}
 
 	/**
-	 * @inheritdoc
-	 * Persist password_changed_at (parent only saves password_hash).
+	 * Admin "resend password": never email plaintext by default.
+	 * Rotates to a random password (old login stops working) and sends a recovery link.
+	 *
+	 * Set userextended.mailPlaintextPasswords=true only for legacy plaintext mail (not recommended).
+	 *
+	 * @return bool
 	 */
 	public function resendPassword()
 	{
+		if (!ModuleConfig::get('mailPlaintextPasswords', false)) {
+			return $this->sendSecurePasswordResetLink();
+		}
+
 		$this->password = PasswordPolicy::generate();
 		$attributes = ['password_hash'];
 		if ($this->hasAttribute('password_changed_at')) {
+			$this->password_changed_at = time();
 			$attributes[] = 'password_changed_at';
 		}
 		$this->save(false, $attributes);
 
 		return $this->mailer->sendGeneratedPassword($this, $this->password);
+	}
+
+	/**
+	 * Invalidate current password and email a recovery link (no plaintext secret).
+	 *
+	 * Order matters: send the link first; only then rotate the password. If mail fails,
+	 * the user is not locked out. Previous recovery tokens for this user are revoked.
+	 *
+	 * @return bool
+	 */
+	protected function sendSecurePasswordResetLink()
+	{
+		Token::deleteAll([
+			'user_id' => $this->id,
+			'type' => Token::TYPE_RECOVERY,
+		]);
+
+		/** @var Token $token */
+		$token = Yii::createObject([
+			'class' => Token::class,
+			'user_id' => $this->id,
+			'type' => Token::TYPE_RECOVERY,
+		]);
+		if (!$token->save(false)) {
+			return false;
+		}
+
+		$sent = (bool) $this->mailer->sendRecoveryMessage($this, $token);
+		if (!$sent) {
+			$token->delete();
+			return false;
+		}
+
+		// Mail delivered: invalidate old password so only the reset link can restore access
+		$this->password = PasswordPolicy::generate();
+		$attributes = ['password_hash'];
+		if ($this->hasAttribute('password_changed_at')) {
+			$this->password_changed_at = time();
+			$attributes[] = 'password_changed_at';
+		}
+		if (!$this->save(false, $attributes)) {
+			// Link already sent — keep token; admin can retry; user can still use link once password save is fixed
+			Yii::warning('Recovery link sent but password rotation failed for user ' . (int) $this->id, __METHOD__);
+			return false;
+		}
+		$this->password = null;
+
+		SecurityAudit::log('admin_password_reset_link', (int) $this->id, [
+			'username' => SecurityAudit::safeLogin($this->username),
+		], 'admin', 'User', '/user/admin/resend-password');
+
+		return true;
 	}
 
 	/**
