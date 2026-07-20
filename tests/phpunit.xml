@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         bootstrap="bootstrap.php"
+         colors="true"
+         cacheResult="false"
+         beStrictAboutChangesToGlobalState="false"
+         failOnRisky="false"
+         failOnWarning="false">
+    <testsuites>
+        <testsuite name="userextended">
+            <directory suffix="Test.php">unit</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

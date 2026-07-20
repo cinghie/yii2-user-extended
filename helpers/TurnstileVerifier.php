@@ -144,12 +144,25 @@ class TurnstileVerifier
 	}
 
 	/**
+	 * Optional test/mock hook for siteverify HTTP (return decoded JSON array or null).
+	 * Production code must leave this null.
+	 *
+	 * @var callable|null
+	 */
+	public static $siteVerifyHandler = null;
+
+	/**
 	 * @param array $payload
 	 *
 	 * @return array|null
 	 */
 	protected static function postSiteVerify(array $payload)
 	{
+		if (is_callable(self::$siteVerifyHandler)) {
+			$result = call_user_func(self::$siteVerifyHandler, $payload);
+			return is_array($result) ? $result : null;
+		}
+
 		// Prefer curl to avoid hard dependency on yii2-httpclient
 		if (function_exists('curl_init')) {
 			$ch = curl_init(self::SITEVERIFY_URL);

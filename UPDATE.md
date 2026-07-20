@@ -139,10 +139,12 @@ Items marked ✅ have already been applied in the package.
    - ~~Environment presets: `dev` / `prod` security defaults.~~
    - Fix: `ModuleSettings` validate/clamp + Turnstile/SameSite checks; `securityPreset` / `Module::securityPreset()`; README sections for all params + profile flags.
 
-8. **Tests**
-   - Unit/integration: login fail limit, session timeout, avatar upload reject, UserSearch rule injection, admin/switch access.
-   - Smoke test redirect to login with `?expired=1`.
-   - Turnstile tests: missing token, invalid token, valid token (mock siteverify).
+8. **Tests** ✅
+   - ~~Unit/integration: login fail limit, session timeout, avatar upload reject, UserSearch rule injection, admin/switch access.~~
+   - ~~Smoke test redirect to login with `?expired=1`.~~
+   - ~~Turnstile tests: missing token, invalid token, valid token (mock siteverify).~~
+   - Fix: PHPUnit suite under `tests/` (`vendor/bin/phpunit -c tests/phpunit.xml`); Turnstile `$siteVerifyHandler` mock hook.
+   - Review: smoke calls `SecurityController::actionLogin`; i18n-safe lock counting; `Yii2BestPracticesTest` (AccessControl/VerbFilter/CSRF, AssetBundle `sourcePath`, safeAttributes, BootstrapInterface, param-bound UserSearch, SafeHtml).
 
 ## Suggested priorities
 

@@ -90,6 +90,8 @@ Internal technical notes.
 - Fix: login lock detection independent of translated messages; ICU date pattern uses `yyyy`; Avatar labels / Prestashop email placeholder via `Yii::t`.
 - Assets: `SessionExpireAsset` publishes `assets/static` only (safe with `linkAssets`), `appendTimestamp` cache busting, minified JS/CSS in prod, `forceCopy` in debug only.
 - Module config: `ModuleSettings` validates/clamps params (Turnstile keys required when enabled); `securityPreset` / `Module::securityPreset('dev'|'prod'|'auto')`; README parameter catalog completed.
+- Tests: PHPUnit suite (`tests/`) for login rate limit, UserSearch rule injection, avatar reject, admin switch forbid, session `?expired=1` smoke, Turnstile mock siteverify, password policy, ModuleSettings.
+- Tests: `Yii2BestPracticesTest` covers Yii2 guide patterns (AccessControl/VerbFilter/CSRF, AssetBundle publishing, mass-assignment, BootstrapInterface, SafeHtml).
 - `SecurityController` uses the package `LoginForm`; `LoginForm` in the user `modelMap`.
 
 ### Admin user performance

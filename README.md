@@ -367,6 +367,16 @@ Category `userextended` (`messages/en`, `messages/it`, `sourceLanguage=en`). Cov
 
 `SessionExpireAsset` publishes from `assets/static/` (`realpath`, not `@vendor/...`). PHP asset classes stay outside `sourcePath`, so they are not web-exposed even when `assetManager.linkAssets` is enabled. In production (`YII_ENV_PROD` or `!YII_DEBUG`) it loads `session-expire.min.js` / `.min.css`; URLs append `?v=<mtime>` for cache busting. Debug sets `forceCopy` so local edits appear without flushing `web/assets`. Optional app-wide: `assetManager.appendTimestamp = true`.
 
+### Tests
+
+From the package directory (with the host app’s Composer autoload):
+
+```bash
+vendor/bin/phpunit -c tests/phpunit.xml
+```
+
+Covers login rate limit lock/clear, UserSearch role SQL-injection rejection, avatar upload validation rejects, admin `switch` forbidden, session `?expired=1` smoke (via `SecurityController::actionLogin`), Turnstile missing/invalid/valid (mock `siteVerifyHandler`), password policy, `ModuleSettings` validation/presets, i18n-safe login lock counting, and **Yii2 best-practice checks** (`Yii2BestPracticesTest`: AccessControl/VerbFilter/CSRF, AssetBundle `sourcePath` + `appendTimestamp`, Assignment `safeAttributes`, BootstrapInterface, parameterized UserSearch SQL, SafeHtml encoding).
+
 ### CSRF / HTTP verbs
 
 Mutating admin actions (`block`, `confirm`, `delete`, bulk activate/deactivate/delete, `resend-password`) and RBAC role/permission `delete` require **POST**. CSRF is enforced by the controller (`enableCsrfValidation`, default on); ActiveForm emits the token field automatically. Bulk user AJAX posts include the CSRF token explicitly.

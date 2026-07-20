@@ -26,12 +26,21 @@
     },
     "require-dev": {
         "cinghie/yii2-traits": "@dev",
+        "phpunit/phpunit": "^9.5 || ^10.0",
         "roave/security-advisories": "dev-latest"
     },
     "autoload": {
         "psr-4": {
             "cinghie\\userextended\\": ""
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "cinghie\\userextended\\tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit -c tests/phpunit.xml"
     },
     "extra": {
         "bootstrap": "cinghie\\userextended\\Bootstrap"
