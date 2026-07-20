@@ -127,10 +127,11 @@ Items marked ✅ have already been applied in the package.
    - Fix: `messages/en/userextended.php` + completed `messages/it`; `sourceLanguage=en`; session toast `Close` via i18n; Prestashop login placeholders translated; Assignments config error translated.
    - Review: `LoginForm::shouldCountAsLoginFailure` no longer matches English lock text (broke under `it`); `isset` for i18n registration; ICU `yyyy` (not week-year `YYYY`); hardcoded Avatar labels / email placeholder.
 
-6. **Assets**
-   - Publish assets with hash/versioning.
-   - Minify session-expire JS in prod.
-   - Robust `sourcePath` (path relative to the package, not only `@vendor/...`).
+6. **Assets** ✅
+   - ~~Publish assets with hash/versioning.~~
+   - ~~Minify session-expire JS in prod.~~
+   - ~~Robust `sourcePath` (path relative to the package, not only `@vendor/...`).~~
+   - Fix: `SessionExpireAsset` publishes from `assets/static` (`realpath`, no `@vendor` alias; safe with `linkAssets`); `appendTimestamp`; min JS/CSS when `YII_ENV_PROD` or `!YII_DEBUG`; `forceCopy` only in debug (not forced `false`).
 
 7. **Module configuration**
    - Document all parameters in README (`sessionTimeout`, captcha, Cloudflare Turnstile, avatar, etc.).
@@ -153,7 +154,7 @@ Items marked ✅ have already been applied in the package.
 | ~~Medium~~ | ~~Cloudflare Turnstile widget on login~~ ✅ |
 | Medium | Stricter session defaults + parameter docs |
 | ~~Medium~~ | ~~Session expire UX (no blocking alert)~~ ✅ |
-| Low | ~~Version cleanup~~ ✅, ~~en i18n~~ ✅, minify assets |
+| Low | ~~Version cleanup~~ ✅, ~~en i18n~~ ✅, ~~minify assets~~ ✅ |
 
 ## Notes
 

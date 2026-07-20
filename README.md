@@ -319,6 +319,10 @@ Module parameters (0.6.4)
 
 Category `userextended` (`messages/en`, `messages/it`, `sourceLanguage=en`). Covers session expire, login/registration security, password policy, avatar errors, and admin UI labels.
 
+### Assets
+
+`SessionExpireAsset` publishes from `assets/static/` (`realpath`, not `@vendor/...`). PHP asset classes stay outside `sourcePath`, so they are not web-exposed even when `assetManager.linkAssets` is enabled. In production (`YII_ENV_PROD` or `!YII_DEBUG`) it loads `session-expire.min.js` / `.min.css`; URLs append `?v=<mtime>` for cache busting. Debug sets `forceCopy` so local edits appear without flushing `web/assets`. Optional app-wide: `assetManager.appendTimestamp = true`.
+
 ### CSRF / HTTP verbs
 
 Mutating admin actions (`block`, `confirm`, `delete`, bulk activate/deactivate/delete, `resend-password`) and RBAC role/permission `delete` require **POST**. CSRF is enforced by the controller (`enableCsrfValidation`, default on); ActiveForm emits the token field automatically. Bulk user AJAX posts include the CSRF token explicitly.
