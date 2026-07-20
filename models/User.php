@@ -17,15 +17,13 @@ use Yii;
 use dektrium\user\models\User as BaseUser;
 use yii\base\InvalidArgumentException;
 use yii\db\ActiveQuery;
-use yii\db\Query;
 use yii\helpers\Html;
 use yii\rbac\Role;
 
 /**
  * User ActiveRecord extends \dektrium\user\models\User
  *
- * @property ActiveQuery $roles
- * @property mixed $role
+ * @property AuthAssignment[] $roles
  * @property array[] $rolesHTML
  * @property string $fullName
  * @property string $avatar
@@ -83,7 +81,7 @@ class User extends BaseUser
      */
     public function getRoles()
     {
-        return $this->hasMany(Assignment::class, ['user_id' => 'id'])->from(Assignment::tableName() . ' AS role');
+        return $this->hasMany(AuthAssignment::class, ['user_id' => 'id']);
     }
 
     /**
@@ -148,17 +146,15 @@ class User extends BaseUser
 	 * Array roles for roles column in admin index
 	 *
 	 * @return array []
-	 * @throws Exception
 	 */
     public function getRolesHTML()
     {
-        $query = new Query;
-        $query->select('item_name')
-              ->from('{{%auth_assignment}}')
-              ->where('user_id='.$this->id);
-        $command = $query->createCommand();
+	    $roles = [];
+	    foreach ($this->roles as $assignment) {
+		    $roles[] = ['item_name' => $assignment->item_name];
+	    }
 
-        return $command->queryAll();
+	    return $roles;
     }
 
 	/**
@@ -168,8 +164,8 @@ class User extends BaseUser
 	 */
     public function getAvatar()
     {
-	    $profile = $this->getProfile()->one();
-        $avatar = $profile->avatar ?: 'default.png';
+	    $profile = $this->profile;
+	    $avatar = ($profile && $profile->avatar) ? $profile->avatar : 'default.png';
 
         return Yii::getAlias(Yii::$app->getModule('userextended')->avatarURL).'small/'.$avatar;
     }

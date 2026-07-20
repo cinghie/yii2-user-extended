@@ -95,8 +95,8 @@ class UserSearch extends BaseUserSearch
     public function search($params)
     {
         $query = $this->finder->getUserQuery();
-        $query->select('*');
-        $query->joinWith('profile');
+        $query->joinWith(['profile']);
+        $query->with(['roles']);
 
         // Add default Order
         $dataProvider = new ActiveDataProvider([
@@ -136,26 +136,23 @@ class UserSearch extends BaseUserSearch
         }
 
         if($this->blocked_at !== '' && $this->blocked_at !== NULL && (int)$this->blocked_at === 0) {
-	        $query->andWhere('blocked_at > 0');
+	        $query->andWhere(['>', $table_name . '.blocked_at', 0]);
         }
 
-        $query->andFilterWhere(['like', 'username', $this->username])
+        $query->andFilterWhere(['like', $table_name . '.username', $this->username])
               ->andFilterWhere(['like', 'profile.firstname', $this->firstname])
               ->andFilterWhere(['like', 'profile.lastname', $this->lastname])
               ->andFilterWhere(['like', 'profile.birthday', $this->birthday])
-              ->andFilterWhere(['like', 'email', $this->email])
+              ->andFilterWhere(['like', $table_name . '.email', $this->email])
               ->andFilterWhere([$table_name . '.id' => $this->id])
               ->andFilterWhere([$table_name . '.registration_ip' => $this->registration_ip]);
 
         if ($this->rule !== null && $this->rule !== '') {
-            $query->andWhere([
-                'in',
-                $table_name . '.id',
-                (new Query())
-                    ->select(['user_id'])
-                    ->from('{{%auth_assignment}}')
-                    ->where(['item_name' => $this->rule]),
-            ]);
+            $assignmentTable = Yii::$app->authManager->assignmentTable;
+            $query->innerJoin(
+                ['aa' => $assignmentTable],
+                $table_name . '.id = aa.user_id'
+            )->andWhere(['aa.item_name' => $this->rule]);
         }
 
         return $dataProvider;
@@ -173,7 +170,7 @@ class UserSearch extends BaseUserSearch
 	 */
 	public function last($limit, $orderby = 'id', $order = SORT_DESC)
 	{
-		$query = User::find()->limit($limit);
+		$query = User::find()->with(['profile', 'roles'])->limit($limit);
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
