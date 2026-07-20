@@ -1,80 +1,87 @@
 # Changelog — yii2-user-extended
 
-Note tecniche interne.
+Internal technical notes.
 
 ## 0.6.4
 
-### Sicurezza
+### Security
 
-- `UserSearch`: filtro `rule` con query parametrizzata e validazione contro ruoli RBAC.
-- Upload avatar: whitelist MIME/extension (jpg/png/webp), max size, blocco double-extension/eseguibili, rename random, path confinato sotto `avatarPath`.
-- Nuovi parametri modulo: `avatarAllowedExtensions`, `avatarMaxSize`.
-- Login brute-force: rate limit IP+username (`LoginRateLimiter`), lock temporaneo, delay progressivo, captcha dopo N fallimenti, messaggi generici anti-enumeration.
-- Parametri modulo login: `enableLoginRateLimit`, `loginMaxAttempts`, `loginAttemptWindow`, `loginLockoutDuration`, `loginProgressiveDelay`, `loginDelayBaseSeconds`, `loginDelayMaxSeconds`, `loginCaptchaAfterAttempts`, `loginCaptchaAction`.
-- Impersonificazione utente (`admin/switch`) disabilitata: AccessControl deny, `actionSwitch` → 403, `enableImpersonateUser = false`.
+- `UserSearch`: parameterized `rule` filter query and validation against RBAC roles.
+- Avatar upload: MIME/extension whitelist (jpg/png/webp), max size, block double-extension/executables, random rename, path confined under `avatarPath`.
+- New module params: `avatarAllowedExtensions`, `avatarMaxSize`.
+- Login brute-force: IP+username rate limit (`LoginRateLimiter`), temporary lock, progressive delay, captcha after N failures, generic anti-enumeration messages.
+- Login module params: `enableLoginRateLimit`, `loginMaxAttempts`, `loginAttemptWindow`, `loginLockoutDuration`, `loginProgressiveDelay`, `loginDelayBaseSeconds`, `loginDelayMaxSeconds`, `loginCaptchaAfterAttempts`, `loginCaptchaAction`.
+- User impersonation (`admin/switch`) disabled: AccessControl deny, `actionSwitch` → 403, `enableImpersonateUser = false`.
 
 ### CSRF / verbs
 
-- `AdminController`: VerbFilter POST su `delete`, `deletemultiple`, `block`, `confirm`, `resend-password`, `activemultiple`, `deactivemultiple`, `switch`; ids bulk sanitizzati; no self-delete/block.
-- `RoleController` / `PermissionController`: VerbFilter POST su `delete` (upstream RBAC ItemController non lo aveva).
-- Form login/register/settings/admin profile: CSRF via controller (default) + hidden field ActiveForm; non usare `enableCsrfValidation` su ActiveForm (non esiste su kartik).
-- Bulk AJAX utenti (`UserSearch`): payload include CSRF token esplicito.
+- `AdminController`: VerbFilter POST on `delete`, `deletemultiple`, `block`, `confirm`, `resend-password`, `activemultiple`, `deactivemultiple`, `switch`; sanitized bulk ids; no self-delete/block.
+- `RoleController` / `PermissionController`: VerbFilter POST on `delete` (upstream RBAC ItemController lacked it).
+- Login/register/settings/admin profile forms: CSRF via controller (default) + ActiveForm hidden field; do not use `enableCsrfValidation` on ActiveForm (not supported by kartik).
+- User bulk AJAX (`UserSearch`): payload includes an explicit CSRF token.
 
 ### XSS output
 
-- Helper `SafeHtml`: encode, plain text, HtmlPurifier whitelist, URL http(s) sicuri.
-- Parametri: `signatureAllowHtml` (default `false`), `signatureAllowedHtml`.
-- Profile: sanitizza signature/bio/name/firstname/lastname/location/website in validazione; `getSignatureHtml()` / `getBioHtml()` per output.
-- Views: encode username/ruoli/avatar/alt/title; login flash encoded; `format => raw` solo per icone statiche block/confirm.
+- `SafeHtml` helper: encode, plain text, HtmlPurifier whitelist, safe http(s) URLs.
+- Params: `signatureAllowHtml` (default `false`), `signatureAllowedHtml`.
+- Profile: sanitize signature/bio/name/firstname/lastname/location/website on validation; `getSignatureHtml()` / `getBioHtml()` for output.
+- Views: encode username/roles/avatar/alt/title; login flash encoded; `format => raw` only for static block/confirm icons.
 
 ### Password policy
 
 - `PasswordPolicy` / `PasswordPolicyValidator`: min/max length, upper/lower/digit/special, ban common passwords.
-- Parametri: `enablePasswordPolicy`, `passwordMinLength` (8), `passwordMaxLength` (72), `passwordRequire*`, `passwordBanCommon`, `passwordCommonList`, `passwordMaxAgeDays` (0 = off).
-- Applicata a `User`, `RegistrationForm`, `SettingsForm`, `RecoveryForm`.
-- Migration `m260720_160000_add_password_changed_at_to_user`; `PasswordExpireFilter` redirect a `/user/settings/account`.
-- Hash/verify solo tramite `dektrium\user\helpers\Password` (Yii security).
-- Review: `PasswordPolicy::generate()` usata in create/register/resendPassword; `resendPassword` persiste `password_changed_at`; guard `hasAttribute` se colonna assente; settings non assegna `password` se `new_password` vuota.
+- Params: `enablePasswordPolicy`, `passwordMinLength` (8), `passwordMaxLength` (72), `passwordRequire*`, `passwordBanCommon`, `passwordCommonList`, `passwordMaxAgeDays` (0 = off).
+- Applied to `User`, `RegistrationForm`, `SettingsForm`, `RecoveryForm`.
+- Migration `m260720_160000_add_password_changed_at_to_user`; `PasswordExpireFilter` redirects to `/user/settings/account`.
+- Hash/verify only via `dektrium\user\helpers\Password` (Yii security).
+- Review: `PasswordPolicy::generate()` used in create/register/resendPassword; `resendPassword` persists `password_changed_at`; `hasAttribute` guard if column missing; settings does not assign `password` when `new_password` is empty.
 
-### Registrazione
+### Registration
 
-- `BackendFilter`: 404 su controller `registration` e `recovery` (profile/settings restano); attach su `user` con `as backend` oppure `userextended.blockRegistrationAndRecovery`.
-- `RegistrationController` + `RegistrationRateLimiter` (IP + email, anche su resend confirmation).
-- Parametri: `enableRegistrationRateLimit`, `registrationMaxAttempts`, `registrationAttemptWindow`, `registrationLockoutDuration`, `registrationProgressiveDelay`, `registrationDelay*`.
-- Protezioni form già presenti: `captcha`, `terms`, Turnstile (`cloudflareTurnstileOnRegistration`); confirmation Dektrium `enableConfirmation`.
+- `BackendFilter`: 404 on `registration` and `recovery` controllers (profile/settings remain); attach on `user` with `as backend` or `userextended.blockRegistrationAndRecovery`.
+- `RegistrationController` + `RegistrationRateLimiter` (IP + email, including confirmation resend).
+- Params: `enableRegistrationRateLimit`, `registrationMaxAttempts`, `registrationAttemptWindow`, `registrationLockoutDuration`, `registrationProgressiveDelay`, `registrationDelay*`.
+- Form protections already present: `captcha`, `terms`, Turnstile (`cloudflareTurnstileOnRegistration`); Dektrium confirmation via `enableConfirmation`.
 
-### Sessione
+### RBAC assignment
 
-- Timeout sessione/auth gestito dal modulo (`sessionTimeout`, `useAbsoluteAuthTimeout`, `absoluteAuthTimeout`, `disableAutoLogin`).
-- Default CRM: `disableAutoLogin = true` (authTimeout efficace; niente remember-me).
-- Cookie sessione: `hardenSessionCookies` applica HttpOnly + Secure (auto HTTPS/prod) + SameSite se mancanti (non forza `lifetime`).
-- `components\WebUser`: allo scadere di auth/absolute timeout invalida remember-me e non ri-loga dal cookie della stessa request.
-- Fix: registrazione `WebUser` aggiorna solo il DI (preserva `identityClass`); non sostituisce più il component `user` con config incompleta; repair su `EVENT_BEFORE_REQUEST`.
-- Regenerazione session ID: Yii `switchIdentity` + `regenerateSessionId` su login; logout con `logout(true)`.
-- Redirect client a login allo scadere (`SessionExpireAsset` / `session-expire.js`).
-- Flash su login con `?expired=1`.
-- Fix: non forzare `session.cookieParams.lifetime`; registra asset session-expire solo su HTML non-AJAX in `EVENT_BEGIN_PAGE` (evita HTML corrotto sulle pagine interne).
+- `AdminController::actionAssignments` + `AssignmentController`: mutation POST-only, explicit CSRF, AccessControl `admin`.
+- `Assignment` model (extends Dektrium): blocks self-escalation (`blockSelfRoleAssignment`); audit via `SecurityAudit` / logger; `user_id` not mass-assignable from POST.
+- `Assignments` widget with `processPost=false` when the controller handles POST (no mutate-on-render).
+- Params: `blockSelfRoleAssignment` (true), `enableRbacAssignmentAudit` (true).
 
-### Altro
+### Session
 
-- Persistenza filename avatar via `updateAttributes` dopo upload (Admin/Settings).
-- `SecurityController` usa il `LoginForm` del package; `LoginForm` nel `modelMap` user.
+- Session/auth timeout managed by the module (`sessionTimeout`, `useAbsoluteAuthTimeout`, `absoluteAuthTimeout`, `disableAutoLogin`).
+- CRM default: `disableAutoLogin = true` (effective authTimeout; no remember-me).
+- Session cookies: `hardenSessionCookies` applies HttpOnly + Secure (auto HTTPS/prod) + SameSite when missing (does not force `lifetime`).
+- `components\WebUser`: on idle/absolute auth timeout, invalidate remember-me and do not re-login from cookie in the same request.
+- Fix: `WebUser` registration updates DI only (preserves `identityClass`); no longer replaces the `user` component with a partial config; repair on `EVENT_BEFORE_REQUEST`.
+- Session ID regeneration: Yii `switchIdentity` + `regenerateSessionId` on login; logout with `logout(true)`.
+- Client redirect to login on expire (`SessionExpireAsset` / `session-expire.js`).
+- Login flash with `?expired=1`.
+- Fix: do not force `session.cookieParams.lifetime`; register session-expire asset only on non-AJAX HTML in `EVENT_BEGIN_PAGE` (avoids corrupted HTML on internal pages).
 
-### Performance admin utenti
+### Other
 
-- `UserSearch`: eager load `profile` + `roles`; filtro ruolo con `INNER JOIN` parametrizzato.
-- `AuthAssignment` ActiveRecord; `getRolesHTML()` usa la relazione (niente SQL concatenato).
-- Migration `m260720_111500_add_user_admin_indexes`: indice su `user.last_login_at`.
+- Persist avatar filename via `updateAttributes` after upload (Admin/Settings).
+- `SecurityController` uses the package `LoginForm`; `LoginForm` in the user `modelMap`.
+
+### Admin user performance
+
+- `UserSearch`: eager load `profile` + `roles`; role filter with parameterized `INNER JOIN`.
+- `AuthAssignment` ActiveRecord; `getRolesHTML()` uses the relation (no concatenated SQL).
+- Migration `m260720_111500_add_user_admin_indexes`: index on `user.last_login_at`.
 
 ### Caching
 
-- `RbacRoleCache`: cache lista ruoli per filtri admin + invalidate su create/update/delete ruolo (`RoleController`).
-- `ModuleConfig`: memo per-request delle impostazioni modulo (Profile, LoginRateLimiter, avatar).
-- Parametri: `enableRbacRoleCache`, `rbacRoleCacheDuration`.
+- `RbacRoleCache`: cache role list for admin filters + invalidate on role create/update/delete (`RoleController`).
+- `ModuleConfig`: per-request memo of module settings (Profile, LoginRateLimiter, avatar).
+- Params: `enableRbacRoleCache`, `rbacRoleCacheDuration`.
 
 ### Cloudflare Turnstile
 
-- Widget opzionale su login (`login` / `login_prestashop`) e registrazione (flag dedicato).
-- `TurnstileVerifier` (siteverify, fail closed); `TurnstileAsset` solo se abilitato.
-- Parametri: `enableCloudflareTurnstile`, `cloudflareSiteKey`, `cloudflareSecretKey`, `cloudflareTurnstileTheme`, `cloudflareTurnstileOnRegistration` (default off; secret da `web-local`).
-- Fix login: non validare Turnstile in AJAX (token monouso); disabilita `enableAjaxValidation` quando Turnstile è attivo; flash dedicati per captcha/Turnstile.
+- Optional widget on login (`login` / `login_prestashop`) and registration (dedicated flag).
+- `TurnstileVerifier` (siteverify, fail closed); `TurnstileAsset` only when enabled.
+- Params: `enableCloudflareTurnstile`, `cloudflareSiteKey`, `cloudflareSecretKey`, `cloudflareTurnstileTheme`, `cloudflareTurnstileOnRegistration` (default off; secret from `web-local`).
+- Login fix: do not validate Turnstile in AJAX (one-time token); disable `enableAjaxValidation` when Turnstile is active; dedicated flash messages for captcha/Turnstile.

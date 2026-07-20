@@ -409,7 +409,16 @@ Fail closed: missing/invalid token denies login. Script is loaded only when enab
 | `enableRbacRoleCache` | `true` | Cache role name list for admin filters. |
 | `rbacRoleCacheDuration` | `3600` | Cache TTL (seconds). |
 
-Map `rbac` `RoleController` / `PermissionController` to the userextended controllers so role-list cache is invalidated and role/permission `delete` is POST-only.
+Map `rbac` `RoleController` / `PermissionController` / `AssignmentController` to the userextended controllers so role-list cache is invalidated, deletes are POST-only, and assignments use the secured model.
+
+### RBAC assignment security
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `blockSelfRoleAssignment` | `true` | Deny adding new roles/permissions to your own user. |
+| `enableRbacAssignmentAudit` | `true` | Log assignment changes (cinghie logger if present, else `Yii::info` category `userextended.security`). |
+
+Assignment updates go through `AdminController::actionAssignments` (and `/rbac/assignment/assign`) with admin AccessControl, CSRF, and VerbFilter. Self-escalation attempts are blocked and audited.
 
 Admin user grid uses eager loading for `profile` / `roles`. Impersonation (`user/admin/switch`) is disabled in this package (`AdminController` + `enableImpersonateUser => false`).
 
@@ -506,6 +515,7 @@ Features
     <li>Session timeout with optional client redirect / warning</li>
     <li>Login brute-force protection (rate limit, lockout, progressive delay, captcha after N failures)</li>
     <li>Registration throttle (IP + email) + BackendFilter for CRM/backend (blocks registration/recovery)</li>
+    <li>RBAC assignment hardening (CSRF, admin-only, block self-escalation, audit)</li>
     <li>Optional Cloudflare Turnstile on login (and registration)</li>
     <li>Admin users grid performance (eager loading, role cache, DB indexes)</li>
     <li>User impersonation disabled by default</li>

@@ -148,6 +148,20 @@ class Module extends BaseUser
     public $rbacRoleCacheDuration = 3600;
 
     /**
+     * Block adding new roles/permissions to your own account (self-escalation).
+     *
+     * @var bool
+     */
+    public $blockSelfRoleAssignment = true;
+
+    /**
+     * Audit RBAC assignment changes (logger module or Yii::info category userextended.security).
+     *
+     * @var bool
+     */
+    public $enableRbacAssignmentAudit = true;
+
+    /**
      * Enable login brute-force protection (IP + username/email).
      *
      * @var bool

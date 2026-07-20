@@ -1,142 +1,144 @@
 # Update - yii2-user-extended
 
-Proposte di ottimizzazione e sicurezza del modulo.  
-Le voci con ✅ sono già state applicate nel package.
+Optimization and security proposals for the module.  
+Items marked ✅ have already been applied in the package.
 
-## Sicurezza
+## Security
 
 1. **SQL injection in `UserSearch`** ✅
-   - ~~Il filtro `rule` concatena `$this->rule` nella query SQL.~~
-   - Fix applicato: query parametrizzata + validazione `rule` contro lista ruoli RBAC.
+   - ~~The `rule` filter concatenated `$this->rule` into the SQL query.~~
+   - Fix applied: parameterized query + `rule` validated against the RBAC role list.
 
-2. **Upload avatar** ✅
-   - ~~Restringere MIME/extension (jpg/png/webp), max size, rename sicuro del file.~~
-   - ~~Bloccare upload di file eseguibili / double extension.~~
-   - ~~Sanitizzare/normalizzare il nome file e verificare che resti sotto `avatarPath`.~~
-   - Fix applicato in `Profile::uploadAvatar` / `deleteImage` + parametri modulo `avatarAllowedExtensions` / `avatarMaxSize`.
+2. **Avatar upload** ✅
+   - ~~Restrict MIME/extension (jpg/png/webp), max size, safe file rename.~~
+   - ~~Block executable uploads / double extensions.~~
+   - ~~Sanitize/normalize the filename and ensure it stays under `avatarPath`.~~
+   - Fix applied in `Profile::uploadAvatar` / `deleteImage` + module params `avatarAllowedExtensions` / `avatarMaxSize`.
 
-3. **Access control admin** ✅
-   - ~~Rivedere `AdminController`: azione `switch` consentita a tutti gli utenti autenticati (`@`).~~
-   - ~~Limitare lo switch utente a ruoli privilegiati e loggare ogni impersonificazione.~~
-   - Decisione applicata: **switch/impersonificazione disabilitata** (deny access + `actionSwitch` 403 + `enableImpersonateUser = false`).
+3. **Admin access control** ✅
+   - ~~Review `AdminController`: `switch` allowed for all authenticated users (`@`).~~
+   - ~~Limit user switch to privileged roles and log every impersonation.~~
+   - Decision applied: **switch/impersonation disabled** (deny access + `actionSwitch` 403 + `enableImpersonateUser = false`).
 
 4. **Login / brute force** ✅
-   - ~~Rate limit su tentativi falliti (IP + username).~~
-   - ~~Delay progressivo o lock temporaneo account.~~
-   - ~~Opzione captcha dopo N fallimenti.~~
-   - ~~Messaggi di errore generici (già parzialmente presenti): evitare enumeration username/email.~~
-   - Fix applicato: `LoginRateLimiter` + `LoginForm` / `SecurityController` (cache IP+login, lock, delay, captcha opzionale).
+   - ~~Rate limit failed attempts (IP + username).~~
+   - ~~Progressive delay or temporary account lock.~~
+   - ~~Optional captcha after N failures.~~
+   - ~~Generic error messages (already partially present): avoid username/email enumeration.~~
+   - Fix applied: `LoginRateLimiter` + `LoginForm` / `SecurityController` (IP+login cache, lock, delay, optional captcha).
 
-5. **Cloudflare Turnstile sul login** ✅
-   - ~~Aggiungere supporto opzionale al widget Cloudflare Turnstile nel form di login.~~
-   - ~~Parametri modulo dedicati (default disabilitati).~~
-   - ~~Validazione server-side siteverify; fail chiuso; secret solo in web-local.~~
-   - Fix: `TurnstileVerifier` + `TurnstileAsset` + widget in login/register; rate limit resta seconda barriera.
+5. **Cloudflare Turnstile on login** ✅
+   - ~~Add optional Cloudflare Turnstile widget support on the login form.~~
+   - ~~Dedicated module params (disabled by default).~~
+   - ~~Server-side siteverify validation; fail closed; secret only in web-local.~~
+   - Fix: `TurnstileVerifier` + `TurnstileAsset` + widget on login/register; rate limit remains a second barrier.
 
-6. **Sessione e autenticazione** ✅
-   - ~~Default più sicuri: valutare `disableAutoLogin = true` in ambienti CRM.~~
-   - ~~Cookie sessione: `Secure` + `HttpOnly` + `SameSite` coerenti per environment.~~
-   - ~~Regenerare session ID al login/logout.~~
-   - ~~Opzione `absoluteAuthTimeout` per durata massima login.~~
-   - ~~Invalidare remember-me cookie allo scadere di `authTimeout`.~~
-   - Fix: default `disableAutoLogin = true`; `hardenSessionCookies` / `sessionCookieSecure` / `sessionSameSite`; `absoluteAuthTimeout`; `WebUser` non ri-loga da cookie dopo timeout; regenerate su login + logout.
+6. **Session and authentication** ✅
+   - ~~Safer defaults: consider `disableAutoLogin = true` in CRM environments.~~
+   - ~~Session cookie: consistent `Secure` + `HttpOnly` + `SameSite` per environment.~~
+   - ~~Regenerate session ID on login/logout.~~
+   - ~~`absoluteAuthTimeout` option for max login duration.~~
+   - ~~Invalidate remember-me cookie when `authTimeout` expires.~~
+   - Fix: default `disableAutoLogin = true`; `hardenSessionCookies` / `sessionCookieSecure` / `sessionSameSite`; `absoluteAuthTimeout`; `WebUser` does not re-login from cookie after timeout; regenerate on login + logout.
 
 7. **CSRF / verbs** ✅
-   - ~~Verificare che tutte le azioni mutative restino su POST + CSRF.~~
-   - ~~Controllare form login/register/settings e azioni multiple admin.~~
-   - Fix: VerbFilter POST su admin bulk/block/delete/confirm + role/permission delete; CSRF via controller + token ActiveForm (non proprietà ActiveForm); bulk AJAX admin include token CSRF; no self-delete/block in bulk.
+   - ~~Ensure all mutating actions stay on POST + CSRF.~~
+   - ~~Check login/register/settings forms and admin bulk actions.~~
+   - Fix: VerbFilter POST on admin bulk/block/delete/confirm + role/permission delete; CSRF via controller + ActiveForm token (not an ActiveForm property); admin bulk AJAX includes CSRF token; no self-delete/block in bulk.
 
 8. **XSS output** ✅
-   - ~~Audit view admin/profile/settings: encode sistematico di username, nome, signature, bio.~~
-   - ~~Evitare `format => raw` senza sanitizzazione.~~
-   - ~~Signature/editor HTML: whitelist tag o salvataggio plain text.~~
-   - Fix: `SafeHtml` helper; encode in admin/profile/settings/login; role names encoded; signature default plain text (`signatureAllowHtml=false`) + HtmlPurifier whitelist se abilitato; bio sempre plain text.
+   - ~~Audit admin/profile/settings views: systematic encode of username, name, signature, bio.~~
+   - ~~Avoid `format => raw` without sanitization.~~
+   - ~~Signature/HTML editor: tag whitelist or plain-text storage.~~
+   - Fix: `SafeHtml` helper; encode in admin/profile/settings/login; role names encoded; signature default plain text (`signatureAllowHtml=false`) + HtmlPurifier whitelist when enabled; bio always plain text.
 
 9. **Password policy** ✅
-   - ~~Policy configurabile (lunghezza minima, complessità, ban password comuni).~~
-   - ~~Forzare cambio password periodico (parametro modulo).~~
-   - ~~Hash solo tramite helper Dektrium/Yii (nessun confronto custom unsafe).~~
-   - Fix: `PasswordPolicy` + validator; `password_changed_at` migration; `PasswordExpireFilter`; form register/settings/recovery/User; hash/verify solo `Password::hash` / `Password::validate`.
-   - Review: `PasswordPolicy::generate()` per create/register/resend; `resendPassword` salva anche `password_changed_at`; guard `hasAttribute` se migration non applicata; policy User limitata a scenari password.
+   - ~~Configurable policy (min length, complexity, ban common passwords).~~
+   - ~~Force periodic password change (module parameter).~~
+   - ~~Hash only via Dektrium/Yii helpers (no unsafe custom comparisons).~~
+   - Fix: `PasswordPolicy` + validator; `password_changed_at` migration; `PasswordExpireFilter`; register/settings/recovery/User forms; hash/verify only via `Password::hash` / `Password::validate`.
+   - Review: `PasswordPolicy::generate()` for create/register/resend; `resendPassword` also saves `password_changed_at`; `hasAttribute` guard if migration not applied; User policy limited to password scenarios.
 
-10. **Registrazione** ✅
-    - ~~BackendFilter già blocca recovery/registration in alcuni contesti: rendere esplicito e documentato.~~
-    - ~~Se registration abilitata: captcha / Turnstile, terms, email confirmation, throttle.~~
-    - Fix: `BackendFilter` documentato (blocca solo `registration`+`recovery`); CRM `user.as backend`; opzionale `blockRegistrationAndRecovery` via Bootstrap.
-    - Fix: `RegistrationController` + `RegistrationRateLimiter` (IP+email); captcha/terms/Turnstile già su `RegistrationForm`; confirmation = `user.enableConfirmation`.
+10. **Registration** ✅
+    - ~~`BackendFilter` already blocks recovery/registration in some contexts: make it explicit and documented.~~
+    - ~~If registration is enabled: captcha / Turnstile, terms, email confirmation, throttle.~~
+    - Fix: `BackendFilter` documented (blocks only `registration`+`recovery`); CRM `user.as backend`; optional `blockRegistrationAndRecovery` via Bootstrap.
+    - Fix: `RegistrationController` + `RegistrationRateLimiter` (IP+email); captcha/terms/Turnstile already on `RegistrationForm`; confirmation = `user.enableConfirmation`.
 
-11. **Dipendenze e packaging**
-    - Allineare `composer.json` (Dektrium vs 2amigos/usuario) alla dipendenza reale usata.
-    - Aggiornare versioni / advisory di sicurezza.
-    - Evitare dipendenze abbandonate; pianificare migrazione auth moderna se necessario.
+11. **Dependencies and packaging**
+    - Align `composer.json` (Dektrium vs 2amigos/usuario) with the dependency actually used.
+    - Update versions / security advisories.
+    - Avoid abandoned dependencies; plan a modern auth migration if needed.
 
-12. **Logging sicurezza**
-    - Log strutturati: login fail/success, block, delete user, role assign, switch user, session expire, Turnstile fail.
-    - Non loggare password o token in chiaro.
+12. **Security logging**
+    - Structured logs: login fail/success, block, delete user, role assign, switch user, session expire, Turnstile fail.
+    - Do not log passwords or tokens in clear text.
 
-13. **Autorizzazione RBAC**
-    - Centralizzare assignment ruoli/permessi con check CSRF + permesso admin.
-    - Impedire self-escalation (un admin non assegna a sé ruoli superiori senza audit).
+13. **RBAC authorization** ✅
+    - ~~Centralize role/permission assignment with CSRF + admin permission checks.~~
+    - ~~Prevent self-escalation (an admin must not assign higher roles to themselves without audit).~~
+    - Fix: `Assignment` model + `Assignments` widget; `AdminController::actionAssignments` and `AssignmentController` (POST/CSRF/admin); `blockSelfRoleAssignment`; `SecurityAudit` (logger or Yii::info).
+    - Review: `user_id` not mass-assignable from POST (`safeAttributes` + rebind from URL in controllers).
 
-## Ottimizzazioni
+## Optimizations
 
-1. **Query e performance admin** ✅
-   - ~~Eager loading `profile` / `roles` nella grid utenti (evitare N+1).~~
-   - ~~Indici DB su `email`, `username`, `last_login_at`, `auth_assignment.user_id`.~~
-   - ~~Sostituire subquery stringa ruoli con join/param query.~~
-   - Fix: `UserSearch` eager load + join filtro ruolo; `AuthAssignment` AR; `getRolesHTML` senza SQL concatenato; migration indice `last_login_at` (`username`/`email`/`auth_assignment.user_id` già presenti upstream).
+1. **Admin query performance** ✅
+   - ~~Eager load `profile` / `roles` in the user grid (avoid N+1).~~
+   - ~~DB indexes on `email`, `username`, `last_login_at`, `auth_assignment.user_id`.~~
+   - ~~Replace string role subquery with join/param query.~~
+   - Fix: `UserSearch` eager load + role filter join; `AuthAssignment` AR; `getRolesHTML` without concatenated SQL; `last_login_at` index migration (`username`/`email`/`auth_assignment.user_id` already upstream).
 
 2. **Caching** ✅
-   - ~~Cache lista ruoli RBAC (`getNameList`) con invalidate on change.~~
-   - ~~Cache config modulo usate spesso in request.~~
-   - Fix: `RbacRoleCache` + invalidate da `RoleController`; `ModuleConfig` memo per-request.
+   - ~~Cache RBAC role list (`getNameList`) with invalidate on change.~~
+   - ~~Cache frequently used module config per request.~~
+   - Fix: `RbacRoleCache` + invalidate from `RoleController`; `ModuleConfig` per-request memo.
 
-3. **Session expire client**
-   - Evitare `alert()` invasivo: toast/banner non bloccante.
-   - Heartbeat leggero opzionale per allineare timer client/server.
-   - Non registrare asset JS su response AJAX JSON.
-   - Warning una sola volta, configurabile.
+3. **Client session expire**
+   - Avoid intrusive `alert()`: non-blocking toast/banner.
+   - Optional light heartbeat to align client/server timers.
+   - Do not register JS assets on AJAX JSON responses.
+   - Show warning once, configurable.
 
-4. **Codice / manutenibilità**
-   - Allineare versioni file header a `0.6.4`.
-   - ~~Correggere bug scenari Profile (`contact` legato per errore a flag `avatar`).~~ ✅ (fixato con `ModuleConfig` in scenarios/rules)
-   - Tipizzare proprietà/metodi e rimuovere codice morto / `var_dump` commentati.
-   - Estrarre helper comuni upload/session in servizi dedicati.
+4. **Code / maintainability**
+   - Align file header versions to `0.6.4`.
+   - ~~Fix Profile scenario bug (`contact` incorrectly tied to `avatar` flag).~~ ✅ (fixed with `ModuleConfig` in scenarios/rules)
+   - Type properties/methods and remove dead code / commented `var_dump`.
+   - Extract common upload/session helpers into dedicated services.
 
 5. **i18n**
-   - Completare cataloghi (`en` oltre a `it`) per tutti i nuovi messaggi sessione/security.
-   - Chiavi coerenti e senza stringhe hardcoded nelle view.
+   - Complete catalogs (`en` as well as `it`) for all new session/security messages.
+   - Consistent keys and no hardcoded strings in views.
 
-6. **Asset**
-   - Pubblicare asset con hash/versioning.
-   - Minify JS session-expire in prod.
-   - `sourcePath` robusto (path relativo al package, non solo `@vendor/...`).
+6. **Assets**
+   - Publish assets with hash/versioning.
+   - Minify session-expire JS in prod.
+   - Robust `sourcePath` (path relative to the package, not only `@vendor/...`).
 
-7. **Configurazione modulo**
-   - Documentare in README tutti i parametri (`sessionTimeout`, captcha, Cloudflare Turnstile, avatar, ecc.).
-   - Validare range parametri in `Module::init()` (es. timeout >= 0; se Turnstile on → site/secret key obbligatori).
-   - Preset environment: `dev` / `prod` security defaults.
+7. **Module configuration**
+   - Document all parameters in README (`sessionTimeout`, captcha, Cloudflare Turnstile, avatar, etc.).
+   - Validate parameter ranges in `Module::init()` (e.g. timeout >= 0; if Turnstile on → site/secret keys required).
+   - Environment presets: `dev` / `prod` security defaults.
 
-8. **Test**
-   - Unit/integration: login fail limit, session timeout, upload avatar reject, UserSearch rule injection, access admin/switch.
-   - Smoke test redirect a login con `?expired=1`.
-   - Test Turnstile: token mancante, token invalid, token valid (mock siteverify).
+8. **Tests**
+   - Unit/integration: login fail limit, session timeout, avatar upload reject, UserSearch rule injection, admin/switch access.
+   - Smoke test redirect to login with `?expired=1`.
+   - Turnstile tests: missing token, invalid token, valid token (mock siteverify).
 
-## Priorità suggerite
+## Suggested priorities
 
-| Priorità | Voce |
+| Priority | Item |
 |----------|------|
-| ~~Alta~~ | ~~Fix SQL injection `UserSearch.rule`~~ ✅ |
-| ~~Alta~~ | ~~Hardening upload avatar~~ ✅ |
-| ~~Alta~~ | ~~Switch utente disabilitato~~ ✅ |
-| ~~Alta~~ | ~~Rate limit login~~ ✅ |
-| ~~Media~~ | ~~Widget Cloudflare Turnstile sul login~~ ✅ |
-| Media | Default sessione più strict + docs parametri |
-| ~~Media~~ | ~~Eager loading / query admin~~ ✅ |
-| Media | UX session expire (no alert bloccante) |
-| Bassa | Cleanup versioni, i18n en, minify asset |
+| ~~High~~ | ~~Fix SQL injection `UserSearch.rule`~~ ✅ |
+| ~~High~~ | ~~Avatar upload hardening~~ ✅ |
+| ~~High~~ | ~~User switch disabled~~ ✅ |
+| ~~High~~ | ~~Login rate limit~~ ✅ |
+| ~~Medium~~ | ~~Cloudflare Turnstile widget on login~~ ✅ |
+| Medium | Stricter session defaults + parameter docs |
+| ~~Medium~~ | ~~Eager loading / admin queries~~ ✅ |
+| Medium | Session expire UX (no blocking alert) |
+| Low | Version cleanup, en i18n, minify assets |
 
-## Note
+## Notes
 
-- Interventi da fare sul package `vendor/cinghie/yii2-user-extended` (o fork) e poi propagare agli environment del progetto.
-- Dopo le modifiche di sicurezza, aggiornare CHANGELOG/README e bump versione modulo.
+- Changes should be made in the `vendor/cinghie/yii2-user-extended` package (or a fork) and then propagated to project environments.
+- After security changes, update CHANGELOG/README and bump the module version.

@@ -18,7 +18,6 @@ use cinghie\userextended\components\WebUser;
 use cinghie\userextended\filters\BackendFilter;
 use cinghie\userextended\filters\PasswordExpireFilter;
 use cinghie\userextended\models\Account;
-use cinghie\userextended\models\Assignment;
 use cinghie\userextended\models\LoginForm;
 use cinghie\userextended\models\Permission;
 use cinghie\userextended\models\Profile;
@@ -49,7 +48,6 @@ class Bootstrap implements BootstrapInterface
      */
     private $_modelMap = [
         'Account' => Account::class,
-        'Assignment' => Assignment::class,
         'LoginForm' => LoginForm::class,
         'Permission' => Permission::class,
         'Profile' => Profile::class,
@@ -78,7 +76,7 @@ class Bootstrap implements BootstrapInterface
                 $modelName = is_array($definition) ? $definition['class'] : $definition;
                 $module->modelMap[$name] = $modelName;
 
-                if (in_array($name, ['Account', 'Assignment', 'LoginForm', 'Permission', 'Profile', 'RecoveryForm', 'RegistrationForm', 'SettingsForm', 'User'], true)) {
+                if (in_array($name, ['Account', 'LoginForm', 'Permission', 'Profile', 'RecoveryForm', 'RegistrationForm', 'SettingsForm', 'User'], true)) {
                     Yii::$container->set($name . 'Query', function () use ($modelName) {
                         return $modelName::find();
                     });

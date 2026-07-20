@@ -14,6 +14,7 @@ namespace cinghie\userextended\controllers;
 
 use Throwable;
 use Yii;
+use cinghie\userextended\models\Assignment;
 use cinghie\userextended\models\Profile;
 use cinghie\userextended\models\User;
 use cinghie\userextended\models\UserSearch;
@@ -28,6 +29,7 @@ use yii\filters\AccessControl;
 use yii\filters\AccessRule;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -69,6 +71,7 @@ class AdminController extends BaseController
                     'resend-password'  => ['POST'],
                     'block'            => ['POST'],
                     'switch'           => ['POST'],
+                    'assignments'      => ['GET', 'POST'],
                 ],
             ],
         ];
@@ -86,6 +89,52 @@ class AdminController extends BaseController
 		throw new \yii\web\ForbiddenHttpException(
 			Yii::t('userextended', 'User impersonation is disabled.')
 		);
+	}
+
+	/**
+	 * Assign RBAC roles/permissions to a user (centralized POST + CSRF + self-escalation guard).
+	 *
+	 * @param int $id
+	 *
+	 * @return string|Response
+	 * @throws BadRequestHttpException
+	 * @throws InvalidConfigException
+	 * @throws NotFoundHttpException
+	 */
+	public function actionAssignments($id)
+	{
+		if (!isset(Yii::$app->extensions['dektrium/yii2-rbac'])) {
+			throw new NotFoundHttpException();
+		}
+
+		Url::remember('', 'actions-redirect');
+		$user = $this->findModel($id);
+
+		$model = Yii::createObject([
+			'class' => Assignment::class,
+			'user_id' => $user->id,
+		]);
+
+		if (Yii::$app->request->isPost) {
+			if (!Yii::$app->request->validateCsrfToken()) {
+				throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
+			}
+
+			$targetUserId = (int) $user->id;
+			if ($model->load(Yii::$app->request->post())) {
+				// Defense in depth: never trust posted user_id
+				$model->user_id = $targetUserId;
+				if ($model->updateAssignments()) {
+					Yii::$app->session->setFlash('success', Yii::t('rbac', 'Assignments have been updated'));
+					return $this->refresh();
+				}
+			}
+		}
+
+		return $this->render('_assignments', [
+			'user' => $user,
+			'model' => $model,
+		]);
 	}
 
 	/**
