@@ -57,6 +57,8 @@ final class ModuleSettings
 					'passwordRequireLowercase' => true,
 					'passwordRequireDigit' => true,
 					'passwordBanCommon' => true,
+					'passwordHashCost' => 13,
+					'rehashPasswordOnLogin' => true,
 					'blockSelfRoleAssignment' => true,
 					'enableSecurityAudit' => true,
 					'enableRbacAssignmentAudit' => true,
@@ -138,6 +140,8 @@ final class ModuleSettings
 			'passwordRequireSpecial' => false,
 			'passwordBanCommon' => true,
 			'passwordMaxAgeDays' => 0,
+			'passwordHashCost' => 13,
+			'rehashPasswordOnLogin' => true,
 			'blockSelfRoleAssignment' => true,
 			'enableRbacAssignmentAudit' => true,
 			'enableSecurityAudit' => true,
@@ -206,6 +210,7 @@ final class ModuleSettings
 		$module->passwordMinLength = max(1, (int) $module->passwordMinLength);
 		$module->passwordMaxLength = max(1, (int) $module->passwordMaxLength);
 		$module->passwordMaxAgeDays = max(0, (int) $module->passwordMaxAgeDays);
+		$module->passwordHashCost = PasswordHashCost::clamp((int) $module->passwordHashCost);
 
 		if ($module->passwordMaxLength > 72) {
 			$module->passwordMaxLength = 72;

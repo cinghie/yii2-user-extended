@@ -47,6 +47,8 @@ Internal technical notes.
 
 - `PasswordPolicy` / `PasswordPolicyValidator`: min/max length, upper/lower/digit/special, ban common passwords.
 - Params: `enablePasswordPolicy`, `passwordMinLength` (8), `passwordMaxLength` (72), `passwordRequire*`, `passwordBanCommon`, `passwordCommonList`, `passwordMaxAgeDays` (0 = off).
+- bcrypt cost: `passwordHashCost` default `13` (Dektrium was `10`) applied to `user.cost` in Bootstrap; `rehashPasswordOnLogin` upgrades weak hashes after successful login without breaking existing ones.
+- Review: cost clamped 12–15; never lower an existing higher `user.cost`; rehash re-validates plaintext, refuses weaker new hash, audits `password_rehash` without secrets.
 - Applied to `User`, `RegistrationForm`, `SettingsForm`, `RecoveryForm`.
 - Migration `m260720_160000_add_password_changed_at_to_user`; `PasswordExpireFilter` redirects to `/user/settings/account`.
 - Hash/verify only via `dektrium\user\helpers\Password` (Yii security).

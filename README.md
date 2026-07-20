@@ -169,6 +169,8 @@ Set on your configuration file, in modules section
         'passwordBanCommon' => true,
         'passwordCommonList' => [], // extra banned passwords
         'passwordMaxAgeDays' => 0, // 0 = disabled; e.g. 90 forces periodic change
+        'passwordHashCost' => 13, // bcrypt 12–15 (default 13); old hashes still verify
+        'rehashPasswordOnLogin' => true, // upgrade-only rehash after successful login
 
         // Session expire / auth hardening
         'sessionTimeout' => 3600, // seconds; 0 disables module session handling
@@ -412,6 +414,8 @@ Bio and name fields are always stripped to plain text on save. Views encode user
 | `passwordBanCommon` | `true` | Reject common passwords. |
 | `passwordCommonList` | `[]` | Extra banned passwords. |
 | `passwordMaxAgeDays` | `0` | Force change after N days (`0` = off). Requires migration `password_changed_at`. |
+| `passwordHashCost` | `13` | bcrypt cost for **new** hashes (via Dektrium `user.cost`). Clamped to **12–15** (never weaker than 12). Existing hashes keep working (`password_verify`). Bootstrap only **raises** `user.cost`, never lowers a higher value. |
+| `rehashPasswordOnLogin` | `true` | After successful login, upgrade `password_hash` if its cost is below `passwordHashCost`. Re-validates the password before rewrite; refuses to save a weaker hash; does not change `password_changed_at`. |
 
 Hashing and verification use only `dektrium\user\helpers\Password` (Yii `security`). Map `RecoveryForm` to `cinghie\userextended\models\RecoveryForm`.
 

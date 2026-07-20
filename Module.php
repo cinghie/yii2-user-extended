@@ -543,6 +543,21 @@ class Module extends BaseUser
     public $passwordMaxAgeDays = 0;
 
     /**
+     * bcrypt cost for new password hashes (Dektrium user.cost). Default 13 (was 10).
+     * Clamped to 12–15. Existing hashes keep working; optional rehash on login upgrades them.
+     *
+     * @var int
+     */
+    public $passwordHashCost = 13;
+
+    /**
+     * On successful login, rehash password_hash if stored cost is below passwordHashCost.
+     *
+     * @var bool
+     */
+    public $rehashPasswordOnLogin = true;
+
+    /**
      * @inheritdoc
      * @throws InvalidConfigException
      */

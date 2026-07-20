@@ -17,6 +17,7 @@ use cinghie\userextended\assets\SessionExpireAsset;
 use cinghie\userextended\components\WebUser;
 use cinghie\userextended\filters\BackendFilter;
 use cinghie\userextended\filters\PasswordExpireFilter;
+use cinghie\userextended\helpers\PasswordHashCost;
 use cinghie\userextended\models\Account;
 use cinghie\userextended\models\LoginForm;
 use cinghie\userextended\models\Permission;
@@ -83,6 +84,9 @@ class Bootstrap implements BootstrapInterface
                 }
             }
 
+            // Apply before web-only hooks so console user create/reset also uses the cost
+            $this->configurePasswordHashCost($app, $module);
+
             if ($app instanceof WebApplication) {
                 $this->registerWebUser($app, $module);
                 $this->configureSessionExpire($app, $module);
@@ -90,6 +94,22 @@ class Bootstrap implements BootstrapInterface
                 $this->configureBackendFilter($app, $module);
             }
         }
+    }
+
+    /**
+     * Raise Dektrium user.cost from userextended passwordHashCost (default 13).
+     *
+     * @param Application $app
+     * @param Module $module
+     * @return void
+     */
+    protected function configurePasswordHashCost(Application $app, Module $module): void
+    {
+        if (!$app->hasModule('user')) {
+            return;
+        }
+
+        PasswordHashCost::applyToUserModule($app->getModule('user'));
     }
 
     /**

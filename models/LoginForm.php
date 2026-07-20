@@ -15,6 +15,7 @@ namespace cinghie\userextended\models;
 use Yii;
 use cinghie\userextended\helpers\LoginRateLimiter;
 use cinghie\userextended\helpers\ModuleConfig;
+use cinghie\userextended\helpers\PasswordHashCost;
 use cinghie\userextended\helpers\SecurityAudit;
 use cinghie\userextended\helpers\TurnstileVerifier;
 use dektrium\user\helpers\Password;
@@ -252,6 +253,9 @@ class LoginForm extends BaseLoginForm
 		$loggedIn = parent::login();
 		if ($loggedIn) {
 			$limiter->clear($this->login);
+			if ($this->user !== null) {
+				PasswordHashCost::rehashIfNeeded($this->user, (string) $this->password);
+			}
 		}
 
 		return $loggedIn;

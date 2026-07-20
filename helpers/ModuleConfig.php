@@ -89,6 +89,8 @@ class ModuleConfig
 				'sessionTimeout' => (int) $m->sessionTimeout,
 				'enableLoginRateLimit' => (bool) $m->enableLoginRateLimit,
 				'rateLimitStorage' => (string) $m->rateLimitStorage,
+				'passwordHashCost' => (int) $m->passwordHashCost,
+				'rehashPasswordOnLogin' => (bool) $m->rehashPasswordOnLogin,
 				'enableRbacRoleCache' => (bool) $m->enableRbacRoleCache,
 			];
 		});
