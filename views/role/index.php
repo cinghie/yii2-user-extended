@@ -60,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				    'header'    => Yii::t('rbac', 'Name'),
 				    'value' => function ($model) {
 					    $url = Url::to(['/rbac/role/update', 'name' => $model['name']]);
-					    return Html::a($model['name'],$url);
+					    return Html::a(Html::encode($model['name']), $url);
 				    }
 			    ],
 			    [

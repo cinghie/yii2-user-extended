@@ -316,6 +316,20 @@ class Module extends BaseUser
 	public $signature = true;
 
 	/**
+	 * Allow limited HTML in signature (Imperavi/CKEditor). If false, store/display as plain text.
+	 *
+	 * @var bool
+	 */
+	public $signatureAllowHtml = false;
+
+	/**
+	 * HtmlPurifier HTML.Allowed when signatureAllowHtml is true.
+	 *
+	 * @var string
+	 */
+	public $signatureAllowedHtml = 'p,br,strong,b,em,i,ul,ol,li,a[href|title|target|rel],span';
+
+	/**
 	 * @var boolean terms
 	 */
 	public $terms = true;

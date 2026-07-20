@@ -15,6 +15,7 @@ namespace cinghie\userextended\models;
 use Yii;
 use cinghie\traits\EditorTrait;
 use cinghie\userextended\helpers\ModuleConfig;
+use cinghie\userextended\helpers\SafeHtml;
 use dektrium\user\models\Profile as BaseProfile;
 use yii\base\Exception;
 use yii\base\InvalidArgumentException;
@@ -176,10 +177,60 @@ class Profile extends BaseProfile
 	    if (!empty($cfg['signature'])) {
 		    $rules['signatureLength'] = ['signature', 'string'];
 		    $rules['signatureTrim'] = ['signature', 'trim'];
+		    $rules['signatureSanitize'] = [
+			    'signature',
+			    'filter',
+			    'filter' => [SafeHtml::class, 'sanitizeSignature'],
+		    ];
+	    }
+
+	    // Bio is always stored as plain text (no HTML)
+	    if (isset($rules['bioString']) || property_exists($this, 'bio')) {
+		    $rules['bioPlain'] = [
+			    'bio',
+			    'filter',
+			    'filter' => [SafeHtml::class, 'plainText'],
+			    'skipOnEmpty' => true,
+		    ];
+	    }
+
+	    // Strip HTML from common text profile fields when present
+	    foreach (['name', 'firstname', 'lastname', 'location', 'public_email', 'website'] as $plainField) {
+		    $rules[$plainField . 'Plain'] = [
+			    $plainField,
+			    'filter',
+			    'filter' => static function ($value) {
+				    if ($value === null || $value === '') {
+					    return $value;
+				    }
+				    return SafeHtml::plainText($value);
+			    },
+			    'skipOnEmpty' => true,
+		    ];
 	    }
 
         return $rules;
     }
+
+	/**
+	 * Signature ready for safe HTML rendering.
+	 *
+	 * @return string
+	 */
+	public function getSignatureHtml()
+	{
+		return SafeHtml::formatSignature($this->signature);
+	}
+
+	/**
+	 * Bio ready for safe HTML rendering.
+	 *
+	 * @return string
+	 */
+	public function getBioHtml()
+	{
+		return SafeHtml::formatBio($this->bio);
+	}
 
 	/**
 	 * @inheritdoc

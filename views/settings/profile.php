@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <label class="control-label col-md-3 col-sm-12" for="profile-avatar-view">Avatar</label>
 
                             <div class="col-md-9 col-sm-12">
-                                <input id="profile-avatar-view" class="form-control" name="Profile[avatar-view]" value="<?= $model->avatar ?>" disabled="" type="text">
+                                <input id="profile-avatar-view" class="form-control" name="Profile[avatar-view]" value="<?= Html::encode($model->avatar) ?>" disabled="" type="text">
                                 <div class="help-block help-block-error "></div>
                             </div>
 
@@ -164,7 +164,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     } ?>
 
                     <?php if(Yii::$app->getModule('userextended')->signature): ?>
-                        <?= $form->field($model, 'signature')->textarea() ?>
+                        <?php if (Yii::$app->getModule('userextended')->signatureAllowHtml): ?>
+                            <?= $model->getEditorWidget($form, 'signature', 'imperavi') ?>
+                        <?php else: ?>
+                            <?= $form->field($model, 'signature')->textarea(['rows' => 6]) ?>
+                        <?php endif ?>
                     <?php endif ?>
 
                     <div class="form-group">

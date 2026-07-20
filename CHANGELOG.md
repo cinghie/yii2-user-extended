@@ -20,6 +20,13 @@ Note tecniche interne.
 - Form login/register/settings/admin profile/connect: `enableCsrfValidation => true`.
 - Bulk AJAX utenti (`UserSearch`): payload include CSRF token esplicito.
 
+### XSS output
+
+- Helper `SafeHtml`: encode, plain text, HtmlPurifier whitelist, URL http(s) sicuri.
+- Parametri: `signatureAllowHtml` (default `false`), `signatureAllowedHtml`.
+- Profile: sanitizza signature/bio/name/firstname/lastname/location/website in validazione; `getSignatureHtml()` / `getBioHtml()` per output.
+- Views: encode username/ruoli/avatar/alt/title; login flash encoded; `format => raw` solo per icone statiche block/confirm.
+
 ### Sessione
 
 - Timeout sessione/auth gestito dal modulo (`sessionTimeout`, `useAbsoluteAuthTimeout`, `absoluteAuthTimeout`, `disableAutoLogin`).

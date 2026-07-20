@@ -27,7 +27,7 @@ $fieldOptions2 = [
 <div class="login-box">
 
     <div class="login-logo">
-        <a href="#"><b><?= Yii::$app->name ?></b></a>
+        <a href="#"><b><?= Html::encode(Yii::$app->name) ?></b></a>
     </div>
 
     <div class="login-box-body">
@@ -35,7 +35,7 @@ $fieldOptions2 = [
 	    <?php if (Yii::$app->session->hasFlash('login')): ?>
             <div class="bg-aqua" style="padding: 10px 0; margin-bottom: 15px;">
                 <p class="login-box-msg" style="padding: 0;">
-                    <?= Yii::$app->session->getFlash('login') ?>
+                    <?= Html::encode(Yii::$app->session->getFlash('login')) ?>
                 </p>
             </div>
 	    <?php endif ?>

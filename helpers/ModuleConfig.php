@@ -83,6 +83,8 @@ class ModuleConfig
 				'lastname' => (bool) $m->lastname,
 				'birthday' => (bool) $m->birthday,
 				'signature' => (bool) $m->signature,
+				'signatureAllowHtml' => (bool) $m->signatureAllowHtml,
+				'signatureAllowedHtml' => $m->signatureAllowedHtml,
 				'captcha' => (bool) $m->captcha,
 				'sessionTimeout' => (int) $m->sessionTimeout,
 				'enableLoginRateLimit' => (bool) $m->enableLoginRateLimit,

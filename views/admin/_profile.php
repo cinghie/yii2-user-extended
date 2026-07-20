@@ -35,7 +35,7 @@ use yii\helpers\Html;
             <div class="form-group field-profile-avatar-view">
                 <label class="control-label col-sm-3" for="profile-avatar-view">Avatar</label>
                 <div class="col-sm-9">
-                    <input id="profile-avatar-view" class="form-control" name="Profile[avatar-view]" value="<?= $profile->avatar ?>" disabled="" type="text">
+                    <input id="profile-avatar-view" class="form-control" name="Profile[avatar-view]" value="<?= Html::encode($profile->avatar) ?>" disabled="" type="text">
                     <div class="help-block help-block-error "></div>
                 </div>
             </div>
@@ -102,7 +102,11 @@ use yii\helpers\Html;
         <?php endif ?>
 
         <?php if(Yii::$app->getModule('userextended')->signature): ?>
-            <?= $profile->getEditorWidget($form, 'signature', $requestEditor = 'imperavi') ?>
+            <?php if (Yii::$app->getModule('userextended')->signatureAllowHtml): ?>
+                <?= $profile->getEditorWidget($form, 'signature', 'imperavi') ?>
+            <?php else: ?>
+                <?= $form->field($profile, 'signature')->textarea(['rows' => 6]) ?>
+            <?php endif ?>
         <?php endif ?>
 
         <div class="form-group">

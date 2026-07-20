@@ -146,6 +146,10 @@ Set on your configuration file, in modules section
         'avatarAllowedExtensions' => ['jpg', 'jpeg', 'png', 'webp'],
         'avatarMaxSize' => 2097152, // 2MB
 
+        // XSS / signature
+        'signatureAllowHtml' => false, // plain text by default; true = HtmlPurifier whitelist
+        'signatureAllowedHtml' => 'p,br,strong,b,em,i,ul,ol,li,a[href|title|target|rel],span',
+
         // Session expire / auth hardening
         'sessionTimeout' => 3600, // seconds; 0 disables module session handling
         'useAbsoluteAuthTimeout' => false, // if true and absoluteAuthTimeout=0, use sessionTimeout
@@ -297,6 +301,15 @@ Module parameters (0.6.4)
 ### CSRF / HTTP verbs
 
 Mutating admin actions (`block`, `confirm`, `delete`, bulk activate/deactivate/delete, `resend-password`) and RBAC role/permission `delete` require **POST**. Login, register, settings and admin profile forms keep **CSRF** enabled. Bulk user AJAX posts include the CSRF token explicitly.
+
+### XSS output
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `signatureAllowHtml` | `false` | If `false`, signature is stored/shown as plain text. If `true`, HtmlPurifier whitelist applies. |
+| `signatureAllowedHtml` | `p,br,strong,...` | HtmlPurifier `HTML.Allowed` when HTML is enabled. |
+
+Bio and name fields are always stripped to plain text on save. Views encode usernames, roles, and attributes; use `Profile::getBioHtml()` / `getSignatureHtml()` for display.
 
 ### Avatar upload security
 

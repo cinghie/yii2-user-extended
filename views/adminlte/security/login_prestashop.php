@@ -106,17 +106,25 @@ $this->registerCss('
 <div class="login-box">
 
 	<div class="login-header text-center">
-		<h1 style="color: #929292; font-size: 24px;"><b><?= Yii::$app->name ?></b></h1>
-        <div><?= isset(Yii::$app->params['version']) ? Yii::$app->params['version'] : 'Set Params version' ?></div>
+		<h1 style="color: #929292; font-size: 24px;"><b><?= Html::encode(Yii::$app->name) ?></b></h1>
+        <div><?= Html::encode(isset(Yii::$app->params['version']) ? (string) Yii::$app->params['version'] : 'Set Params version') ?></div>
 	</div>
 
     <div class="login-logo">
-	    <?= Html::img(Yii::$app->getModule('userextended')->templateLogoURL, ['alt'=>'some', 'class'=>'thing']);?>
+	    <?= Html::img(Yii::$app->getModule('userextended')->templateLogoURL, ['alt' => Html::encode(Yii::$app->name), 'class'=>'thing']);?>
     </div>
 
 	<div class="login-box-body">
 
-        <h4 class="text-center"><?= isset(Yii::$app->params['copyright_text']) ? Yii::$app->params['copyright_text'] : 'Set Params copyright_text' ?></h4>
+        <h4 class="text-center"><?= Html::encode(isset(Yii::$app->params['copyright_text']) ? (string) Yii::$app->params['copyright_text'] : 'Set Params copyright_text') ?></h4>
+
+		<?php if (Yii::$app->session->hasFlash('login')): ?>
+            <div class="bg-aqua" style="padding: 10px 0; margin-bottom: 15px;">
+                <p class="login-box-msg" style="padding: 0;">
+                    <?= Html::encode(Yii::$app->session->getFlash('login')) ?>
+                </p>
+            </div>
+		<?php endif ?>
 
 		<?php $form = ActiveForm::begin([
 			'id' => 'login-form',

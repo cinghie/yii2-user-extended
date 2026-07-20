@@ -87,7 +87,7 @@ $this->registerJs('$(document).ready(function()
 			'value' => function ($model) {
 				/** @var User $model */
 				$url = urldecode(Url::toRoute(['/user/admin/update', 'id' => $model->id]));
-				return Html::a($model->username,$url);
+				return Html::a(Html::encode($model->username), $url);
 			}
 		],
 		[
@@ -168,12 +168,12 @@ $this->registerJs('$(document).ready(function()
             'label' => Yii::t( 'userextended', 'Role' ),
 			'width' => '8%',
 			'value' => function ($model) {
-				$html = '';
+				$html = [];
 				/** @var User $model */
-				foreach($model->getRolesHTML() as $role){
-					$html .= $role['item_name'] . '<br>';
+				foreach ($model->getRolesHTML() as $role) {
+					$html[] = Html::encode($role['item_name']);
 				}
-				return $html;
+				return implode('<br>', $html);
 			},
 		],
 		[

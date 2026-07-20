@@ -7,14 +7,16 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.3
+ * @version 0.6.4
  */
 
+use cinghie\userextended\helpers\SafeHtml;
 use yii\widgets\Menu;
 
 $user    = Yii::$app->user->identity;
 $profile = $user->profile;
-$avatar  = $profile->getImageUrl();
+$avatar  = SafeHtml::encode($profile->getImageUrl());
+$username = SafeHtml::encode($user->username);
 $networksVisible = count(Yii::$app->authClientCollection->clients) > 0;
 
 ?>
@@ -23,13 +25,13 @@ $networksVisible = count(Yii::$app->authClientCollection->clients) > 0;
 
     <div class="panel-heading">
         <h3 class="panel-title" style="text-align: center;">
-            <?= $user->username ?>
+            <?= $username ?>
         </h3>
     </div>
 
     <div class="user-image">
         <a href="#" style="display: block; max-width: 100%; padding: 15px 15px 0;">
-            <img class="img-responsive" src="<?php echo $avatar ?>" alt="<?php echo $user->username ?>" title="<?php echo $user->username ?>" style="border: 1px solid #ddd; margin-left: auto; margin-right: auto; max-width: 100%; padding: 15px;">
+            <img class="img-responsive" src="<?= $avatar ?>" alt="<?= $username ?>" title="<?= $username ?>" style="border: 1px solid #ddd; margin-left: auto; margin-right: auto; max-width: 100%; padding: 15px;">
         </a>
     </div>
 

@@ -46,10 +46,11 @@ Le voci con ✅ sono già state applicate nel package.
    - ~~Controllare form login/register/settings e azioni multiple admin.~~
    - Fix: VerbFilter POST su admin bulk/block/delete/confirm + role/permission delete; CSRF esplicito nei form login/register/settings/profile; bulk AJAX admin include token CSRF; no self-delete/block in bulk.
 
-8. **XSS output**
-   - Audit view admin/profile/settings: encode sistematico di username, nome, signature, bio.
-   - Evitare `format => raw` senza sanitizzazione.
-   - Signature/editor HTML: whitelist tag o salvataggio plain text.
+8. **XSS output** ✅
+   - ~~Audit view admin/profile/settings: encode sistematico di username, nome, signature, bio.~~
+   - ~~Evitare `format => raw` senza sanitizzazione.~~
+   - ~~Signature/editor HTML: whitelist tag o salvataggio plain text.~~
+   - Fix: `SafeHtml` helper; encode in admin/profile/settings/login; role names encoded; signature default plain text (`signatureAllowHtml=false`) + HtmlPurifier whitelist se abilitato; bio sempre plain text.
 
 9. **Password policy**
    - Policy configurabile (lunghezza minima, complessità, ban password comuni).
