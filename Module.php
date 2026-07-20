@@ -155,11 +155,19 @@ class Module extends BaseUser
     public $blockSelfRoleAssignment = true;
 
     /**
-     * Audit RBAC assignment changes (logger module or Yii::info category userextended.security).
+     * Audit RBAC assignment changes (also requires enableSecurityAudit).
      *
      * @var bool
      */
     public $enableRbacAssignmentAudit = true;
+
+    /**
+     * Structured security audit (login, block/delete, Turnstile, session expire, RBAC).
+     * Never logs passwords or tokens. Uses cinghie logger when available, else Yii::info.
+     *
+     * @var bool
+     */
+    public $enableSecurityAudit = true;
 
     /**
      * Enable login brute-force protection (IP + username/email).

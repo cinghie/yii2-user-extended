@@ -13,6 +13,14 @@ Internal technical notes.
 - Login module params: `enableLoginRateLimit`, `loginMaxAttempts`, `loginAttemptWindow`, `loginLockoutDuration`, `loginProgressiveDelay`, `loginDelayBaseSeconds`, `loginDelayMaxSeconds`, `loginCaptchaAfterAttempts`, `loginCaptchaAction`.
 - User impersonation (`admin/switch`) disabled: AccessControl deny, `actionSwitch` → 403, `enableImpersonateUser = false`.
 
+### Security audit
+
+- `SecurityAudit` helper: structured events to cinghie logger (if present) or `Yii::info` category `userextended.security`.
+- Param `enableSecurityAudit` (default `true`); RBAC events also gated by `enableRbacAssignmentAudit`.
+- Events: `login_success` / `login_fail`, `logout`, `turnstile_fail`, `user_block` / `user_unblock`, `user_delete` / `user_delete_bulk`, `switch_denied`, `session_expire` / `session_expire_client` / `session_authkey_invalid`, `assign_update` / `self_escalation_block`.
+- Never logs passwords, tokens, auth keys, or CSRF values (`sanitizeData`).
+- Review: reserved context keys always win; `session_expire_client` logged once per session; case-insensitive secret key stripping.
+
 ### CSRF / verbs
 
 - `AdminController`: VerbFilter POST on `delete`, `deletemultiple`, `block`, `confirm`, `resend-password`, `activemultiple`, `deactivemultiple`, `switch`; sanitized bulk ids; no self-delete/block.

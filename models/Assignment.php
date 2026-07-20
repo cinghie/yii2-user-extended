@@ -75,7 +75,7 @@ class Assignment extends BaseAssignment
 				'actor_id' => $actorId,
 				'attempted_add' => $toAssign,
 				'current' => $assignedItemsNames,
-			]);
+			], 'rbac_assignment', 'User', '/user/admin/assignments');
 
 			return false;
 		}
@@ -97,7 +97,7 @@ class Assignment extends BaseAssignment
 			'actor_id' => $actorId,
 			'added' => $toAssign,
 			'removed' => $toRevoke,
-		]);
+		], 'rbac_assignment', 'User', '/user/admin/assignments');
 
 		return true;
 	}

@@ -15,6 +15,7 @@ namespace cinghie\userextended\models;
 use Yii;
 use cinghie\userextended\helpers\LoginRateLimiter;
 use cinghie\userextended\helpers\ModuleConfig;
+use cinghie\userextended\helpers\SecurityAudit;
 use cinghie\userextended\helpers\TurnstileVerifier;
 use dektrium\user\helpers\Password;
 use dektrium\user\models\LoginForm as BaseLoginForm;
@@ -80,6 +81,10 @@ class LoginForm extends BaseLoginForm
 							$attribute,
 							Yii::t('userextended', 'Security verification failed. Please try again.')
 						);
+						SecurityAudit::log('turnstile_fail', 0, [
+							'context' => 'login',
+							'login' => SecurityAudit::safeLogin($this->login),
+						], 'auth', 'User', '/user/security/login');
 					}
 				},
 			],

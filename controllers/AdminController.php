@@ -14,6 +14,7 @@ namespace cinghie\userextended\controllers;
 
 use Throwable;
 use Yii;
+use cinghie\userextended\helpers\SecurityAudit;
 use cinghie\userextended\models\Assignment;
 use cinghie\userextended\models\Profile;
 use cinghie\userextended\models\User;
@@ -30,6 +31,7 @@ use yii\filters\AccessRule;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -82,11 +84,15 @@ class AdminController extends BaseController
 	 *
 	 * @param int|null $id
 	 *
-	 * @throws \yii\web\ForbiddenHttpException
+	 * @throws ForbiddenHttpException
 	 */
 	public function actionSwitch($id = null)
 	{
-		throw new \yii\web\ForbiddenHttpException(
+		SecurityAudit::log('switch_denied', (int) $id, [
+			'target_user_id' => (int) $id,
+		], 'admin', 'User', '/user/admin/switch');
+
+		throw new ForbiddenHttpException(
 			Yii::t('userextended', 'User impersonation is disabled.')
 		);
 	}
@@ -252,17 +258,54 @@ class AdminController extends BaseController
                 $this->trigger(self::EVENT_BEFORE_UNBLOCK, $event);
                 $user->unblock();
                 $this->trigger(self::EVENT_AFTER_UNBLOCK, $event);
+                SecurityAudit::log('user_unblock', (int) $user->id, [
+					'username' => SecurityAudit::safeLogin($user->username),
+				], 'admin', 'User', '/user/admin/block');
                 Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been unblocked'));
             } else {
                 $this->trigger(self::EVENT_BEFORE_BLOCK, $event);
                 $user->block();
                 $this->trigger(self::EVENT_AFTER_BLOCK, $event);
+                SecurityAudit::log('user_block', (int) $user->id, [
+					'username' => SecurityAudit::safeLogin($user->username),
+				], 'admin', 'User', '/user/admin/block');
                 Yii::$app->getSession()->setFlash('warning', Yii::t('user', 'User has been blocked'));
             }
         }
 
 	    return $this->redirect(Yii::$app->request->referrer);
     }
+
+	/**
+	 * Deletes a user (with audit).
+	 *
+	 * @param int $id
+	 *
+	 * @return Response
+	 * @throws InvalidConfigException
+	 * @throws NotFoundHttpException
+	 * @throws StaleObjectException
+	 * @throws Throwable
+	 */
+	public function actionDelete($id)
+	{
+		if ((int) $id === (int) Yii::$app->user->getId()) {
+			Yii::$app->getSession()->setFlash('danger', Yii::t('user', 'You can not remove your own account'));
+		} else {
+			$model = $this->findModel($id);
+			$event = $this->getUserEvent($model);
+			$username = SecurityAudit::safeLogin($model->username);
+			$this->trigger(self::EVENT_BEFORE_DELETE, $event);
+			$model->delete();
+			$this->trigger(self::EVENT_AFTER_DELETE, $event);
+			SecurityAudit::log('user_delete', (int) $id, [
+				'username' => $username,
+			], 'admin', 'User', '/user/admin/delete');
+			Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been deleted'));
+		}
+
+		return $this->redirect(['index']);
+	}
 
 	/**
 	 * Active selected User models.
@@ -276,6 +319,10 @@ class AdminController extends BaseController
 
             if ($model->getIsBlocked()) {
                 $model->unblock();
+                SecurityAudit::log('user_unblock', (int) $model->id, [
+					'bulk' => true,
+					'username' => SecurityAudit::safeLogin($model->username),
+				], 'admin', 'User', '/user/admin/activemultiple');
                 Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been unblocked'));
             }
         }
@@ -300,6 +347,10 @@ class AdminController extends BaseController
 
             if (!$model->getIsBlocked()) {
                 $model->block();
+                SecurityAudit::log('user_block', (int) $model->id, [
+					'bulk' => true,
+					'username' => SecurityAudit::safeLogin($model->username),
+				], 'admin', 'User', '/user/admin/deactivemultiple');
                 Yii::$app->getSession()->setFlash('warning', Yii::t('user', 'User has been blocked'));
             }
         }
@@ -324,6 +375,7 @@ class AdminController extends BaseController
 		}
 
 		$currentId = (int) Yii::$app->user->getId();
+		$deleted = [];
 
 		foreach ($ids as $id) {
 			if ($id === $currentId) {
@@ -331,8 +383,22 @@ class AdminController extends BaseController
 				continue;
 			}
 
+			$model = $this->findModel($id);
+			$username = SecurityAudit::safeLogin($model->username);
 			Yii::$app->db->createCommand()->delete('{{%auth_assignment}}', ['user_id' => $id])->execute();
-			$this->findModel($id)->delete();
+			$model->delete();
+			$deleted[] = $id;
+			SecurityAudit::log('user_delete', (int) $id, [
+				'bulk' => true,
+				'username' => $username,
+			], 'admin', 'User', '/user/admin/deletemultiple');
+		}
+
+		if ($deleted) {
+			SecurityAudit::log('user_delete_bulk', 0, [
+				'ids' => $deleted,
+				'count' => count($deleted),
+			], 'admin', 'User', '/user/admin/deletemultiple');
 		}
 
 		Yii::$app->session->setFlash('success', Yii::t('userextended', 'Delete Success!'));

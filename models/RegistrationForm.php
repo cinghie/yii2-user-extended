@@ -16,6 +16,7 @@ use Exception;
 use Yii;
 use cinghie\userextended\helpers\ModuleConfig;
 use cinghie\userextended\helpers\PasswordPolicy;
+use cinghie\userextended\helpers\SecurityAudit;
 use cinghie\userextended\helpers\TurnstileVerifier;
 use dektrium\user\models\RegistrationForm as BaseRegistrationForm;
 use yii\base\InvalidConfigException;
@@ -83,6 +84,10 @@ class RegistrationForm extends BaseRegistrationForm
 						    $attribute,
 						    Yii::t('userextended', 'Security verification failed. Please try again.')
 					    );
+					    SecurityAudit::log('turnstile_fail', 0, [
+						    'context' => 'registration',
+						    'email' => SecurityAudit::safeLogin($this->email),
+					    ], 'auth', 'User', '/user/registration/register');
 				    }
 			    },
 		    ];

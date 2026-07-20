@@ -13,6 +13,7 @@
 namespace cinghie\userextended\components;
 
 use Yii;
+use cinghie\userextended\helpers\SecurityAudit;
 use yii\web\IdentityInterface;
 use yii\web\User;
 
@@ -50,7 +51,8 @@ class WebUser extends User
             if ($authKey !== null && !$identity->validateAuthKey($authKey)) {
                 $identity = null;
                 $ip = Yii::$app->getRequest()->getUserIP();
-                Yii::warning("Invalid session auth key attempted for user '$id' from $ip: $authKey", __METHOD__);
+                Yii::warning("Invalid session auth key attempted for user '$id' from $ip", __METHOD__);
+                SecurityAudit::log('session_authkey_invalid', (int) $id, [], 'session', 'User', '/');
             }
         }
 
@@ -60,9 +62,15 @@ class WebUser extends User
         if ($identity !== null && ($this->authTimeout !== null || $this->absoluteAuthTimeout !== null)) {
             $expire = $this->authTimeout !== null ? $session->get($this->authTimeoutParam) : null;
             $expireAbsolute = $this->absoluteAuthTimeout !== null ? $session->get($this->absoluteAuthTimeoutParam) : null;
-            if (($expire !== null && $expire < time()) || ($expireAbsolute !== null && $expireAbsolute < time())) {
+            $idleExpired = $expire !== null && $expire < time();
+            $absoluteExpired = $expireAbsolute !== null && $expireAbsolute < time();
+            if ($idleExpired || $absoluteExpired) {
                 $timedOut = true;
+                $userId = (int) $identity->getId();
                 $this->logout(false);
+                SecurityAudit::log('session_expire', $userId, [
+                    'reason' => $absoluteExpired ? 'absolute' : 'idle',
+                ], 'session', 'User', '/');
             } elseif ($this->authTimeout !== null) {
                 $session->set($this->authTimeoutParam, time() + $this->authTimeout);
             }

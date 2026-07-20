@@ -14,6 +14,7 @@ namespace cinghie\userextended\controllers;
 
 use Yii;
 use cinghie\userextended\helpers\LoginRateLimiter;
+use cinghie\userextended\helpers\SecurityAudit;
 use cinghie\userextended\models\LoginForm;
 use dektrium\user\controllers\SecurityController as BaseController;
 use yii\base\ExitException;
@@ -56,6 +57,13 @@ class SecurityController extends BaseController
 
 		if (Yii::$app->request->get('expired')) {
 			Yii::$app->session->setFlash('login', Yii::t('userextended', 'Your session has expired. Please sign in again.'));
+			// Log once per session to avoid refresh/bookmark spam
+			if (!Yii::$app->session->get('userextended.expire_client_logged')) {
+				SecurityAudit::log('session_expire_client', 0, [
+					'reason' => 'expired_query',
+				], 'session', 'User', '/user/security/login');
+				Yii::$app->session->set('userextended.expire_client_logged', 1);
+			}
 		} else {
 			Yii::$app->session->setFlash('login', Yii::t('userextended', 'Type your credentials'));
 		}
@@ -66,7 +74,18 @@ class SecurityController extends BaseController
 			if ($model->login()) {
 				$limiter->clear($model->login);
 				$this->regenerateSessionIdIfEnabled();
+				Yii::$app->session->remove('userextended.expire_client_logged');
 				Yii::$app->session->setFlash('login', Yii::t('userextended', 'Login successful'));
+				SecurityAudit::log(
+					'login_success',
+					Yii::$app->user->id ? (int) Yii::$app->user->id : 0,
+					[
+						'login' => SecurityAudit::safeLogin($model->login),
+					],
+					'auth',
+					'User',
+					'/user/security/login'
+				);
 				$this->trigger(self::EVENT_AFTER_LOGIN, $event);
 				return $this->goBack();
 			}
@@ -75,6 +94,13 @@ class SecurityController extends BaseController
 				$limiter->recordFailure($model->login);
 				$limiter->applyDelay($model->login);
 			}
+
+			$reason = $this->resolveLoginFailureReason($model, $limiter);
+			SecurityAudit::log('login_fail', 0, [
+				'login' => SecurityAudit::safeLogin($model->login),
+				'reason' => $reason,
+				'locked' => $limiter->isLocked($model->login),
+			], 'auth', 'User', '/user/security/login');
 
 			Yii::$app->session->setFlash('login', $this->resolveLoginFailureFlash($model, $limiter));
 		}
@@ -111,20 +137,55 @@ class SecurityController extends BaseController
 	}
 
 	/**
+	 * Machine-readable fail reason (no secrets).
+	 *
+	 * @param LoginForm $model
+	 * @param LoginRateLimiter $limiter
+	 *
+	 * @return string
+	 */
+	protected function resolveLoginFailureReason(LoginForm $model, LoginRateLimiter $limiter)
+	{
+		if ($limiter->isLocked($model->login)) {
+			return 'locked';
+		}
+		if ($model->hasErrors('turnstileToken')) {
+			return 'turnstile';
+		}
+		if ($model->hasErrors('captcha')) {
+			return 'captcha';
+		}
+
+		return 'credentials';
+	}
+
+	/**
 	 * Logs the user out (destroys session + clears identity cookie via switchIdentity).
 	 *
 	 * @return Response
 	 */
 	public function actionLogout()
 	{
-		$event = $this->getUserEvent(Yii::$app->user->identity);
+		$identity = Yii::$app->user->identity;
+		$userId = $identity ? (int) $identity->getId() : 0;
 
-		$this->trigger(self::EVENT_BEFORE_LOGOUT, $event);
+		if ($identity !== null) {
+			$event = $this->getUserEvent($identity);
+			$this->trigger(self::EVENT_BEFORE_LOGOUT, $event);
+		}
 
 		// logout(true): switchIdentity regenerates session id then destroys the session
 		Yii::$app->getUser()->logout(true);
 
-		$this->trigger(self::EVENT_AFTER_LOGOUT, $event);
+		if ($userId > 0) {
+			SecurityAudit::log('logout', $userId, [
+				'user_id' => $userId,
+			], 'auth', 'User', '/user/security/logout');
+		}
+
+		if ($identity !== null) {
+			$this->trigger(self::EVENT_AFTER_LOGOUT, $event);
+		}
 
 		return $this->goHome();
 	}

@@ -70,9 +70,11 @@ Items marked ✅ have already been applied in the package.
     - Update versions / security advisories.
     - Avoid abandoned dependencies; plan a modern auth migration if needed.
 
-12. **Security logging**
-    - Structured logs: login fail/success, block, delete user, role assign, switch user, session expire, Turnstile fail.
-    - Do not log passwords or tokens in clear text.
+12. **Security logging** ✅
+    - ~~Structured logs: login fail/success, block, delete user, role assign, switch user, session expire, Turnstile fail.~~
+    - ~~Do not log passwords or tokens in clear text.~~
+    - Fix: generalized `SecurityAudit` (`enableSecurityAudit`); hooks on login/logout, block/unblock/delete, switch denied, session expire, Turnstile fail, RBAC assign; secrets stripped; `WebUser` no longer logs auth keys.
+    - Review: reserved audit keys not overwritable by payload; `session_expire_client` once per session; logout safe when guest; case-insensitive secret sanitization.
 
 13. **RBAC authorization** ✅
     - ~~Centralize role/permission assignment with CSRF + admin permission checks.~~
