@@ -49,9 +49,8 @@ class AdminController extends BaseController
 		        ],
 		        'rules' => [
 			        [
-				        'allow' => true,
+				        'allow' => false,
 				        'actions' => ['switch'],
-				        'roles' => ['@'],
 			        ],
 			        [
 				        'allow' => true,
@@ -69,11 +68,24 @@ class AdminController extends BaseController
                     'confirm'          => ['post'],
                     'resend-password'  => ['post'],
                     'block'            => ['post'],
-                    'switch'           => ['post'],
                 ],
             ]
         ];
     }
+
+	/**
+	 * Impersonation is disabled.
+	 *
+	 * @param int|null $id
+	 *
+	 * @throws \yii\web\ForbiddenHttpException
+	 */
+	public function actionSwitch($id = null)
+	{
+		throw new \yii\web\ForbiddenHttpException(
+			Yii::t('userextended', 'User impersonation is disabled.')
+		);
+	}
 
 	/**
 	 * Lists all User models.
