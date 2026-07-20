@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.3
+ * @version 0.6.4
  */
 
 namespace cinghie\userextended\models;
@@ -18,6 +18,7 @@ use dektrium\user\models\Profile as BaseProfile;
 use yii\base\Exception;
 use yii\base\InvalidArgumentException;
 use yii\db\ActiveQueryInterface;
+use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
 
 /**
@@ -32,6 +33,35 @@ use yii\web\UploadedFile;
 class Profile extends BaseProfile
 {
 	use EditorTrait;
+
+	/**
+	 * MIME → canonical extension used when storing avatars.
+	 *
+	 * @var array<string, string>
+	 */
+	private static $avatarMimeMap = [
+		'image/jpeg' => 'jpg',
+		'image/png' => 'png',
+		'image/webp' => 'webp',
+	];
+
+	/**
+	 * Canonical extension → accepted client extensions.
+	 *
+	 * @var array<string, string[]>
+	 */
+	private static $avatarExtensionAliases = [
+		'jpg' => ['jpg', 'jpeg'],
+		'png' => ['png'],
+		'webp' => ['webp'],
+	];
+
+	/**
+	 * Validation error from the last avatar upload attempt (applied in beforeValidate).
+	 *
+	 * @var string|null
+	 */
+	private $avatarUploadError;
 
 	/**
 	 * @inheritdoc
@@ -128,6 +158,18 @@ class Profile extends BaseProfile
         return $rules;
     }
 
+	/**
+	 * @inheritdoc
+	 */
+	public function beforeValidate()
+	{
+		if ($this->avatarUploadError !== null) {
+			$this->addError('avatar', $this->avatarUploadError);
+		}
+
+		return parent::beforeValidate();
+	}
+
     /**
      * @inheritdoc
      */
@@ -155,26 +197,198 @@ class Profile extends BaseProfile
 	 */
     public function uploadAvatar($filePath)
     {
+	    $this->avatarUploadError = null;
+
         $file = UploadedFile::getInstance($this, 'avatar');
 
         // if no file was uploaded abort the upload
-        if ( null === $file ) {
+        if ($file === null) {
             return false;
         }
 
-		// file extension
-	    $fileExt = $file->extension;
-	    // purge filename
-	    $fileName = Yii::$app->security->generateRandomString();
-	    // update file->name
-	    $file->name = $fileName.".{$fileExt}";
-	    // update avatar field
-	    $this->avatar = $fileName.".{$fileExt}";
-	    // save images to imagePath
-	    $file->saveAs($filePath.$fileName.".{$fileExt}");
+	    $safeExt = $this->validateAvatarUpload($file);
+	    if ($safeExt === false) {
+		    return false;
+	    }
+
+	    $basePath = $this->resolveAvatarDirectory($filePath, true);
+	    if ($basePath === false) {
+		    $this->avatarUploadError = Yii::t('userextended', 'Avatar upload path is not writable.');
+		    return false;
+	    }
+
+	    $fileName = Yii::$app->security->generateRandomString(32);
+	    $finalName = $fileName . '.' . $safeExt;
+	    $targetPath = $basePath . DIRECTORY_SEPARATOR . $finalName;
+
+	    if (!$this->isPathInsideDirectory($basePath, $targetPath)) {
+		    $this->avatarUploadError = Yii::t('userextended', 'Invalid avatar file.');
+		    return false;
+	    }
+
+	    if (!$file->saveAs($targetPath)) {
+		    $this->avatarUploadError = Yii::t('userextended', 'Avatar upload failed.');
+		    return false;
+	    }
+
+	    $file->name = $finalName;
+	    $this->avatar = $finalName;
 
 	    return $file;
     }
+
+	/**
+	 * Validate uploaded avatar: extension, MIME, size, double extension, real image.
+	 *
+	 * @param UploadedFile $file
+	 *
+	 * @return string|false Canonical extension on success
+	 */
+	protected function validateAvatarUpload(UploadedFile $file)
+	{
+		$module = Yii::$app->getModule('userextended');
+		$allowedExtensions = array_map('strtolower', (array) $module->avatarAllowedExtensions);
+		$maxSize = (int) $module->avatarMaxSize;
+
+		if ((int) $file->error !== UPLOAD_ERR_OK) {
+			$this->avatarUploadError = Yii::t('userextended', 'Avatar upload failed.');
+			return false;
+		}
+
+		if ($file->size <= 0 || ($maxSize > 0 && $file->size > $maxSize)) {
+			$this->avatarUploadError = Yii::t('userextended', 'Avatar exceeds the maximum allowed size.');
+			return false;
+		}
+
+		$originalName = (string) $file->name;
+		$baseName = pathinfo($originalName, PATHINFO_FILENAME);
+		if ($baseName === '' || strpos($baseName, '.') !== false) {
+			$this->avatarUploadError = Yii::t('userextended', 'Invalid avatar file name.');
+			return false;
+		}
+
+		$extension = strtolower((string) $file->extension);
+		if ($extension === '' || !in_array($extension, $allowedExtensions, true)) {
+			$this->avatarUploadError = Yii::t('userextended', 'Avatar must be a JPG, PNG or WEBP image.');
+			return false;
+		}
+
+		$blocked = ['php', 'phtml', 'phar', 'php3', 'php4', 'php5', 'php7', 'php8', 'cgi', 'pl', 'py', 'asp', 'aspx', 'exe', 'sh', 'bat', 'cmd', 'com', 'js', 'html', 'htm', 'shtml', 'svg'];
+		foreach ($blocked as $blockedExt) {
+			if (stripos($originalName, '.' . $blockedExt . '.') !== false || preg_match('/\.' . preg_quote($blockedExt, '/') . '$/i', $originalName)) {
+				$this->avatarUploadError = Yii::t('userextended', 'Invalid avatar file.');
+				return false;
+			}
+		}
+
+		$mime = $this->detectAvatarMimeType($file);
+		if ($mime === null || !isset(self::$avatarMimeMap[$mime])) {
+			$this->avatarUploadError = Yii::t('userextended', 'Avatar must be a JPG, PNG or WEBP image.');
+			return false;
+		}
+
+		$canonicalExt = self::$avatarMimeMap[$mime];
+		$aliases = self::$avatarExtensionAliases[$canonicalExt];
+		if (!in_array($extension, $aliases, true)) {
+			$this->avatarUploadError = Yii::t('userextended', 'Avatar must be a JPG, PNG or WEBP image.');
+			return false;
+		}
+
+		$canonicalAllowed = in_array($canonicalExt, $allowedExtensions, true)
+			|| ($canonicalExt === 'jpg' && in_array('jpeg', $allowedExtensions, true));
+		if (!$canonicalAllowed) {
+			$this->avatarUploadError = Yii::t('userextended', 'Avatar must be a JPG, PNG or WEBP image.');
+			return false;
+		}
+
+		$imageInfo = @getimagesize($file->tempName);
+		if ($imageInfo === false || empty($imageInfo['mime']) || $imageInfo['mime'] !== $mime) {
+			$this->avatarUploadError = Yii::t('userextended', 'Avatar must be a JPG, PNG or WEBP image.');
+			return false;
+		}
+
+		return $canonicalExt;
+	}
+
+	/**
+	 * @param UploadedFile $file
+	 *
+	 * @return string|null
+	 */
+	protected function detectAvatarMimeType(UploadedFile $file)
+	{
+		$tempName = $file->tempName;
+		if (!is_string($tempName) || $tempName === '' || !is_uploaded_file($tempName)) {
+			return null;
+		}
+
+		if (class_exists(\finfo::class)) {
+			$finfo = new \finfo(FILEINFO_MIME_TYPE);
+			$mime = $finfo->file($tempName);
+			if (is_string($mime) && $mime !== '') {
+				return $mime;
+			}
+		}
+
+		if (function_exists('mime_content_type')) {
+			$mime = mime_content_type($tempName);
+			if (is_string($mime) && $mime !== '') {
+				return $mime;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Resolve and optionally ensure the avatar storage directory exists.
+	 *
+	 * @param string $filePath
+	 * @param bool $create
+	 *
+	 * @return string|false Absolute real path
+	 */
+	protected function resolveAvatarDirectory($filePath, $create = false)
+	{
+		$path = $filePath !== '' && $filePath !== null
+			? $filePath
+			: Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath);
+
+		$path = Yii::getAlias($path);
+		$path = rtrim(str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path), DIRECTORY_SEPARATOR);
+
+		if (!is_dir($path)) {
+			if (!$create || !FileHelper::createDirectory($path)) {
+				return false;
+			}
+		}
+
+		$realPath = realpath($path);
+		if ($realPath === false || !is_dir($realPath)) {
+			return false;
+		}
+
+		if ($create && !is_writable($realPath)) {
+			return false;
+		}
+
+		return $realPath;
+	}
+
+	/**
+	 * @param string $directory Absolute directory path
+	 * @param string $path Absolute file path
+	 *
+	 * @return bool
+	 */
+	protected function isPathInsideDirectory($directory, $path)
+	{
+		$directory = rtrim(str_replace('\\', '/', $directory), '/') . '/';
+		$path = str_replace('\\', '/', $path);
+
+		return strpos($path, $directory) === 0
+			&& strpos($path, '..') === false;
+	}
 
 	/**
 	 * fetch stored image file name with complete path
@@ -184,7 +398,17 @@ class Profile extends BaseProfile
 	 */
     public function getImagePath()
     {
-        return $this->avatar ? Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath).$this->avatar : null;
+	    if (!$this->avatar || !$this->isSafeAvatarBasename($this->avatar)) {
+		    return null;
+	    }
+
+	    $basePath = $this->resolveAvatarDirectory(Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath));
+	    if ($basePath === false) {
+		    return null;
+	    }
+
+	    $fullPath = $basePath . DIRECTORY_SEPARATOR . basename($this->avatar);
+	    return $this->isPathInsideDirectory($basePath, $fullPath) ? $fullPath : null;
     }
 
 	/**
@@ -201,7 +425,9 @@ class Profile extends BaseProfile
 
         } else {
 
-            $avatar   = $this->avatar ?: 'default.png';
+            $avatar = ($this->avatar && $this->isSafeAvatarBasename($this->avatar))
+	            ? basename($this->avatar)
+	            : 'default.png';
             $imageURL = Yii::getAlias(Yii::$app->getModule('userextended')->avatarURL).$avatar;
         }
 
@@ -218,23 +444,52 @@ class Profile extends BaseProfile
 	 */
     public function deleteImage($avatarOld)
     {
-        $avatarURL = Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath).$avatarOld;
+	    if ($avatarOld === null || $avatarOld === '' || $avatarOld === 'default.png') {
+		    return false;
+	    }
 
-        // check if file exists on server
-        if (empty($avatarURL) || !file_exists($avatarURL)) {
-            return false;
-        }
+	    $avatarOld = basename((string) $avatarOld);
+	    if (!$this->isSafeAvatarBasename($avatarOld)) {
+		    return false;
+	    }
+
+	    $basePath = $this->resolveAvatarDirectory(Yii::getAlias(Yii::$app->getModule('userextended')->avatarPath));
+	    if ($basePath === false) {
+		    return false;
+	    }
+
+	    $avatarURL = $basePath . DIRECTORY_SEPARATOR . $avatarOld;
+	    if (!$this->isPathInsideDirectory($basePath, $avatarURL)) {
+		    return false;
+	    }
+
+	    $realFile = realpath($avatarURL);
+	    if ($realFile === false || !is_file($realFile) || !$this->isPathInsideDirectory($basePath, $realFile)) {
+		    return false;
+	    }
 
         // check if uploaded file can be deleted on server
-        if (!unlink($avatarURL)) {
+        if (!unlink($realFile)) {
             return false;
         }
 
-        // if deletion successful, reset your file attributes
-        $this->avatar = null;
+        // if deletion successful and this was the current avatar, reset attribute
+        if ($this->avatar !== null && basename((string) $this->avatar) === $avatarOld) {
+            $this->avatar = null;
+        }
 
         return true;
     }
+
+	/**
+	 * @param string $name
+	 *
+	 * @return bool
+	 */
+	protected function isSafeAvatarBasename($name)
+	{
+		return (bool) preg_match('/^[A-Za-z0-9_-]+\.(jpg|jpeg|png|webp)$/', $name);
+	}
 
     /**
      * Get image form Social

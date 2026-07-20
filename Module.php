@@ -73,6 +73,20 @@ class Module extends BaseUser
      */
     public $avatarURL  = '@web/img/users/';
 
+    /**
+     * Allowed avatar file extensions (lowercase, without dot).
+     *
+     * @var string[]
+     */
+    public $avatarAllowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+
+    /**
+     * Max avatar upload size in bytes (default 2MB).
+     *
+     * @var int
+     */
+    public $avatarMaxSize = 2097152;
+
 	/**
 	 * @var string default User Role
 	 */

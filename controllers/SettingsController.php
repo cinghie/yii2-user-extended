@@ -7,7 +7,7 @@
  * @github https://github.com/cinghie/yii2-user-extended
  * @license GNU GENERAL PUBLIC LICENSE VERSION 3
  * @package yii2-user-extended
- * @version 0.6.3
+ * @version 0.6.4
  */
 
 namespace cinghie\userextended\controllers;
@@ -70,18 +70,17 @@ class SettingsController extends BaseController
         {
             // revert back if no valid file instance uploaded
             if ($image === false) {
-
-                $model->avatar = $oldImage;
-
+                if ($model->avatar !== $oldImage) {
+                    $model->updateAttributes(['avatar' => $oldImage]);
+                }
             } else {
-                
                 // if is there an old image, delete it
-                if($oldImage) {
+                if ($oldImage && $oldImage !== $image->name) {
                     $model->deleteImage($oldImage);
                 }
 
-                // upload new avatar
-                $model->avatar = $image->name;
+                // persist new avatar filename
+                $model->updateAttributes(['avatar' => $image->name]);
             }
 
             Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Your profile has been updated'));

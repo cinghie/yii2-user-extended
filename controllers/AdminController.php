@@ -140,14 +140,16 @@ class AdminController extends BaseController
         {
             // revert back if no valid file instance uploaded
             if ($image === false) {
-                $profile->avatar = $oldImage;
+                if ($profile->avatar !== $oldImage) {
+                    $profile->updateAttributes(['avatar' => $oldImage]);
+                }
             } else {
                 // if is there an old image, delete it
-                if($oldImage) {
+                if ($oldImage && $oldImage !== $image->name) {
                     $profile->deleteImage($oldImage);
                 }
-                // upload new avatar
-                $profile->avatar = $image->name;
+                // persist new avatar filename
+                $profile->updateAttributes(['avatar' => $image->name]);
             }
 
             Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Profile details have been updated'));
