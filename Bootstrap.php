@@ -101,8 +101,9 @@ class Bootstrap implements BootstrapInterface
             $session = $app->getSession();
             $session->timeout = $timeout;
 
+            // Do not force cookie lifetime here: overriding it can break session cookies
+            // and produce corrupted HTML responses in some environments.
             $cookieParams = $session->getCookieParams();
-            $cookieParams['lifetime'] = $timeout;
             if (!isset($cookieParams['httponly'])) {
                 $cookieParams['httponly'] = true;
             }
@@ -113,10 +114,11 @@ class Bootstrap implements BootstrapInterface
         }
 
         $app->on(Application::EVENT_BEFORE_REQUEST, function () use ($app, $module, $timeout) {
-            if (!$app->has('user')) {
+            if (!$app->has('user') || !$app->has('request')) {
                 return;
             }
 
+            $request = $app->getRequest();
             $user = $app->getUser();
             if ($module->disableAutoLogin) {
                 $user->enableAutoLogin = false;
@@ -129,12 +131,33 @@ class Bootstrap implements BootstrapInterface
                 }
             }
 
+            // Client asset only on full HTML page loads for authenticated users
             if (
-                $timeout > 0
-                && $module->enableClientSessionExpireRedirect
-                && !$user->getIsGuest()
+                $timeout <= 0
+                || !$module->enableClientSessionExpireRedirect
+                || $user->getIsGuest()
+                || $request->getIsAjax()
             ) {
-                $view = $app->getView();
+                return;
+            }
+
+            $accept = (string) $request->getHeaders()->get('Accept', '');
+            if (
+                $accept !== ''
+                && stripos($accept, 'text/html') === false
+                && stripos($accept, '*/*') === false
+            ) {
+                return;
+            }
+
+            $view = $app->getView();
+            $view->on(View::EVENT_BEGIN_PAGE, function () use ($view, $module, $timeout) {
+                static $registered = false;
+                if ($registered) {
+                    return;
+                }
+                $registered = true;
+
                 SessionExpireAsset::register($view);
 
                 $loginUrl = Url::to(['/user/security/login', 'expired' => 1]);
@@ -147,10 +170,10 @@ class Bootstrap implements BootstrapInterface
                 ];
 
                 $view->registerJs(
-                    'window.userextendedSessionExpire = ' . Json::encode($config) . ';',
+                    'window.userextendedSessionExpire = ' . Json::htmlEncode($config) . ';',
                     View::POS_HEAD
                 );
-            }
+            });
         });
     }
 }

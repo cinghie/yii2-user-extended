@@ -18,6 +18,7 @@ Note tecniche interne.
 - Timeout sessione/auth gestito dal modulo (`sessionTimeout`, `useAbsoluteAuthTimeout`, `disableAutoLogin`).
 - Redirect client a login allo scadere (`SessionExpireAsset` / `session-expire.js`).
 - Flash su login con `?expired=1`.
+- Fix: non forzare `session.cookieParams.lifetime`; registra asset session-expire solo su HTML non-AJAX in `EVENT_BEGIN_PAGE` (evita HTML corrotto sulle pagine interne).
 
 ### Altro
 
