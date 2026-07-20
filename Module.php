@@ -87,6 +87,69 @@ class Module extends BaseUser
      */
     public $avatarMaxSize = 2097152;
 
+    /**
+     * Enable login brute-force protection (IP + username/email).
+     *
+     * @var bool
+     */
+    public $enableLoginRateLimit = true;
+
+    /**
+     * Failed attempts before temporary lock.
+     *
+     * @var int
+     */
+    public $loginMaxAttempts = 5;
+
+    /**
+     * Window (seconds) for counting failed attempts in cache TTL.
+     *
+     * @var int
+     */
+    public $loginAttemptWindow = 900;
+
+    /**
+     * Lock duration (seconds) after max attempts.
+     *
+     * @var int
+     */
+    public $loginLockoutDuration = 900;
+
+    /**
+     * Sleep after failed login based on attempt count.
+     *
+     * @var bool
+     */
+    public $loginProgressiveDelay = true;
+
+    /**
+     * Base delay seconds × attempt count (capped by loginDelayMaxSeconds).
+     *
+     * @var int
+     */
+    public $loginDelayBaseSeconds = 1;
+
+    /**
+     * Max progressive delay in seconds.
+     *
+     * @var int
+     */
+    public $loginDelayMaxSeconds = 5;
+
+    /**
+     * Show captcha after N failed attempts (0 disables).
+     *
+     * @var int
+     */
+    public $loginCaptchaAfterAttempts = 3;
+
+    /**
+     * Captcha action route for login form.
+     *
+     * @var string|array
+     */
+    public $loginCaptchaAction = ['/site/captcha'];
+
 	/**
 	 * @var string default User Role
 	 */

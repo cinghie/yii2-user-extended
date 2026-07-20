@@ -13,11 +13,12 @@
 namespace cinghie\userextended\controllers;
 
 use Yii;
+use cinghie\userextended\helpers\LoginRateLimiter;
+use cinghie\userextended\models\LoginForm;
 use dektrium\user\controllers\SecurityController as BaseController;
-use dektrium\user\models\LoginForm;
 use yii\base\ExitException;
 use yii\base\InvalidConfigException;
-use yii\Web\Response;
+use yii\web\Response;
 
 /**
  * Class SecurityController
@@ -48,6 +49,7 @@ class SecurityController extends BaseController
 		/** @var LoginForm $model */
 		$model = Yii::createObject(LoginForm::class);
 		$event = $this->getFormEvent($model);
+		$limiter = LoginRateLimiter::create();
 
 		$this->performAjaxValidation($model);
 		$this->trigger(self::EVENT_BEFORE_LOGIN, $event);
@@ -59,13 +61,30 @@ class SecurityController extends BaseController
 		}
 
 		if ($model->load(Yii::$app->getRequest()->post())) {
+			$wasLocked = $limiter->isLocked($model->login);
+
 			if ($model->login()) {
+				$limiter->clear($model->login);
 				Yii::$app->session->setFlash('login', Yii::t('userextended', 'Login successful'));
 				$this->trigger(self::EVENT_AFTER_LOGIN, $event);
 				return $this->goBack();
 			}
 
-			Yii::$app->session->setFlash('login', Yii::t('userextended', 'Incorrect Username or Password'));
+			if ($limiter->isEnabled()) {
+				if (!$wasLocked) {
+					$limiter->recordFailure($model->login);
+				}
+				$limiter->applyDelay($model->login);
+			}
+
+			if ($limiter->isLocked($model->login)) {
+				Yii::$app->session->setFlash(
+					'login',
+					Yii::t('userextended', 'Too many failed login attempts. Please try again later.')
+				);
+			} else {
+				Yii::$app->session->setFlash('login', Yii::t('userextended', 'Incorrect Username or Password'));
+			}
 		}
 
 		$view = Yii::$app->getModule('userextended')->templateLogin;

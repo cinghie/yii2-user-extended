@@ -57,6 +57,13 @@ $fieldOptions2 = [
             ->label(false)
             ->passwordInput(['placeholder' => $model->getAttributeLabel('password')]) ?>
 
+        <?php if ($model->isCaptchaRequired()): ?>
+            <?= $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::class, [
+                'captchaAction' => Yii::$app->getModule('userextended')->loginCaptchaAction,
+                'options' => ['class' => 'form-control', 'placeholder' => Yii::t('userextended', 'Captcha')],
+            ])->label(false) ?>
+        <?php endif ?>
+
         <div class="row">
             <div class="col-xs-8">
                 <div class="checkbox icheck">

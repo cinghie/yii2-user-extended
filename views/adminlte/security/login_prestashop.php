@@ -146,6 +146,12 @@ $this->registerCss('
             ])->label(Yii::t('user', 'Password'))
 			->passwordInput(['placeholder' => $model->getAttributeLabel('password')]) ?>
 
+        <?php if ($model->isCaptchaRequired()): ?>
+            <?= $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::class, [
+                'captchaAction' => Yii::$app->getModule('userextended')->loginCaptchaAction,
+            ]) ?>
+        <?php endif ?>
+
         <div class="row form-group row-padding-top">
             <div class="col-xs-12">
 	            <?= Html::submitButton(Yii::t('user', 'Sign in'), ['class' => 'btn bg-aqua btn-block']) ?>
