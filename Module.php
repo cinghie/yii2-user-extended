@@ -524,6 +524,14 @@ class Module extends BaseUser
 	public $templateLogin = 'login';
 
 	/**
+	 * Bootstrap version for views/Kartik: `bootstrap` (3), `bootstrap4`, or `bootstrap5`.
+	 * Align with the CRM module when the app uses AdminLTE3 / BS4.
+	 *
+	 * @var string
+	 */
+	public $bootstrap = 'bootstrap';
+
+	/**
 	 * @var string logo url
 	 */
 	public $templateLogoURL = '@web/logo.png';
@@ -658,6 +666,37 @@ class Module extends BaseUser
     {
         return $this->version;
     }
+
+	/**
+	 * Numeric Bootstrap version for Kartik ActiveForm (3, 4 or 5).
+	 *
+	 * @return int
+	 */
+	public function getBsVersion()
+	{
+		switch ($this->bootstrap) {
+			case 'bootstrap5':
+			case '5':
+				return 5;
+			case 'bootstrap4':
+			case '4':
+				return 4;
+			case 'bootstrap':
+			case '3':
+			default:
+				return 3;
+		}
+	}
+
+	/**
+	 * Whether the module is configured for Bootstrap 4+.
+	 *
+	 * @return bool
+	 */
+	public function isBs4()
+	{
+		return $this->getBsVersion() >= 4;
+	}
 
     /**
      * Translating module message

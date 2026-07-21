@@ -10,6 +10,12 @@ use yii\helpers\Html;
 $this->title = Yii::t('user', 'Sign in');
 $this->params['breadcrumbs'][] = $this->title;
 
+$ue = Yii::$app->getModule('userextended');
+$bsVersion = $ue->getBsVersion();
+$isBs4 = $ue->isBs4();
+$iconEnvelope = $isBs4 ? '<i class="fas fa-envelope"></i>' : '<i class="glyphicon glyphicon-envelope"></i>';
+$iconLock = $isBs4 ? '<i class="fas fa-lock"></i>' : '<i class="glyphicon glyphicon-lock"></i>';
+
 $this->registerCss('
     h1 {
         margin-bottom: 5px;
@@ -128,6 +134,7 @@ $this->registerCss('
 
 		<?php $form = ActiveForm::begin([
 			'id' => 'login-form',
+			'bsVersion' => $bsVersion,
 			// AJAX validation burns single-use Turnstile tokens before the real submit
 			'enableAjaxValidation'   => !\cinghie\userextended\helpers\TurnstileVerifier::shouldProtectLogin(),
 			'enableClientValidation' => false,
@@ -139,7 +146,7 @@ $this->registerCss('
 		<?= $form->field($model, 'login', [
 			'addon' => [
 				'prepend' => [
-					'content'=>'<i class="glyphicon glyphicon-envelope"></i>'
+					'content' => $iconEnvelope,
 				]
 			],
 			'options' => ['class' => 'form-group has-feedback']
@@ -149,7 +156,7 @@ $this->registerCss('
 		<?= $form->field($model, 'password', [
 			'addon' => [
 				'prepend' => [
-					'content'=>'<i class="glyphicon glyphicon-lock"></i>'
+					'content' => $iconLock,
 				]
 			],
 			'options' => ['class' => 'form-group has-feedback']
@@ -168,20 +175,20 @@ $this->registerCss('
         <?php endif ?>
 
         <div class="row form-group row-padding-top">
-            <div class="col-xs-12">
+            <div class="col-xs-12 col-12">
 	            <?= Html::submitButton(Yii::t('user', 'Sign in'), ['class' => 'btn bg-aqua btn-block']) ?>
             </div>
         </div>
 
 		<div class="row">
-			<div class="col-xs-8">
+			<div class="col-xs-8 col-8">
 				<div class="checkbox icheck">
 					<div class="icheckbox_square-blue" style="position: relative;" aria-checked="false" aria-disabled="false">
 						<?= $form->field($model, 'rememberMe')->checkbox() ?>
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-4">
+			<div class="col-xs-4 col-4">
 
 			</div>
 		</div>

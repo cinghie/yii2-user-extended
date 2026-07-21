@@ -4,21 +4,47 @@
 
 use dektrium\user\widgets\Connect;
 use cinghie\userextended\helpers\TurnstileVerifier;
+use kartik\widgets\ActiveForm;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
 
 $this->title = Yii::t('user', 'Sign in');
 $this->params['breadcrumbs'][] = $this->title;
 
-$fieldOptions1 = [
-    'options' => ['class' => 'form-group has-feedback'],
-    'template' => "{input}<span class='glyphicon glyphicon-envelope form-control-feedback'></span>"
-];
+$ue = Yii::$app->getModule('userextended');
+$bsVersion = $ue->getBsVersion();
+$isBs4 = $ue->isBs4();
+$iconEnvelope = $isBs4 ? '<i class="fas fa-envelope"></i>' : '<i class="glyphicon glyphicon-envelope"></i>';
+$iconLock = $isBs4 ? '<i class="fas fa-lock"></i>' : '<i class="glyphicon glyphicon-lock"></i>';
 
-$fieldOptions2 = [
-    'options' => ['class' => 'form-group has-feedback'],
-    'template' => "{input}<span class='glyphicon glyphicon-lock form-control-feedback'></span>"
-];
+if ($isBs4) {
+    // AdminLTE 3 / Bootstrap 4: input-group addons
+    $fieldOptions1 = [
+        'addon' => [
+            'append' => [
+                'content' => $iconEnvelope,
+            ],
+        ],
+        'options' => ['class' => 'form-group'],
+    ];
+    $fieldOptions2 = [
+        'addon' => [
+            'append' => [
+                'content' => $iconLock,
+            ],
+        ],
+        'options' => ['class' => 'form-group'],
+    ];
+} else {
+    // AdminLTE 2 / Bootstrap 3: form-control-feedback icons
+    $fieldOptions1 = [
+        'options' => ['class' => 'form-group has-feedback'],
+        'template' => "{input}<span class='glyphicon glyphicon-envelope form-control-feedback'></span>",
+    ];
+    $fieldOptions2 = [
+        'options' => ['class' => 'form-group has-feedback'],
+        'template' => "{input}<span class='glyphicon glyphicon-lock form-control-feedback'></span>",
+    ];
+}
 
 ?>
 
@@ -30,7 +56,12 @@ $fieldOptions2 = [
         <a href="#"><b><?= Html::encode(Yii::$app->name) ?></b></a>
     </div>
 
+    <?php if ($isBs4): ?>
+    <div class="card">
+    <div class="card-body login-card-body">
+    <?php else: ?>
     <div class="login-box-body">
+    <?php endif ?>
 
 	    <?php if (Yii::$app->session->hasFlash('login')): ?>
             <div class="bg-aqua" style="padding: 10px 0; margin-bottom: 15px;">
@@ -42,6 +73,7 @@ $fieldOptions2 = [
 
         <?php $form = ActiveForm::begin([
             'id' => 'login-form',
+            'bsVersion' => $bsVersion,
             // AJAX validation burns single-use Turnstile tokens before the real submit
             'enableAjaxValidation'   => !\cinghie\userextended\helpers\TurnstileVerifier::shouldProtectLogin(),
             'enableClientValidation' => false,
@@ -72,14 +104,14 @@ $fieldOptions2 = [
         <?php endif ?>
 
         <div class="row">
-            <div class="col-xs-8">
+            <div class="col-xs-8 col-8">
                 <div class="checkbox icheck">
                     <div class="icheckbox_square-blue" style="position: relative;" aria-checked="false" aria-disabled="false">
                         <?= $form->field($model, 'rememberMe')->checkbox() ?>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-4">
+            <div class="col-xs-4 col-4">
                 <?= Html::submitButton(Yii::t('user', 'Sign in'), ['class' => 'btn btn-primary btn-block btn-flat']) ?>
             </div>
         </div>
@@ -110,7 +142,12 @@ $fieldOptions2 = [
 		        'baseAuthUrl' => ['/user/security/auth'],
 	        ]) ?>
         <?php endif ?>
-        
+
+    <?php if ($isBs4): ?>
     </div>
+    </div>
+    <?php else: ?>
+    </div>
+    <?php endif ?>
 
 </div>
