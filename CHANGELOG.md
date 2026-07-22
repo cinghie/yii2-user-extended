@@ -1,123 +1,117 @@
-# Changelog — yii2-user-extended
+# Changelog — cinghie/yii2-user-extended
 
-Internal technical notes.
+All notable changes to this package are documented in this file.
 
-## 0.6.4
+Format based on [Keep a Changelog](https://keepachangelog.com/).
+
+### Documentation rules (root + all `vendor/cinghie`)
+
+- **`CHANGELOG.md` and `UPDATE.md` must always be written in English.**
+- **`CHANGELOG.md` entries must use dated headings** (`## YYYY-MM-DD`, newest first), split by **commit days** — do **not** use `## [Unreleased]`.
+- **`UPDATE.md` history must use dates** (`YYYY-MM-DD` headings, newest first) to record what changed or was decided over time.
+- **`UPDATE.md` structure (mandatory):** (1) **Priority list first** — open items only, before explanations; (2) **Open items** with full detail; (3) **Processed** items kept lower and marked **Processed**, removed from the priority list; (4) History/ops after the roadmap.
+- **Never include dangerous or sensitive references** in root or any `vendor/cinghie` `CHANGELOG.md` / `UPDATE.md`: credentials, secrets, private hosts, customer data, personal paths, exploit details, attack recipes, or proof-of-concept payloads.
+- This is **especially mandatory for public packages** (this module may be published or shared): describe hardening only as features and safe configuration guidance.
+
+---
+
+## 2026-07-22
+
+### Changed
+
+- Documentation: English-only `CHANGELOG.md` / `UPDATE.md`, dated History, no dangerous/sensitive references (public-package safe wording).
+
+---
+
+## 2026-07-21
+
+### Changed
+
+- AdminLTE login views (`login`, `login_prestashop`) aligned with Bootstrap 4 / guest layout expectations.
+- Module bootstrap handling for Bootstrap 4 login presentation.
+
+---
+
+## 2026-07-20
+
+Version **0.6.4** hardening baseline (migrations dated `m260720_*`).
 
 ### Security
 
-- `UserSearch`: parameterized `rule` filter query and validation against RBAC roles.
-- Avatar upload: MIME/extension whitelist (jpg/png/webp), max size, block double-extension/executables, random rename, path confined under `avatarPath`.
+- `UserSearch`: parameterized `rule` filter and validation against existing RBAC roles.
+- Avatar upload: MIME/extension allowlist (jpg/png/webp), max size, safer renaming, storage confined under `avatarPath`.
 - New module params: `avatarAllowedExtensions`, `avatarMaxSize`.
-- Login brute-force: IP+username rate limit (`LoginRateLimiter`), temporary lock, progressive delay, captcha after N failures, generic anti-enumeration messages.
+- Login rate limiting (IP + username): temporary lock, progressive delay, captcha after repeated failures, generic failure messages.
 - Login module params: `enableLoginRateLimit`, `loginMaxAttempts`, `loginAttemptWindow`, `loginLockoutDuration`, `loginProgressiveDelay`, `loginDelayBaseSeconds`, `loginDelayMaxSeconds`, `loginCaptchaAfterAttempts`, `loginCaptchaAction`.
-- DB-backed lockout: `rateLimitStorage` default `db` via `RateLimitStore` + migration `m260720_190000_create_userextended_rate_limit_table` (login + registration); survives cache flush; `cache`/`auto` backends retained.
-- Review: DB writes use upsert (no duplicate-key race); expired rows ignored; fallback to cache if table missing.
-- User impersonation (`admin/switch`) disabled: AccessControl deny, `actionSwitch` → 403, `enableImpersonateUser = false`.
+- Optional DB-backed rate-limit store (`RateLimitStore` + migration `m260720_190000_create_userextended_rate_limit_table`); `cache` / `auto` backends retained.
+- User impersonation (`admin/switch`) disabled by default: AccessControl deny, action returns 403, `enableImpersonateUser = false`.
 
 ### Security audit
 
-- `SecurityAudit` helper: structured events to cinghie logger (if present) or `Yii::info` category `userextended.security`.
-- Param `enableSecurityAudit` (default `true`); RBAC events also gated by `enableRbacAssignmentAudit`.
-- Events: `login_success` / `login_fail`, `logout`, `turnstile_fail`, `user_block` / `user_unblock`, `user_delete` / `user_delete_bulk`, `switch_denied`, `session_expire` / `session_expire_client` / `session_authkey_invalid`, `assign_update` / `self_escalation_block`.
+- `SecurityAudit` helper: structured events via cinghie logger (if present) or `Yii::info` category `userextended.security`.
+- Params: `enableSecurityAudit` (default `true`); RBAC events also gated by `enableRbacAssignmentAudit`.
+- Event types include login success/fail, logout, captcha failures, block/unblock, delete, denied switch, session expire, RBAC assignment updates.
 - Never logs passwords, tokens, auth keys, or CSRF values (`sanitizeData`).
-- Review: reserved context keys always win; `session_expire_client` logged once per session; case-insensitive secret key stripping.
 
 ### Dependencies / packaging
 
-- Decision: retain abandoned **Dektrium** (`yii2-user` + `yii2-rbac`) for now; security controls live in userextended overrides.
-- Package `composer.json`: require `dektrium/yii2-user` + `dektrium/yii2-rbac`; remove `2amigos/yii2-usuario`; conflict usuario.
-- Keep Yii2 core up to date; medium-term migration to a maintained user module still recommended.
+- Composer requires `dektrium/yii2-user` and `dektrium/yii2-rbac`; conflicts with `2amigos/yii2-usuario`.
+- Security controls live in userextended overrides while Dektrium remains the base for now.
+- Keep Yii2 core updated; medium-term migration to a maintained user module is still recommended.
 
 ### CSRF / verbs
 
-- `AdminController`: VerbFilter POST on `delete`, `deletemultiple`, `block`, `confirm`, `resend-password`, `activemultiple`, `deactivemultiple`, `switch`; sanitized bulk ids; no self-delete/block.
-- `RoleController` / `PermissionController`: VerbFilter POST on `delete` (upstream RBAC ItemController lacked it).
-- Login/register/settings/admin profile forms: CSRF via controller (default) + ActiveForm hidden field; do not use `enableCsrfValidation` on ActiveForm (not supported by kartik).
-- User bulk AJAX (`UserSearch`): payload includes an explicit CSRF token.
+- `AdminController`: VerbFilter POST on destructive/admin mutation actions; sanitized bulk ids; no self-delete/block.
+- `RoleController` / `PermissionController`: VerbFilter POST on `delete`.
+- Login/register/settings/admin profile forms: CSRF via controller defaults + ActiveForm hidden field.
+- User bulk AJAX payloads include an explicit CSRF token.
 
-### XSS output
+### XSS-safe output
 
-- `SafeHtml` helper: encode, plain text, HtmlPurifier whitelist, safe http(s) URLs.
+- `SafeHtml` helper: encode, plain text, HtmlPurifier allowlist, safe http(s) URLs.
 - Params: `signatureAllowHtml` (default `false`), `signatureAllowedHtml`.
-- Profile: sanitize signature/bio/name/firstname/lastname/location/website on validation; `getSignatureHtml()` / `getBioHtml()` for output.
-- Views: encode username/roles/avatar/alt/title; login flash encoded; `format => raw` only for static block/confirm icons.
+- Profile fields sanitized on validation; dedicated HTML getters for signature/bio.
+- Views encode user-facing strings; `format => raw` limited to trusted static markup.
 
 ### Password policy
 
-- `PasswordPolicy` / `PasswordPolicyValidator`: min/max length, upper/lower/digit/special, ban common passwords.
-- Params: `enablePasswordPolicy`, `passwordMinLength` (8), `passwordMaxLength` (72), `passwordRequire*`, `passwordBanCommon`, `passwordCommonList`, `passwordMaxAgeDays` (0 = off).
-- bcrypt cost: `passwordHashCost` default `13` (Dektrium was `10`) applied to `user.cost` in Bootstrap; `rehashPasswordOnLogin` upgrades weak hashes after successful login without breaking existing ones.
-- Review: cost clamped 12–15; never lower an existing higher `user.cost`; rehash re-validates plaintext, refuses weaker new hash, audits `password_rehash` without secrets.
-- Applied to `User`, `RegistrationForm`, `SettingsForm`, `RecoveryForm`.
-- Migration `m260720_160000_add_password_changed_at_to_user`; `PasswordExpireFilter` redirects to `/user/settings/account`.
-- Hash/verify only via `dektrium\user\helpers\Password` (Yii security).
-- Review: `PasswordPolicy::generate()` used in create/register/resendPassword; `resendPassword` persists `password_changed_at`; `hasAttribute` guard if column missing; settings does not assign `password` when `new_password` is empty.
+- `PasswordPolicy` / `PasswordPolicyValidator`: length bounds, character classes, optional common-password ban.
+- Related module params for policy, max age, and bcrypt cost (`passwordHashCost`, default stronger than upstream).
+- Applied to user/registration/settings/recovery forms; optional password-age redirect via `PasswordExpireFilter`.
+- Hashing/verification via Dektrium `Password` helper (Yii security).
+- Migration `m260720_160000_add_password_changed_at_to_user`.
 
-### Registration
+### Registration / recovery
 
-- `BackendFilter`: 404 on `registration` and `recovery` controllers (profile/settings remain); attach on `user` with `as backend` or `userextended.blockRegistrationAndRecovery`.
-- `RegistrationController` + `RegistrationRateLimiter` (IP + email, including confirmation resend).
-- Params: `enableRegistrationRateLimit`, `registrationMaxAttempts`, `registrationAttemptWindow`, `registrationLockoutDuration`, `registrationProgressiveDelay`, `registrationDelay*`.
-- Form protections already present: `captcha`, `terms`, Turnstile (`cloudflareTurnstileOnRegistration`); Dektrium confirmation via `enableConfirmation`.
-- Recovery/registration hardening (safe before re-enable): shorter `recoverWithin`/`confirmWithin`, `STRATEGY_SECURE` email change, `mailPlaintextPasswords=false` (admin resend → recovery link), `RecoveryController` + `RecoveryRateLimiter`.
-- Review: admin reset sends mail **before** rotating password (no lockout on mail failure); revokes prior recovery tokens; legacy plaintext path sets `password_changed_at`.
+- Optional `BackendFilter` to disable public registration/recovery controllers when the product is backend-only.
+- Registration rate limiting (IP + email), including confirmation resend paths.
+- Recovery/registration hardening options: shorter confirmation windows, secure email-change strategy, no plaintext passwords in mail by default.
+- Admin password reset sends mail before rotating credentials when configured that way.
 
 ### RBAC assignment
 
-- `AdminController::actionAssignments` + `AssignmentController`: mutation POST-only, explicit CSRF, AccessControl `admin`.
-- `Assignment` model (extends Dektrium): blocks self-escalation (`blockSelfRoleAssignment`); audit via `SecurityAudit` / logger; `user_id` not mass-assignable from POST.
-- `Assignments` widget with `processPost=false` when the controller handles POST (no mutate-on-render).
-- Params: `blockSelfRoleAssignment` (true), `enableRbacAssignmentAudit` (true).
+- Assignment mutations POST-only with explicit CSRF and `admin` AccessControl.
+- Blocks self-escalation when `blockSelfRoleAssignment` is enabled; assignment audit optional.
+- Assignments widget can disable mutate-on-render (`processPost=false`).
 
 ### Session
 
-- Session/auth timeout managed by the module (`sessionTimeout`, `useAbsoluteAuthTimeout`, `absoluteAuthTimeout`, `disableAutoLogin`).
-- CRM default: `disableAutoLogin = true` (effective authTimeout; no remember-me).
-- Session cookies: `hardenSessionCookies` applies HttpOnly + Secure (auto HTTPS/prod) + SameSite when missing (does not force `lifetime`).
-- `components\WebUser`: on idle/absolute auth timeout, invalidate remember-me and do not re-login from cookie in the same request.
-- Fix: `WebUser` registration updates DI only (preserves `identityClass`); no longer replaces the `user` component with a partial config; repair on `EVENT_BEFORE_REQUEST`.
-- Session ID regeneration: Yii `switchIdentity` + `regenerateSessionId` on login; logout with `logout(true)`.
-- Client redirect to login on expire (`SessionExpireAsset` / `session-expire.js`).
-- Non-blocking toast warning (no `alert()`); `clientWarningOnce` (default true).
-- Optional heartbeat: `clientSessionHeartbeatInterval` / `clientSessionHeartbeatUrl` (defaults to `GET /user/security/session-ping` → 204; AJAX skips asset registration).
-- Warning window capped below `sessionTimeout`; timers cleared on redirect; no full-page heartbeat GET.
-- Login flash with `?expired=1`.
-- Fix: do not force `session.cookieParams.lifetime`; register session-expire asset only on non-AJAX/PJAX HTML (skips JSON Accept) in `EVENT_BEGIN_PAGE`.
-- Asset `sourcePath` uses `__DIR__` (package-relative).
+- Module-managed idle/absolute auth timeouts and optional remember-me disable.
+- Session cookie hardening (`hardenSessionCookies`: HttpOnly, Secure when appropriate, SameSite).
+- Custom `WebUser` behavior on auth timeout; session ID regeneration on login; logout with full destroy.
+- Optional client warning/redirect assets for expired sessions; optional heartbeat endpoint.
+- Assets published from package-relative paths with cache-busting.
 
 ### Other
 
-- Persist avatar filename via `updateAttributes` after upload (Admin/Settings).
-- Shared `ProfileAvatarService` for Admin/Settings profile avatar update flow (upload after AJAX validation; rollback orphan file on failed save).
-- `SessionHelper::regenerateIdIfEnabled()`; `RateLimitStore` for login/registration limiters (session fallback guarded).
-- File headers aligned to `0.6.4`; scaffold comment removed from `UserSearch`.
-- i18n: complete `messages/en` + `messages/it` catalogs (session/security/password/avatar); `sourceLanguage=en`; toast Close label translated.
-- Fix: login lock detection independent of translated messages; ICU date pattern uses `yyyy`; Avatar labels / Prestashop email placeholder via `Yii::t`.
-- Assets: `SessionExpireAsset` publishes `assets/static` only (safe with `linkAssets`), `appendTimestamp` cache busting, minified JS/CSS in prod, `forceCopy` in debug only.
-- Module config: `ModuleSettings` validates/clamps params (Turnstile keys required when enabled); `securityPreset` / `Module::securityPreset('dev'|'prod'|'auto')`; README parameter catalog completed.
-- Session cookies: `hardenSessionCookies` respects existing `samesite` from app config (Yii `getCookieParams()` lowercases keys; previously Strict could be overwritten with Lax).
-- Registration Turnstile: skip siteverify on AJAX validation (single-use tokens), same as login.
-- SecurityAudit: broader secret-key sanitization (`secret*`, API/private keys) without dropping safe fields like `password_changed_at`.
-- Tests: PHPUnit suite (`tests/`) for login rate limit, UserSearch rule injection, avatar reject, admin switch forbid, session `?expired=1` smoke, Turnstile mock siteverify, password policy, ModuleSettings.
-- Tests: `Yii2BestPracticesTest` covers Yii2 guide patterns (AccessControl/VerbFilter/CSRF, AssetBundle publishing, mass-assignment, BootstrapInterface, SafeHtml).
-- `SecurityController` uses the package `LoginForm`; `LoginForm` in the user `modelMap`.
+- Shared `ProfileAvatarService` for admin/settings avatar updates.
+- i18n catalogs for `en` / `it` (session/security/password/avatar).
+- `ModuleSettings` validates/clamps params; optional `securityPreset` (`dev` / `prod` / `auto`).
+- Optional Cloudflare Turnstile on login/registration (keys from app config; fail closed).
+- PHPUnit coverage for rate limit, search filters, avatar reject, switch forbid, session expire flash, Turnstile mock, password policy, module settings, and Yii2 best-practice patterns.
 
-### Admin user performance
+### Admin performance / caching
 
-- `UserSearch`: eager load `profile` + `roles`; role filter with parameterized `INNER JOIN`.
-- `AuthAssignment` ActiveRecord; `getRolesHTML()` uses the relation (no concatenated SQL).
-- Migration `m260720_111500_add_user_admin_indexes`: index on `user.last_login_at`.
-
-### Caching
-
-- `RbacRoleCache`: cache role list for admin filters + invalidate on role create/update/delete (`RoleController`).
-- `ModuleConfig`: per-request memo of module settings (Profile, LoginRateLimiter, avatar).
-- Params: `enableRbacRoleCache`, `rbacRoleCacheDuration`.
-
-### Cloudflare Turnstile
-
-- Optional widget on login (`login` / `login_prestashop`) and registration (dedicated flag).
-- `TurnstileVerifier` (siteverify, fail closed); `TurnstileAsset` only when enabled.
-- Params: `enableCloudflareTurnstile`, `cloudflareSiteKey`, `cloudflareSecretKey`, `cloudflareTurnstileTheme`, `cloudflareTurnstileOnRegistration` (default off; secret from `web-local`).
-- Login fix: do not validate Turnstile in AJAX (one-time token); disable `enableAjaxValidation` when Turnstile is active; dedicated flash messages for captcha/Turnstile.
+- `UserSearch` eager loads profile/roles; parameterized role filter join.
+- Migration `m260720_111500_add_user_admin_indexes` (e.g. `user.last_login_at`).
+- `RbacRoleCache` for admin filters; per-request `ModuleConfig` memoization.
