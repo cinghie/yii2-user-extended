@@ -3,7 +3,7 @@
 Open hardening / dependency work.  
 Completed package detail also lives in `CHANGELOG.md` / `README.md`.
 
-### Documentation rules (root + all `vendor/cinghie`)
+### Documentation rules
 
 - **`CHANGELOG.md` and `UPDATE.md` must always be written in English.**
 - **`CHANGELOG.md` entries must use dated headings** (`## YYYY-MM-DD`, newest first), split by **commit days** — do **not** use `## [Unreleased]`.
