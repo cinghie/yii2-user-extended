@@ -4,7 +4,7 @@ All notable changes to this package are documented in this file.
 
 Format based on [Keep a Changelog](https://keepachangelog.com/).
 
-### Documentation rules (root + all `vendor/cinghie`)
+### Documentation rules
 
 - **`CHANGELOG.md` and `UPDATE.md` must always be written in English.**
 - **`CHANGELOG.md` entries must use dated headings** (`## YYYY-MM-DD`, newest first), split by **commit days** — do **not** use `## [Unreleased]`.
