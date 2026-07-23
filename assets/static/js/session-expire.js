@@ -122,6 +122,19 @@
             hideToast();
         }
 
+        /**
+         * Yii debug / Gii (and similar) poll forever; must not reset the idle timer.
+         */
+        function isBackgroundActivityUrl(url) {
+            if (!url) {
+                return false;
+            }
+            var s = String(url);
+            // Absolute or relative; ignore query string
+            var path = s.split('?')[0];
+            return /(?:^|\/)(?:debug|gii)(?:\/|$)/i.test(path);
+        }
+
         function startTimer() {
             if (timerId) {
                 window.clearInterval(timerId);
@@ -208,6 +221,10 @@
                     if (String(settings.url).indexOf(config.heartbeatUrl) !== -1) {
                         return;
                     }
+                }
+
+                if (settings && isBackgroundActivityUrl(settings.url)) {
+                    return;
                 }
 
                 var status = xhr && xhr.status ? xhr.status : 0;

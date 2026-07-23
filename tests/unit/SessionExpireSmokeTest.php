@@ -68,4 +68,35 @@ class SessionExpireSmokeTest extends TestCase
 		$url = \yii\helpers\Url::to(['/user/security/login', 'expired' => 1]);
 		$this->assertStringContainsString('expired', $url);
 	}
+
+	public function testWebUserSkipsIdleRenewalForDebugAndGiiPaths(): void
+	{
+		$user = new \cinghie\userextended\components\WebUser([
+			'identityClass' => \yii\web\IdentityInterface::class,
+			'enableSession' => false,
+			'enableAutoLogin' => false,
+		]);
+		$ref = new \ReflectionClass($user);
+		$method = $ref->getMethod('shouldRenewIdleAuthTimeout');
+		$method->setAccessible(true);
+
+		Yii::$app->request->setPathInfo('crm/invoices/index');
+		$this->assertTrue($method->invoke($user));
+
+		Yii::$app->request->setPathInfo('debug/default/toolbar');
+		$this->assertFalse($method->invoke($user));
+
+		Yii::$app->request->setPathInfo('gii/default/index');
+		$this->assertFalse($method->invoke($user));
+
+		Yii::$app->request->setPathInfo('it/debug/default/toolbar');
+		$this->assertFalse($method->invoke($user));
+	}
+
+	public function testSessionExpireScriptIgnoresBackgroundUrls(): void
+	{
+		$js = file_get_contents(dirname(__DIR__, 2) . '/assets/static/js/session-expire.js');
+		$this->assertStringContainsString('isBackgroundActivityUrl', $js);
+		$this->assertStringContainsString('debug|gii', $js);
+	}
 }

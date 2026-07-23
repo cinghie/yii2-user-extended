@@ -72,7 +72,11 @@ class WebUser extends User
                     'reason' => $absoluteExpired ? 'absolute' : 'idle',
                 ], 'session', 'User', '/');
             } elseif ($this->authTimeout !== null) {
-                $session->set($this->authTimeoutParam, time() + $this->authTimeout);
+                // Dev tools (debug/gii) poll via AJAX and would otherwise keep idle forever.
+                // Still initialize __expire on first hit; only skip renewals for background probes.
+                if ($expire === null || $this->shouldRenewIdleAuthTimeout()) {
+                    $session->set($this->authTimeoutParam, time() + $this->authTimeout);
+                }
             }
         }
 
@@ -87,5 +91,32 @@ class WebUser extends User
                 $this->renewIdentityCookie();
             }
         }
+    }
+
+    /**
+     * Whether this request should extend the idle authTimeout window.
+     *
+     * Yii debug toolbar / Gii poll continuously; treating them as activity prevents
+     * automatic logout in local/Docker (YII_DEBUG) environments.
+     *
+     * @return bool
+     */
+    protected function shouldRenewIdleAuthTimeout(): bool
+    {
+        if (!Yii::$app->has('request')) {
+            return true;
+        }
+
+        $path = trim((string) Yii::$app->getRequest()->getPathInfo(), '/');
+        if ($path === '') {
+            return true;
+        }
+
+        // Optional language prefix (e.g. it/debug/...) when not stripped by urlManager
+        if (preg_match('#^(?:[a-z]{2}(?:-[a-z]{2})?/)?(?:debug|gii)(?:/|$)#i', $path)) {
+            return false;
+        }
+
+        return true;
     }
 }

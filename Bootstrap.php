@@ -179,6 +179,10 @@ class Bootstrap implements BootstrapInterface
 
         $config['class'] = WebUser::class;
 
+        if ($module->disableAutoLogin) {
+            $config['enableAutoLogin'] = false;
+        }
+
         Yii::$container->set(YiiUser::class, $config);
         Yii::$container->set('yii\web\User', $config);
         Yii::$container->set(WebUser::class, $config);

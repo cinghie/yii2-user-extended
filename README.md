@@ -339,6 +339,8 @@ Or set `'securityPreset' => 'auto'` on the module and override only what you nee
 | `absoluteAuthTimeout` | `0` | Max login duration in seconds (`0` = off unless `useAbsoluteAuthTimeout`). |
 | `enableClientSessionExpireRedirect` | `true` | Client JS redirects to login with `?expired=1`. |
 | `clientWarningBeforeExpire` | `60` | Warning seconds before expire (`0` = off). Capped below `sessionTimeout`. |
+
+**Docker / YII_DEBUG note:** the Yii debug toolbar (and Gii) poll via AJAX. Those URLs are ignored for idle renewal (server + client). Still set an explicit `sessionTimeout` in `web-local.php` so `securityPreset=auto` (dev → 7200) does not diverge from your `session.timeout`. Prefer `cookieParams.lifetime = 0` (session cookie) and let `authTimeout` own idle logout.
 | `clientWarningOnce` | `true` | Show toast at most once per idle cycle. |
 | `clientSessionHeartbeatInterval` | `0` | Optional heartbeat seconds (`0` = off). While it succeeds, client + server idle timers renew. |
 | `clientSessionHeartbeatUrl` | `null` | Heartbeat URL; when null and interval > 0, uses `/user/security/session-ping` (204). |

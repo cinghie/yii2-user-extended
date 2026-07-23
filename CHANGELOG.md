@@ -15,6 +15,15 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## 2026-07-23
+
+### Fixed
+
+- Automatic idle logout no longer stalls under Yii debug / Gii: `WebUser` skips renewing `__expire` for `debug`/`gii` requests, and `session-expire.js` ignores those AJAX URLs (common failure in Docker/dev with the debug toolbar polling).
+- When `disableAutoLogin` is enabled, DI now sets `enableAutoLogin = false` (Dektrium bootstrap defaults to `true`).
+
+---
+
 ## 2026-07-22
 
 ### Changed
