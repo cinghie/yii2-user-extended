@@ -514,7 +514,7 @@ Map `rbac` `RoleController` / `PermissionController` / `AssignmentController` to
 |-----------|---------|-------------|
 | `blockSelfRoleAssignment` | `true` | Deny adding new roles/permissions to your own user. |
 | `enableRbacAssignmentAudit` | `true` | Log assignment changes (requires `enableSecurityAudit`). |
-| `enableSecurityAudit` | `true` | Structured security events (login, block/delete, Turnstile, session, RBAC) via logger or `Yii::info` (`userextended.security`). Never logs passwords/tokens. |
+| `enableSecurityAudit` | `true` | Structured security events via logger or `Yii::info` (`userextended.security`): auth (login/logout/registration), settings (password/email/username/profile, self-delete, network disconnect, email confirm), admin (block/delete/profile), Turnstile, session, RBAC. Never logs passwords/tokens. |
 
 Assignment updates go through `AdminController::actionAssignments` (and `/rbac/assignment/assign`) with admin AccessControl, CSRF, and VerbFilter. Self-escalation attempts are blocked and audited.
 
@@ -614,7 +614,7 @@ Features
     <li>Login brute-force protection (rate limit, lockout, progressive delay, captcha after N failures)</li>
     <li>Registration throttle (IP + email) + BackendFilter for CRM/backend (blocks registration/recovery)</li>
     <li>RBAC assignment hardening (CSRF, admin-only, block self-escalation, audit)</li>
-    <li>Structured security audit (login, block/delete, Turnstile, session expire; no secrets)</li>
+    <li>Structured security audit (auth, settings mutations, admin block/delete/profile, Turnstile, session, RBAC; no secrets)</li>
     <li>Optional Cloudflare Turnstile on login (and registration)</li>
     <li>Admin users grid performance (eager loading, role cache, DB indexes)</li>
     <li>User impersonation disabled by default</li>

@@ -206,6 +206,11 @@ class AdminController extends BaseController
             if ($profile->save()) {
                 $avatarUpdate->finalizeAfterSave();
 
+                SecurityAudit::log('admin_profile_update', (int) $user->id, [
+					'user_id' => (int) $user->id,
+					'username' => SecurityAudit::safeLogin($user->username),
+				], 'admin', 'User', '/user/admin/update-profile');
+
                 Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Profile details have been updated'));
 
                 $this->trigger(self::EVENT_AFTER_PROFILE_UPDATE, $event);

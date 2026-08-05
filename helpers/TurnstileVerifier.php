@@ -60,6 +60,20 @@ class TurnstileVerifier
 	}
 
 	/**
+	 * True during Yii ActiveForm AJAX field validation (POST includes `ajax` form id).
+	 * A forged XHR that submits the full form without that key is not treated as AJAX validation,
+	 * so Turnstile still applies.
+	 *
+	 * @return bool
+	 */
+	public static function isActiveFormAjaxValidationRequest()
+	{
+		$request = Yii::$app->request;
+
+		return $request->isAjax && $request->post('ajax') !== null && $request->post('ajax') !== '';
+	}
+
+	/**
 	 * Site + secret keys present.
 	 *
 	 * @return bool

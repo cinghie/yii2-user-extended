@@ -14,7 +14,7 @@ namespace cinghie\userextended\controllers;
 
 use Yii;
 use cinghie\userextended\helpers\RegistrationRateLimiter;
-use cinghie\userextended\helpers\TurnstileVerifier;
+use cinghie\userextended\helpers\SecurityAudit;
 use cinghie\userextended\models\RegistrationForm;
 use dektrium\user\controllers\RegistrationController as BaseController;
 use dektrium\user\models\ResendForm;
@@ -45,11 +45,10 @@ class RegistrationController extends BaseController
 
 		$this->trigger(self::EVENT_BEFORE_REGISTER, $event);
 
-		// Turnstile tokens are single-use: never run ActiveForm AJAX validation when
-		// registration Turnstile is enabled (parity with login forms).
-		if (!TurnstileVerifier::isEnabledForRegistration()) {
-			$this->performAjaxValidation($model);
-		}
+		// Always run ActiveForm AJAX validation first (ends the request with JSON).
+		// RegistrationForm skips Turnstile siteverify only when POST includes ActiveForm's `ajax`
+		// form id (single-use tokens); any other AJAX POST still requires Turnstile and cannot register.
+		$this->performAjaxValidation($model);
 
 		if ($model->load(Yii::$app->request->post())) {
 			if ($limiter->isLocked($model->email)) {
@@ -64,6 +63,10 @@ class RegistrationController extends BaseController
 				if ($registered) {
 					// Keep IP counter (mass-signup); clear only email key
 					$limiter->clearEmail($model->email);
+					SecurityAudit::log('registration_success', 0, [
+						'email' => SecurityAudit::safeLogin($model->email),
+						'username' => SecurityAudit::safeLogin($model->username),
+					], 'auth', 'User', '/user/registration/register');
 					$this->trigger(self::EVENT_AFTER_REGISTER, $event);
 
 					return $this->render('/message', [

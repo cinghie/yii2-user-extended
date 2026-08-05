@@ -72,15 +72,16 @@ class RegistrationForm extends BaseRegistrationForm
 			    'turnstileToken',
 			    'required',
 			    'when' => static function () {
-				    return !Yii::$app->request->isAjax;
+				    // ActiveForm ajax validation only — forged XHR registration must still require Turnstile
+				    return !TurnstileVerifier::isActiveFormAjaxValidationRequest();
 			    },
 			    'message' => Yii::t('userextended', 'Security verification failed. Please try again.'),
 		    ];
 		    $rules[] = [
 			    'turnstileToken',
 			    function ($attribute) {
-				    // Tokens are single-use: never call siteverify during AJAX validation
-				    if (Yii::$app->request->isAjax || $this->hasErrors($attribute)) {
+				    // Tokens are single-use: never call siteverify during ActiveForm AJAX validation
+				    if (TurnstileVerifier::isActiveFormAjaxValidationRequest() || $this->hasErrors($attribute)) {
 					    return;
 				    }
 				    if (!TurnstileVerifier::verify($this->$attribute)) {

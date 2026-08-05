@@ -17,13 +17,19 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## 2026-08-05
 
+### Added
+
+- Broader `SecurityAudit` coverage: settings `password_change` / `email_change` / `username_change` / `profile_update` / `email_confirm` / `network_disconnect` / `account_self_delete`; `registration_success`; `admin_profile_update`. Unit test `SecurityAuditTest` (sanitize + RBAC audit flag).
+- `TurnstileVerifier::isActiveFormAjaxValidationRequest()` — detects Yii ActiveForm AJAX field validation via the `ajax` POST form id.
+
 ### Fixed
 
-- Registration Turnstile: skip ActiveForm AJAX validation in `RegistrationController` when registration Turnstile is enabled (single-use tokens); `RegistrationForm` already skipped `siteverify` on AJAX; registration views keep `enableAjaxValidation = false`. Covered by `RegistrationFormTurnstileAjaxTest`.
+- Registration Turnstile: `RegistrationController` always runs `performAjaxValidation` (do not skip it when Turnstile is enabled — that opened a forged-XHR registration path). `RegistrationForm` / `LoginForm` skip `siteverify` only for ActiveForm AJAX validation, not for every `isAjax` request. Registration views keep `enableAjaxValidation = false`. Covered by `RegistrationFormTurnstileAjaxTest`.
+- Settings audit noise: `email_change` is not logged when the form still shows a pending `unconfirmed_email`; `email_confirm` is logged only when email or flags actually progress.
 
 ### Changed
 
-- UPDATE roadmap: closed registration Turnstile AJAX token reuse; residual backlog remains broader SecurityAudit events and Dektrium RBAC assignment mutation centralization. Consuming apps should Composer-refresh after releases — no ad-hoc production `vendor/` patches.
+- UPDATE roadmap: closed registration Turnstile AJAX token reuse and broader SecurityAudit coverage; residual backlog remains Dektrium RBAC assignment mutation centralization (plus 2FA / password history / ops). Consuming apps should Composer-refresh after releases — no ad-hoc production `vendor/` patches.
 
 ---
 

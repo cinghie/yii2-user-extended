@@ -62,17 +62,18 @@ class LoginForm extends BaseLoginForm
 				'turnstileToken',
 				'required',
 				'when' => function () {
-					return $this->isTurnstileRequired() && !Yii::$app->request->isAjax;
+					// ActiveForm ajax validation only — forged XHR login must still require Turnstile
+					return $this->isTurnstileRequired() && !TurnstileVerifier::isActiveFormAjaxValidationRequest();
 				},
 				'message' => Yii::t('userextended', 'Security verification failed. Please try again.'),
 			],
 			'turnstileValidate' => [
 				'turnstileToken',
 				function ($attribute) {
-					// Tokens are single-use: never call siteverify during AJAX validation
+					// Tokens are single-use: never call siteverify during ActiveForm AJAX validation
 					if (
 						!$this->isTurnstileRequired()
-						|| Yii::$app->request->isAjax
+						|| TurnstileVerifier::isActiveFormAjaxValidationRequest()
 						|| $this->hasErrors($attribute)
 					) {
 						return;
