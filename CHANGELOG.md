@@ -15,6 +15,14 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## 2026-08-05
+
+### Changed
+
+- UPDATE roadmap: tracked residual auth/RBAC hardening (registration Turnstile AJAX token reuse, broader SecurityAudit events, Dektrium RBAC assignment mutation centralization); consuming apps should Composer-refresh after releases — no ad-hoc production `vendor/` patches.
+
+---
+
 ## 2026-07-23
 
 ### Fixed

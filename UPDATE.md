@@ -24,6 +24,9 @@ Completed package detail also lives in `CHANGELOG.md` / `README.md`.
 |----------|------|
 | High | 2FA/TOTP for admins |
 | Medium | Password history / no-reuse |
+| Low | Registration Turnstile AJAX token reuse hardening |
+| Low | Broader SecurityAudit event coverage |
+| Low | Dektrium RBAC assignment mutation centralization |
 | Low | Deploy network restrictions for admin entry |
 | Low | Pin/fork strategy for upstream user packages |
 | Low | Plan migration to a maintained user module |
@@ -38,9 +41,12 @@ Completed package detail also lives in `CHANGELOG.md` / `README.md`.
 
 1. **2FA/TOTP for admins** — highest value for CRM-style backends.
 2. **Password history / no-reuse** — reject recently used passwords on change.
-3. **Ops hardening (deploy-specific):** restrict admin entry points by network policy where appropriate.
-4. **Treat upstream user packages carefully:** review diffs before Composer updates; prefer path/VCS pins for forks.
-5. **Medium-term:** plan migration to a maintained user module when feasible.
+3. **Registration Turnstile AJAX token reuse** — ensure captcha tokens cannot be replayed across registration AJAX steps when public registration is enabled (fail closed).
+4. **Broader SecurityAudit events** — expand audit coverage beyond the current baseline (login/settings/sensitive mutations) without logging secrets.
+5. **Dektrium RBAC assignment mutation centralization** — centralize role/permission assignment mutations in `dektrium/yii2-rbac` (or userextended wrappers) so every write path shares the same validation/ACL.
+6. **Ops hardening (deploy-specific):** restrict admin entry points by network policy where appropriate.
+7. **Treat upstream user packages carefully:** review diffs before Composer updates; prefer path/VCS pins for forks.
+8. **Medium-term:** plan migration to a maintained user module when feasible.
 
 Also keep `yiisoft/yii2` updated (framework patches matter more than abandoned user bases).
 
@@ -48,6 +54,7 @@ Also keep `yiisoft/yii2` updated (framework patches matter more than abandoned u
 
 - Implement in this package (or a maintained fork), then release via Composer.
 - After security changes, update CHANGELOG/README and bump the module version.
+- Consuming apps: **Composer-refresh** after package releases; **do not** patch `vendor/` ad hoc in production. Public registration may be disabled in some products — residual items above still belong here, not in app overrides.
 
 ---
 
@@ -79,6 +86,10 @@ Also keep `yiisoft/yii2` updated (framework patches matter more than abandoned u
 ---
 
 ## History
+
+### 2026-08-05
+
+- Tracked residual auth/RBAC hardening from consuming CRM apps: registration Turnstile AJAX token reuse, broader SecurityAudit events, Dektrium RBAC assignment mutation centralization. Reminder: ship via Composer releases; apps must refresh vendor — no ad-hoc production `vendor/` patches.
 
 ### 2026-07-22
 
