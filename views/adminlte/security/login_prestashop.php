@@ -291,7 +291,7 @@ if ($isBs4) {
             <h4 class="text-center"><?= Html::encode($copyrightText) ?></h4>
 
             <?php if (Yii::$app->session->hasFlash('login')): ?>
-                <div class="bg-aqua" style="padding: 10px 0; margin-bottom: 15px;">
+                <div class="bg-warning" style="padding: 10px 0; margin-bottom: 15px;">
                     <p class="login-box-msg" style="padding: 0;">
                         <?= Html::encode(Yii::$app->session->getFlash('login')) ?>
                     </p>
