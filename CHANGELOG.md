@@ -17,9 +17,13 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## 2026-08-05
 
+### Fixed
+
+- Registration Turnstile: skip ActiveForm AJAX validation in `RegistrationController` when registration Turnstile is enabled (single-use tokens); `RegistrationForm` already skipped `siteverify` on AJAX; registration views keep `enableAjaxValidation = false`. Covered by `RegistrationFormTurnstileAjaxTest`.
+
 ### Changed
 
-- UPDATE roadmap: tracked residual auth/RBAC hardening (registration Turnstile AJAX token reuse, broader SecurityAudit events, Dektrium RBAC assignment mutation centralization); consuming apps should Composer-refresh after releases — no ad-hoc production `vendor/` patches.
+- UPDATE roadmap: closed registration Turnstile AJAX token reuse; residual backlog remains broader SecurityAudit events and Dektrium RBAC assignment mutation centralization. Consuming apps should Composer-refresh after releases — no ad-hoc production `vendor/` patches.
 
 ---
 

@@ -24,7 +24,6 @@ Completed package detail also lives in `CHANGELOG.md` / `README.md`.
 |----------|------|
 | High | 2FA/TOTP for admins |
 | Medium | Password history / no-reuse |
-| Low | Registration Turnstile AJAX token reuse hardening |
 | Low | Broader SecurityAudit event coverage |
 | Low | Dektrium RBAC assignment mutation centralization |
 | Low | Deploy network restrictions for admin entry |
@@ -41,12 +40,11 @@ Completed package detail also lives in `CHANGELOG.md` / `README.md`.
 
 1. **2FA/TOTP for admins** — highest value for CRM-style backends.
 2. **Password history / no-reuse** — reject recently used passwords on change.
-3. **Registration Turnstile AJAX token reuse** — ensure captcha tokens cannot be replayed across registration AJAX steps when public registration is enabled (fail closed).
-4. **Broader SecurityAudit events** — expand audit coverage beyond the current baseline (login/settings/sensitive mutations) without logging secrets.
-5. **Dektrium RBAC assignment mutation centralization** — centralize role/permission assignment mutations in `dektrium/yii2-rbac` (or userextended wrappers) so every write path shares the same validation/ACL.
-6. **Ops hardening (deploy-specific):** restrict admin entry points by network policy where appropriate.
-7. **Treat upstream user packages carefully:** review diffs before Composer updates; prefer path/VCS pins for forks.
-8. **Medium-term:** plan migration to a maintained user module when feasible.
+3. **Broader SecurityAudit events** — expand audit coverage beyond the current baseline (login/settings/sensitive mutations) without logging secrets.
+4. **Dektrium RBAC assignment mutation centralization** — centralize role/permission assignment mutations in `dektrium/yii2-rbac` (or userextended wrappers) so every write path shares the same validation/ACL.
+5. **Ops hardening (deploy-specific):** restrict admin entry points by network policy where appropriate.
+6. **Treat upstream user packages carefully:** review diffs before Composer updates; prefer path/VCS pins for forks.
+7. **Medium-term:** plan migration to a maintained user module when feasible.
 
 Also keep `yiisoft/yii2` updated (framework patches matter more than abandoned user bases).
 
@@ -61,6 +59,12 @@ Also keep `yiisoft/yii2` updated (framework patches matter more than abandoned u
 ## Processed
 
 > Keep processed suggestions here (not in the Priority list). Newest processed first.
+
+### 2026-08-05 — Processed
+
+| Item | Outcome |
+|------|---------|
+| Registration Turnstile AJAX token reuse hardening | **Processed** — `RegistrationForm` skips `siteverify` on AJAX; registration views keep `enableAjaxValidation = false`; `RegistrationController` skips `performAjaxValidation` when registration Turnstile is enabled; unit test `RegistrationFormTurnstileAjaxTest`. |
 
 ### 2026-07-22 — Processed
 
@@ -89,7 +93,8 @@ Also keep `yiisoft/yii2` updated (framework patches matter more than abandoned u
 
 ### 2026-08-05
 
-- Tracked residual auth/RBAC hardening from consuming CRM apps: registration Turnstile AJAX token reuse, broader SecurityAudit events, Dektrium RBAC assignment mutation centralization. Reminder: ship via Composer releases; apps must refresh vendor — no ad-hoc production `vendor/` patches.
+- Closed **Registration Turnstile AJAX token reuse**: model skip + form AJAX off + controller skips ActiveForm AJAX validation when registration Turnstile is on; covered by `RegistrationFormTurnstileAjaxTest`.
+- Tracked residual auth/RBAC hardening from consuming CRM apps: broader SecurityAudit events, Dektrium RBAC assignment mutation centralization. Reminder: ship via Composer releases; apps must refresh vendor — no ad-hoc production `vendor/` patches.
 
 ### 2026-07-22
 

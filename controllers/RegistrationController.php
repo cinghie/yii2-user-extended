@@ -14,6 +14,7 @@ namespace cinghie\userextended\controllers;
 
 use Yii;
 use cinghie\userextended\helpers\RegistrationRateLimiter;
+use cinghie\userextended\helpers\TurnstileVerifier;
 use cinghie\userextended\models\RegistrationForm;
 use dektrium\user\controllers\RegistrationController as BaseController;
 use dektrium\user\models\ResendForm;
@@ -43,7 +44,12 @@ class RegistrationController extends BaseController
 		$limiter = RegistrationRateLimiter::create();
 
 		$this->trigger(self::EVENT_BEFORE_REGISTER, $event);
-		$this->performAjaxValidation($model);
+
+		// Turnstile tokens are single-use: never run ActiveForm AJAX validation when
+		// registration Turnstile is enabled (parity with login forms).
+		if (!TurnstileVerifier::isEnabledForRegistration()) {
+			$this->performAjaxValidation($model);
+		}
 
 		if ($model->load(Yii::$app->request->post())) {
 			if ($limiter->isLocked($model->email)) {

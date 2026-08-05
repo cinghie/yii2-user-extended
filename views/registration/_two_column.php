@@ -26,6 +26,7 @@ use yii\helpers\Html;
 
 	            <?php $form = ActiveForm::begin([
 		            'id' => 'registration-form',
+		            // Always off: Turnstile tokens are single-use; RegistrationForm also skips siteverify on AJAX.
 		            'enableAjaxValidation' => false,
 		            'enableClientValidation' => true,
 	            ]) ?>
