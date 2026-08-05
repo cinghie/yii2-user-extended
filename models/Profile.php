@@ -29,8 +29,10 @@ use yii\web\UploadedFile;
  * @property string $imagePath
  * @property string $imageUrl
  * @property string $socialImage
- * @property ActiveQueryInterface $account
- * @property Profile $accountAttributes
+ * @property int|null $account
+ * @property int|null $contact
+ * @property ActiveQueryInterface $socialAccount
+ * @property array|null $socialAccountAttributes
  */
 class Profile extends BaseProfile
 {
@@ -493,7 +495,7 @@ class Profile extends BaseProfile
 	 */
     public function getImageUrl()
     {
-	    if ( !$this->avatar && $this->getAccountAttributes() !== null )
+	    if ( !$this->avatar && $this->getSocialAccountAttributes() !== null )
         {
             $imageURL = $this->getSocialImage();
 
@@ -568,41 +570,41 @@ class Profile extends BaseProfile
     /**
      * Get image form Social
      *
-     * @return string
+     * @return string|null
      */
     public function getSocialImage()
     {
-        $account  = $this->getAccountAttributes();
+        $account = $this->getSocialAccountAttributes();
 
-        switch($account['provider'])
-        {
-	        case 'facebook':
-		        /** @var Account $account */
-		        $imageURL = 'https://graph.facebook.com/' . $account['client_id'] . '/picture?type=large';
-		        break;
-	        case 'twitter':
-		        /** @var Account $account */
-		        $imageURL = '';
-		        break;
-	        default:
-		        $imageURL = null;
+        if (!is_array($account) || empty($account['provider'])) {
+	        return null;
         }
 
-        return $imageURL;
+        switch ($account['provider']) {
+	        case 'facebook':
+		        return 'https://graph.facebook.com/' . $account['client_id'] . '/picture?type=large';
+	        case 'twitter':
+		        return '';
+	        default:
+		        return null;
+        }
     }
 
     /**
+     * Social-network account linked to this user (Dektrium Account model).
+     * Named socialAccount so it does not collide with the optional profile `account` integer attribute.
+     *
      * @return ActiveQueryInterface
      */
-    public function getAccount()
+    public function getSocialAccount()
     {
         return $this->hasOne($this->module->modelMap['Account'], ['user_id' => 'user_id']);
     }
 
 	/**
-	 * @return Profile []
+	 * @return array|null
 	 */
-    public function getAccountAttributes()
+    public function getSocialAccountAttributes()
     {
         return $this->hasOne($this->module->modelMap['Account'], ['user_id' => 'user_id'])->asArray()->one();
     }

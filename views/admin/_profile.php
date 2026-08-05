@@ -80,6 +80,10 @@ use yii\helpers\Html;
             <?= $form->field($profile, 'account') ?>
         <?php endif ?>
 
+        <?php if(Yii::$app->getModule('userextended')->contact): ?>
+            <?= $form->field($profile, 'contact') ?>
+        <?php endif ?>
+
         <?php if(Yii::$app->getModule('userextended')->publicEmail): ?>
             <?= $form->field($profile, 'public_email') ?>
         <?php endif ?>

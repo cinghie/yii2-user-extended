@@ -94,6 +94,7 @@ Also keep `yiisoft/yii2` updated (framework patches matter more than abandoned u
 
 - Closed **Broader SecurityAudit event coverage**: settings account/profile/delete/networks/confirm, registration success, admin profile update; `email_change` / `email_confirm` only on real mutations; secrets still stripped by `SecurityAudit::sanitizeData`.
 - Closed **Registration Turnstile AJAX token reuse**: skip `siteverify` only for ActiveForm AJAX (`ajax` POST id); controller always runs `performAjaxValidation` (skipping it when Turnstile is on was unsafe); forged XHR still verifies; covered by `RegistrationFormTurnstileAjaxTest`.
+- Fixed profile `account` / social-account naming collision (`getSocialAccount`), added `account`/`contact` columns migration, corrected settings profile field for `account`.
 - Residual auth/RBAC hardening: Dektrium RBAC assignment mutation centralization. Reminder: ship via Composer releases; apps must refresh vendor — no ad-hoc production `vendor/` patches.
 
 ### 2026-07-22

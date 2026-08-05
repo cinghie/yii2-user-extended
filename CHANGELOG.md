@@ -21,11 +21,13 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 - Broader `SecurityAudit` coverage: settings `password_change` / `email_change` / `username_change` / `profile_update` / `email_confirm` / `network_disconnect` / `account_self_delete`; `registration_success`; `admin_profile_update`. Unit test `SecurityAuditTest` (sanitize + RBAC audit flag).
 - `TurnstileVerifier::isActiveFormAjaxValidationRequest()` — detects Yii ActiveForm AJAX field validation via the `ajax` POST form id.
+- Migration `m260805_163000_add_account_contact_to_profile` for optional profile `account` / `contact` integers.
 
 ### Fixed
 
 - Registration Turnstile: `RegistrationController` always runs `performAjaxValidation` (do not skip it when Turnstile is enabled — that opened a forged-XHR registration path). `RegistrationForm` / `LoginForm` skip `siteverify` only for ActiveForm AJAX validation, not for every `isAjax` request. Registration views keep `enableAjaxValidation = false`. Covered by `RegistrationFormTurnstileAjaxTest`.
 - Settings audit noise: `email_change` is not logged when the form still shows a pending `unconfirmed_email`; `email_confirm` is logged only when email or flags actually progress.
+- Profile `account` field collided with social `getAccount()` relation (AJAX/load threw read-only property). Renamed relation to `getSocialAccount()` / `getSocialAccountAttributes()`; migration adds nullable `account` / `contact` columns; settings profile view no longer mis-renders birthday Select2 when `account` is enabled.
 
 ### Changed
 
