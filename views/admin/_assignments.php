@@ -10,7 +10,6 @@
  * @version 0.6.4
  */
 
-use Yii;
 use cinghie\userextended\widgets\Assignments;
 use yii\bootstrap\Alert;
 use yii\helpers\Html;
