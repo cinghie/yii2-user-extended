@@ -120,7 +120,7 @@ class SecurityAudit
 				$logger->action = mb_substr($action, 0, 32);
 				$logger->data = $payload;
 				$logger->icon = 'fa fa-shield';
-				$logger->ip = mb_substr($ip, 0, 16);
+				$logger->ip = \cinghie\logger\models\Loggers::sanitizeIp($ip);
 				$logger->created_by = $actorId;
 				$logger->created = date('Y-m-d H:i:s');
 				$logger->created_date = date('Y-m-d');

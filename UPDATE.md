@@ -58,6 +58,12 @@ Also keep `yiisoft/yii2` updated (framework patches matter more than abandoned u
 
 > Keep processed suggestions here (not in the Priority list). Newest processed first.
 
+### 2026-10-22 — Processed
+
+| Was | Item | Outcome |
+|-----|------|---------|
+| **High** | Logger IP on audit rows | **Processed** — `Loggers::sanitizeIp()` on persist. |
+
 ### 2026-08-05 — Processed
 
 | Item | Outcome |

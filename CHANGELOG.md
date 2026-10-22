@@ -15,6 +15,12 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## 2026-10-22
+
+### Fixed
+
+- `SecurityAudit` writes logger `ip` through `Loggers::sanitizeIp()` so null/invalid values are not passed to `filter_var()` and are not truncated into an invalid string.
+
 ## 2026-08-05
 
 ### Added
